@@ -1,0 +1,162 @@
+@import "tailwindcss";
+
+/*
+ * Housing Support Rides — design system
+ * Warm ivory + deep teal, humanist type. Light-only palette (committed).
+ */
+
+:root {
+  --background: hsl(42, 40%, 97%);        /* #fbf8f2 warm ivory */
+  --foreground: hsl(196, 32%, 15%);       /* #1a2f33 deep slate-teal */
+  --primary: hsl(186, 58%, 26%);          /* #1c6a6f deep teal */
+  --primary-foreground: hsl(42, 40%, 98%);
+  --muted-foreground: hsl(196, 10%, 44%);
+  --border: hsl(40, 20%, 87%);
+  --card: hsl(42, 42%, 94%);
+  --accent-warm: hsl(24, 82%, 56%);       /* donate / urgency accent */
+  --accent-soft: hsl(186, 34%, 88%);      /* pale teal wash */
+
+  --rb-ivory: #fbf8f2;
+  --rb-teal: #1c6a6f;
+  --rb-orange: #ef7c2b;
+}
+
+/*
+ * Map the semantic tokens to Tailwind's color system with `inline` so the
+ * generated utilities (bg-primary, text-muted-foreground, …) reference the
+ * :root vars directly — one source of truth, and var(--primary) still works
+ * inline exactly as the component code expects.
+ */
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border);
+  --color-card: var(--card);
+  --color-accent-warm: var(--accent-warm);
+  --color-accent-soft: var(--accent-soft);
+
+  --color-rb-ivory: var(--rb-ivory);
+  --color-rb-teal: var(--rb-teal);
+  --color-rb-orange: var(--rb-orange);
+
+  --font-serif: 'Source Serif 4', Georgia, serif;
+  --font-sans: 'Inter', system-ui, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  border-color: var(--border);
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 76px; /* clear the sticky navbar on anchor jumps */
+  color-scheme: light;      /* commit to the light ivory palette */
+}
+
+body {
+  margin: 0;
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  font-weight: 400;
+  font-size: 17px;
+  line-height: 1.78;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  margin: 0;
+  color: var(--foreground);
+}
+
+p {
+  margin: 0;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+/* Respect reduced-motion: let Framer Motion fall back to no transforms. */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+/* Reusable eyebrow label */
+.eyebrow {
+  font-family: var(--font-sans);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  font-size: 11px;
+  color: var(--primary);
+}
+
+/* ---------- Article body (journal MDX content) ---------- */
+.article-body {
+  color: var(--foreground);
+  font-size: 18px;
+  line-height: 1.8;
+}
+.article-body > * + * {
+  margin-top: 1.25em;
+}
+.article-body h2 {
+  font-family: var(--font-serif);
+  font-weight: 600;
+  font-size: 28px;
+  line-height: 1.2;
+  margin-top: 1.8em;
+}
+.article-body h3 {
+  font-family: var(--font-serif);
+  font-weight: 600;
+  font-size: 22px;
+  line-height: 1.25;
+  margin-top: 1.6em;
+}
+.article-body a {
+  color: var(--primary);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.article-body ul {
+  list-style: disc;
+  padding-left: 1.4em;
+}
+.article-body ol {
+  list-style: decimal;
+  padding-left: 1.4em;
+}
+.article-body li + li {
+  margin-top: 0.4em;
+}
+.article-body blockquote {
+  border-left: 3px solid var(--primary);
+  padding-left: 1.1em;
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 21px;
+  color: var(--foreground);
+}
+.article-body strong {
+  font-weight: 600;
+  color: var(--foreground);
+}
+.article-body code {
+  background: var(--card);
+  padding: 0.15em 0.4em;
+  border-radius: 4px;
+  font-size: 0.9em;
+}

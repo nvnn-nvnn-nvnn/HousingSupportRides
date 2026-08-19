@@ -1,0 +1,13 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro'
+import App from '../App.tsx'
+---
+
+<BaseLayout title="Housing Support Rides — Getting neighbors where they need to be">
+  <!--
+    The landing page reuses the existing React design system as a single
+    hydrated island. The blog (/journal) is fully static Astro — see the
+    per-section island note in notes/blog-cms-plan.md for a future refinement.
+  -->
+  <App client:load />
+</BaseLayout>
