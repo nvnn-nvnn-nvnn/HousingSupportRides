@@ -1,0 +1,41 @@
+---
+import SiteLayout from '../layouts/SiteLayout.astro'
+import PageHeader from '../components/PageHeader.astro'
+---
+
+<SiteLayout
+  title="Our History — Housing Support Rides"
+  description="The story of Housing Support Rides — how we started and where we're headed."
+>
+  <PageHeader
+    eyebrow="Our Story"
+    title="Our History"
+    lead="Placeholder intro — the founding story and the need that started it all."
+  />
+
+  <section class="mx-auto max-w-[760px] px-5 py-16">
+    <ol class="space-y-8">
+      <li class="border-l-2 border-[var(--primary)] pl-6">
+        <p class="font-serif text-2xl font-semibold text-[var(--primary)]">2023</p>
+        <p class="mt-2 text-[var(--muted-foreground)]">
+          Housing Support Rides is founded to help neighbors get to housing, work,
+          and appointments. Placeholder milestone.
+        </p>
+      </li>
+      <li class="border-l-2 border-[var(--border)] pl-6">
+        <p class="font-serif text-2xl font-semibold">2024</p>
+        <p class="mt-2 text-[var(--muted-foreground)]">Placeholder milestone.</p>
+      </li>
+      <li class="border-l-2 border-[var(--border)] pl-6">
+        <p class="font-serif text-2xl font-semibold">Today</p>
+        <p class="mt-2 text-[var(--muted-foreground)]">Placeholder milestone.</p>
+      </li>
+    </ol>
+
+    <h2 class="mt-16 font-serif text-2xl font-semibold">Leadership</h2>
+    <div class="mt-6 rounded-xl border border-[var(--border)] bg-[var(--card)] p-6">
+      <p class="font-sans text-lg font-semibold">Kong Meng Vang</p>
+      <p class="text-[var(--muted-foreground)]">Executive Director</p>
+    </div>
+  </section>
+</SiteLayout>

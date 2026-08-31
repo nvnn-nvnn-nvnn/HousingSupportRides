@@ -1,0 +1,91 @@
+---
+import SiteLayout from '../layouts/SiteLayout.astro'
+import PageHeader from '../components/PageHeader.astro'
+
+const inputClass =
+  'w-full rounded-lg border border-[var(--border)] bg-[var(--background)] px-4 py-3 text-[var(--foreground)] placeholder:text-[var(--muted-foreground)] focus:border-[var(--primary)] focus:outline-none focus:ring-2 focus:ring-[var(--accent-soft)]'
+---
+
+<SiteLayout
+  title="Contact — Housing Support Rides"
+  description="Get in touch with Housing Support Rides."
+>
+  <PageHeader
+    eyebrow="Get in Touch"
+    title="Contact Us"
+    lead="Questions about a ride, volunteering, or partnering with us? Send a note and we'll get back to you."
+  />
+
+  <section class="mx-auto max-w-[1200px] px-5 py-16 md:px-16">
+    <div class="grid grid-cols-1 gap-12 lg:grid-cols-[1.4fr_1fr]">
+      <!-- Placeholder form. TODO: wire to web3 intake. -->
+      <form class="grid gap-5" onsubmit="return false">
+        <div class="grid gap-5 sm:grid-cols-2">
+          <label class="grid gap-2 text-sm font-medium text-[var(--foreground)]">
+            Name
+            <input class={inputClass} type="text" name="name" autocomplete="name" placeholder="Your name" />
+          </label>
+          <label class="grid gap-2 text-sm font-medium text-[var(--foreground)]">
+            Email
+            <input class={inputClass} type="email" name="email" autocomplete="email" placeholder="you@example.com" />
+          </label>
+        </div>
+        <label class="grid gap-2 text-sm font-medium text-[var(--foreground)]">
+          Phone <span class="font-normal text-[var(--muted-foreground)]">(optional)</span>
+          <input class={inputClass} type="tel" name="phone" autocomplete="tel" placeholder="(000) 000-0000" />
+        </label>
+        <label class="grid gap-2 text-sm font-medium text-[var(--foreground)]">
+          Message
+          <textarea class={inputClass} name="message" rows="5" placeholder="How can we help?"></textarea>
+        </label>
+        <div>
+          <button
+            type="submit"
+            class="rounded-full bg-[var(--accent-warm)] px-7 py-3.5 font-semibold text-white transition-all duration-200 hover:brightness-95 active:brightness-90"
+          >
+            Send message
+          </button>
+          <p class="mt-3 text-sm text-[var(--muted-foreground)]">
+            Placeholder form — submissions aren't wired up yet.
+          </p>
+        </div>
+      </form>
+
+      <!-- Contact details -->
+      <aside class="grid content-start gap-6">
+        <div>
+          <h2 class="text-xs font-semibold uppercase tracking-[0.16em] text-[var(--muted-foreground)]">
+            Reach us
+          </h2>
+          <address class="mt-3 grid gap-3 not-italic text-[var(--foreground)]">
+            <p>
+              917 Edmund Ave<br />
+              Saint Paul, MN 55104
+            </p>
+            <p>
+              <a class="text-[var(--primary)] hover:opacity-70" href="tel:+17635017764">
+                (763) 501-7764
+              </a>
+            </p>
+            <p>
+              <a
+                class="text-[var(--primary)] hover:opacity-70"
+                href="mailto:hello@housingsupportrides.org"
+              >
+                hello@housingsupportrides.org
+              </a>
+            </p>
+          </address>
+        </div>
+        <div>
+          <h2 class="text-xs font-semibold uppercase tracking-[0.16em] text-[var(--muted-foreground)]">
+            Hours
+          </h2>
+          <p class="mt-3 text-[var(--muted-foreground)]">
+            Placeholder — e.g. Mon–Fri, 8am–5pm.
+          </p>
+        </div>
+      </aside>
+    </div>
+  </section>
+</SiteLayout>

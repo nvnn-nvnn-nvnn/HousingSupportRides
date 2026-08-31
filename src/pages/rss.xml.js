@@ -6,7 +6,7 @@ export async function GET(context) {
 
   return rss({
     title: 'Housing Support Rides — Journal',
-    description: 'Field updates, water quality results, and stories from the watershed.',
+    description: 'Stories, updates, and volunteer news from Housing Support Rides.',
     site: context.site,
     items: posts
       .sort((a, b) => b.data.publishedAt.valueOf() - a.data.publishedAt.valueOf())

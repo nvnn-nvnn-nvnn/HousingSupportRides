@@ -35,7 +35,7 @@ function StoryCard({ story, index }: { story: Story; index: number }) {
       {/* Caption gradient + text */}
       <div
         className="absolute inset-x-0 bottom-0 p-6"
-        style={{ background: 'linear-gradient(to top, rgba(26,47,51,0.92), transparent)' }}
+        style={{ background: 'linear-gradient(to top, rgba(32,14,15,0.92), transparent)' }}
       >
         <span className="text-xs font-semibold uppercase tracking-[0.16em] text-white/80">
           {story.category}
@@ -60,9 +60,9 @@ function FieldStories() {
     <section id="field-stories" className="bg-[var(--background)] py-24">
       <div className="mx-auto max-w-[1200px] px-5 md:px-16">
         <FadeUp className="max-w-2xl">
-          <Eyebrow>From the Field</Eyebrow>
+          <Eyebrow>Stories</Eyebrow>
           <h2 className="mt-3 font-serif font-semibold" style={{ fontSize: 'clamp(32px, 4vw, 44px)' }}>
-            What It Looks Like on the Ground
+            Real People, Real Progress
           </h2>
         </FadeUp>
 

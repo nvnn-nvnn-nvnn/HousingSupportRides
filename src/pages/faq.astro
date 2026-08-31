@@ -1,0 +1,48 @@
+---
+import SiteLayout from '../layouts/SiteLayout.astro'
+import PageHeader from '../components/PageHeader.astro'
+
+// Placeholder Q&A — replace answers with real content.
+const faqs = [
+  { q: 'Who can request a ride?', a: 'Placeholder answer describing eligibility.' },
+  { q: 'How do I book a ride?', a: 'Placeholder answer describing the booking process.' },
+  { q: 'How much does a ride cost?', a: 'Placeholder answer about cost / that rides are free.' },
+  { q: 'What areas do you serve?', a: 'Placeholder answer about the service area.' },
+  { q: 'How can I volunteer as a driver?', a: 'Placeholder answer pointing to the Volunteer page.' },
+  { q: 'Are donations tax-deductible?', a: 'Placeholder answer — yes, as a registered 501(c)(3).' },
+]
+---
+
+<SiteLayout
+  title="FAQ — Housing Support Rides"
+  description="Answers to common questions about rides, eligibility, volunteering, and giving."
+>
+  <PageHeader
+    eyebrow="Questions"
+    title="Frequently Asked Questions"
+    lead="Can't find what you're looking for? Reach out and we'll help."
+  />
+
+  <section class="mx-auto max-w-[760px] px-5 py-16">
+    <div class="divide-y divide-[var(--border)] border-y border-[var(--border)]">
+      {
+        faqs.map((item) => (
+          <details class="group py-5">
+            <summary class="flex cursor-pointer list-none items-center justify-between gap-4 font-sans text-lg font-semibold [&::-webkit-details-marker]:hidden">
+              {item.q}
+              <span
+                class="shrink-0 text-2xl leading-none text-[var(--primary)] transition-transform duration-200 group-open:rotate-45"
+                aria-hidden="true"
+              >
+                +
+              </span>
+            </summary>
+            <p class="mt-3 text-[var(--muted-foreground)]" style="line-height: 1.7;">
+              {item.a}
+            </p>
+          </details>
+        ))
+      }
+    </div>
+  </section>
+</SiteLayout>

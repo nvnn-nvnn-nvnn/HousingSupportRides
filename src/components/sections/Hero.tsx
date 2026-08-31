@@ -19,7 +19,7 @@ function Hero() {
   return (
     <section id="top" className="relative min-h-[86vh] overflow-hidden">
       {/* Desktop image — full-bleed to the right viewport edge */}
-      <div className="absolute inset-y-0 right-0 hidden md:block md:w-1/2 lg:w-[52%]">
+      <div className="absolute inset-y-0 right-0 hidden md:block md:w-1/2">
         <motion.div
           className="h-full w-full"
           initial={{ clipPath: 'inset(0 0 0 100%)' }}
@@ -27,8 +27,8 @@ function Hero() {
           transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
         >
           <MediaPlaceholder
-            alt="River bend at sunrise"
-            hint="Wide river bend framed by green banks in soft morning light, mist on the water, calm and hopeful, natural landscape photography"
+            alt="A volunteer driver helping a neighbor into a car"
+            hint="A volunteer driver opening a car door for a smiling person outside an apartment, warm morning light, hopeful documentary photography"
             className="h-full"
           />
         </motion.div>
@@ -37,8 +37,8 @@ function Hero() {
       {/* Mobile image — background layer behind text with ivory scrim */}
       <div className="absolute inset-0 md:hidden">
         <MediaPlaceholder
-          alt="River bend at sunrise"
-          hint="Wide river bend in soft morning light"
+          alt="A volunteer driver helping a neighbor into a car"
+          hint="A volunteer helping a neighbor, warm morning light"
           chip={false}
         />
         <div
@@ -56,10 +56,10 @@ function Hero() {
           variants={container}
           initial="hidden"
           animate="show"
-          className="max-w-[560px] py-24 md:py-20"
+          className="w-full max-w-[560px] py-24 md:w-1/2 md:max-w-none md:pr-10 md:py-20"
         >
           <motion.p variants={item} className="eyebrow">
-            Rides to housing, healthcare, and home since 1997
+            Housing · Rides · Reintegration since 2023
           </motion.p>
 
           <motion.h1
@@ -67,9 +67,9 @@ function Hero() {
             className="mt-5 font-serif font-semibold text-[var(--foreground)]"
             style={{ fontSize: 'clamp(38px, 5vw, 68px)', lineHeight: 1.1 }}
           >
-            Clean water is not <br className="hidden md:block" />
-            a cause. It is <br className="hidden md:block" />
-            infrastructure.
+            Everyone deserves <br className="hidden md:block" />
+            a way back <br className="hidden md:block" />
+            home.
           </motion.h1>
 
           <motion.p
@@ -77,15 +77,16 @@ function Hero() {
             className="mt-6 max-w-lg text-[var(--muted-foreground)]"
             style={{ fontSize: 17, lineHeight: 1.78 }}
           >
-            We monitor, restore, and defend 340 miles of river across three
-            counties — with volunteers, science, and a very small staff.
+            Housing Support Rides helps people rebuilding their lives find stable
+            housing, reliable transportation, and a community that has their
+            back — one neighbor at a time.
           </motion.p>
 
           <motion.div variants={item} className="mt-8 flex flex-wrap gap-3">
             <Button href="#donate" size="lg">
               Donate
             </Button>
-            <Button href="#impact" variant="outline" size="lg">
+            <Button href="#impact" variants={item} size="lg">
               See Our Impact
             </Button>
           </motion.div>

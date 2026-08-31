@@ -16,6 +16,7 @@ Start here, then read the companion docs:
 | [component-responsibilities.md](./component-responsibilities.md) | What each section/component does |
 | [todo-next-steps.md](./todo-next-steps.md) | Placeholders + what still needs wiring |
 | [blog-cms-plan.md](./blog-cms-plan.md) | Blog/journalism decision record — why Astro + Keystatic |
+| [CHANGELOG.md](./CHANGELOG.md) | Running log of what changed and when |
 
 > **Task-based how-to guides** (writing posts, the admin, deploying) live in a
 > separate top-level folder: **[../how-to/](../how-to/)**.
@@ -47,6 +48,10 @@ npm run build    # astro build  ✅ passing
 npm run preview  # run the built site
 npm run lint     # oxlint       ✅ clean
 ```
+
+**Version control:** this is a git repo (branch `master`). Blog posts are files,
+so committing is how you keep them — Keystatic saves in local mode don't publish
+until committed + pushed. See [../how-to/using-the-admin.md](../how-to/using-the-admin.md).
 
 ## The 30-second mental model
 

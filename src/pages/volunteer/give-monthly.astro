@@ -1,0 +1,41 @@
+---
+import SiteLayout from '../../layouts/SiteLayout.astro'
+import PageHeader from '../../components/PageHeader.astro'
+import Button from '../../components/ui/Button'
+---
+
+<SiteLayout
+  title="Give Monthly — Housing Support Rides"
+  description="Join our monthly giving circle — steady, predictable support that lets us commit to people for the long haul."
+>
+  <PageHeader
+    eyebrow="Give"
+    title="Give Monthly"
+    lead="One-time gifts help. Monthly gifts let us make promises. Steady support is what turns a good week into a real plan for someone's future."
+  />
+
+  <section class="mx-auto max-w-[760px] px-5 py-16">
+    <p class="text-[var(--muted-foreground)]" style="line-height: 1.78;">
+      Placeholder intro — explain the monthly giving circle and why recurring
+      support matters more than its dollar amount.
+    </p>
+
+    <h2 class="mt-12 font-serif text-2xl font-semibold">Why monthly matters</h2>
+    <ul class="mt-4 space-y-2 text-[var(--muted-foreground)]">
+      <li>Predictable funding lets us commit to multi-month case plans.</li>
+      <li>It keeps drivers on the road and move-in kits on the shelf.</li>
+      <li>Even a small amount, every month, compounds into real stability.</li>
+    </ul>
+
+    <div class="mt-12 rounded-xl border border-[var(--border)] bg-[var(--card)] p-8">
+      <h3 class="font-sans text-xl font-semibold">Join The Circle</h3>
+      <p class="mt-2 text-[var(--muted-foreground)]">
+        Choose an amount and make it monthly — you can change or cancel anytime.
+      </p>
+      <div class="mt-5 flex flex-wrap gap-3">
+        <Button href="/#donate">Set up monthly giving</Button>
+        <Button href="/contact" variant="outline">Ask a question</Button>
+      </div>
+    </div>
+  </section>
+</SiteLayout>

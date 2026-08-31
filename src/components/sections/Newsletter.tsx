@@ -15,7 +15,7 @@ function Newsletter() {
             Two emails a month. Both worth opening.
           </h2>
           <p className="mt-4 text-white/80">
-            Field updates, water quality results, and the occasional call to show up somewhere.
+            Neighbor stories, volunteer needs, and the occasional call to show up somewhere.
           </p>
         </FadeUp>
 

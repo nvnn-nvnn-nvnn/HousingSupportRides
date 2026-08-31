@@ -7,7 +7,17 @@ import { config, collection, fields } from '@keystatic/core'
  * Frontmatter field keys here MUST match src/content.config.ts.
  */
 export default config({
-  storage: { kind: 'local' },
+  // Editing access:
+  //   - dev (`npm run dev`): local mode — reads/writes files on your machine.
+  //   - production: GitHub mode — multiple people sign in at /keystatic and each
+  //     save becomes a commit. Anyone with WRITE access to the repo can edit
+  //     (that's your editor list — manage it in GitHub → Settings → Collaborators).
+  // TODO before deploy: replace OWNER with your GitHub org/user, push the repo to
+  // GitHub, install the Keystatic GitHub App, and set the env vars. Full steps in
+  // how-to/deploying.md. For editors without GitHub accounts, use Keystatic Cloud.
+  storage: import.meta.env.DEV
+    ? { kind: 'local' }
+    : { kind: 'github', repo: 'OWNER/housing-support-rides' },
   ui: {
     brand: { name: 'Housing Support Rides' },
   },
@@ -37,13 +47,14 @@ export default config({
         category: fields.select({
           label: 'Category',
           options: [
-            { label: 'Field Story', value: 'Field Story' },
-            { label: 'Advocacy', value: 'Advocacy' },
-            { label: 'Cleanup', value: 'Cleanup' },
-            { label: 'Water Quality', value: 'Water Quality' },
-            { label: 'Education', value: 'Education' },
+            { label: 'Client Story', value: 'Client Story' },
+            { label: 'Housing', value: 'Housing' },
+            { label: 'Rides', value: 'Rides' },
+            { label: 'Volunteers', value: 'Volunteers' },
+            { label: 'Community', value: 'Community' },
+            { label: 'News', value: 'News' },
           ],
-          defaultValue: 'Field Story',
+          defaultValue: 'Client Story',
         }),
         excerpt: fields.text({
           label: 'Excerpt',

@@ -49,25 +49,31 @@ the live `/keystatic` route on the deployed site:
 - You can then remove the Keystatic integration + adapter from the build used
   for the static host. Keep them for local editing.
 
-## Letting staff edit in production
+## Multiple editors (admin for news, etc.)
 
-Local mode (the default here) only writes files on the machine running the dev
-server. To let non-technical staff publish from their browser:
+`keystatic.config.tsx` is already set up to switch automatically:
+- **dev** (`npm run dev`) → local mode (writes files on your machine).
+- **production** → **GitHub mode**, which is what lets *multiple people* sign in
+  at `/keystatic` and edit (each save becomes a commit).
 
-1. Switch Keystatic to **GitHub mode** in `keystatic.config.tsx`:
-   ```ts
-   storage: {
-     kind: 'github',
-     repo: 'your-org/housing-support-rides',
-   }
-   ```
-2. Create the Keystatic GitHub App and add the credentials as environment
-   variables on your host (follow the Keystatic "GitHub mode" setup docs).
-3. Deploy with a host adapter (Option 1). Staff visit `yourdomain/keystatic`,
-   sign in with GitHub, and their saves become commits + a deploy.
+To turn it on:
 
-Alternative: **Keystatic Cloud** handles auth for you if you'd rather not manage
-the GitHub App.
+1. **Push the repo to GitHub**, then in `keystatic.config.tsx` replace `OWNER`
+   in `repo: 'OWNER/housing-support-rides'` with your GitHub org/user.
+2. **Create the Keystatic GitHub App** (Keystatic's guided setup / docs) and set
+   the resulting env vars on your host:
+   `KEYSTATIC_GITHUB_CLIENT_ID`, `KEYSTATIC_GITHUB_CLIENT_SECRET`,
+   `KEYSTATIC_SECRET`.
+3. **Deploy with a host adapter** (Option 1). Staff visit `yourdomain/keystatic`,
+   sign in with GitHub, and edits become commits + a deploy.
+
+**Who can edit = who has write access to the repo.** Manage your editor list in
+**GitHub → repo → Settings → Collaborators & teams** (add/remove people, or use a
+team). Everyone there can edit all collections, including the news/journal.
+
+**Editors without GitHub accounts?** Use **Keystatic Cloud** — it handles sign-in
+and team management for you, so non-technical staff don't need GitHub logins.
+Keystatic itself has no per-collection roles yet; GitHub/Cloud access is all-or-nothing.
 
 ## Pre-launch checklist
 - [ ] `site` set to the real domain in `astro.config.mjs`

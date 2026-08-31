@@ -18,7 +18,7 @@ function DonateBlock() {
 
   const activeTier = DONATION_TIERS.find((t) => t.amount === selected)
   const impact = usingCustom
-    ? 'goes straight to the river — monitoring, restoration, advocacy, and education.'
+    ? 'goes directly to housing, rides, and support for neighbors rebuilding their lives.'
     : activeTier?.impact
 
   const ctaLabel = `Donate $${amount.toLocaleString('en-US')}${
@@ -137,9 +137,11 @@ function DonateBlock() {
           {ctaLabel}
         </button>
 
+        {/* TODO: confirm 501(c)(3) status and add the real EIN before accepting
+            donations. Do NOT claim tax-deductibility until verified. */}
         <p className="mt-6 text-center text-xs leading-relaxed text-white/60">
-          Housing Support Rides is a registered 501(c)(3). EIN 45-2810394. All gifts are
-          tax-deductible to the extent allowed by law.
+          Housing Support Rides, Inc. is a nonprofit organization based in Saint
+          Paul, Minnesota.
         </p>
       </div>
     </section>

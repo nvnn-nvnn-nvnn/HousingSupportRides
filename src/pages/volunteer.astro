@@ -1,0 +1,52 @@
+---
+import SiteLayout from '../layouts/SiteLayout.astro'
+import PageHeader from '../components/PageHeader.astro'
+
+const roles = [
+  {
+    title: 'Become a Driver',
+    href: '/volunteer/become-a-driver',
+    body: 'Give rides to work, appointments, and interviews on a schedule that fits your week. Mileage is covered.',
+  },
+  {
+    title: 'Help Coordinate',
+    href: '/volunteer/help-coordinate',
+    body: 'Match riders with drivers, handle intake, and keep the schedule running — much of it from home.',
+  },
+  {
+    title: 'Give Monthly',
+    href: '/volunteer/give-monthly',
+    body: 'Join our monthly giving circle. Steady support lets us plan for the long haul.',
+  },
+]
+---
+
+<SiteLayout
+  title="Volunteer — Housing Support Rides"
+  description="Ways to get involved and volunteer with Housing Support Rides."
+>
+  <PageHeader
+    eyebrow="Join Us"
+    title="Volunteer"
+    lead="Placeholder intro — describe how volunteers power the organization and what a typical commitment looks like."
+  />
+
+  <section class="mx-auto max-w-[1200px] px-5 py-16 md:px-16">
+    <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
+      {
+        roles.map((role) => (
+          <a
+            href={role.href}
+            class="group flex flex-col rounded-xl border border-[var(--border)] bg-[var(--card)] p-8 transition-all hover:-translate-y-1 hover:shadow-[0_18px_40px_-16px_rgba(40,18,20,0.28)]"
+          >
+            <h2 class="font-sans text-xl font-semibold">{role.title}</h2>
+            <p class="mt-3 flex-1 text-[var(--muted-foreground)]">{role.body}</p>
+            <span class="mt-5 inline-flex items-center gap-1.5 text-sm font-medium text-[var(--primary)] transition-all group-hover:gap-2.5">
+              Learn more <span aria-hidden="true">→</span>
+            </span>
+          </a>
+        ))
+      }
+    </div>
+  </section>
+</SiteLayout>

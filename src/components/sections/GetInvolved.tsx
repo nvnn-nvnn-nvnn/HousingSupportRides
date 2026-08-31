@@ -37,7 +37,7 @@ function GetInvolved() {
                   {route.body}
                 </p>
                 <div className="mt-6">
-                  <Button href="#donate" variant="outline" size="sm">
+                  <Button href={route.href} variant="outline" size="sm">
                     {route.cta}
                   </Button>
                 </div>

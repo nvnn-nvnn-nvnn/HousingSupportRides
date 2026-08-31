@@ -1,0 +1,48 @@
+---
+import SiteLayout from '../../layouts/SiteLayout.astro'
+import PageHeader from '../../components/PageHeader.astro'
+import Button from '../../components/ui/Button'
+---
+
+<SiteLayout
+  title="Help Coordinate — Housing Support Rides"
+  description="Volunteer behind the scenes: match riders with drivers, handle intake, and keep the schedule running."
+>
+  <PageHeader
+    eyebrow="Volunteer"
+    title="Help Coordinate"
+    lead="Not everyone can drive — but every ride depends on someone keeping the pieces together. Coordinators are the engine behind the program."
+  />
+
+  <section class="mx-auto max-w-[760px] px-5 py-16">
+    <p class="text-[var(--muted-foreground)]" style="line-height: 1.78;">
+      Placeholder intro — describe the coordination role and why it matters, and
+      note that much of it can be done remotely.
+    </p>
+
+    <h2 class="mt-12 font-serif text-2xl font-semibold">What you'll do</h2>
+    <ul class="mt-4 space-y-2 text-[var(--muted-foreground)]">
+      <li>Match ride requests with available drivers.</li>
+      <li>Help new clients through intake and paperwork.</li>
+      <li>Keep the weekly schedule accurate and confirm trips.</li>
+    </ul>
+
+    <h2 class="mt-10 font-serif text-2xl font-semibold">Who it's for</h2>
+    <ul class="mt-4 space-y-2 text-[var(--muted-foreground)]">
+      <li>Organized people who like a clear system (placeholder).</li>
+      <li>Comfortable on the phone and with simple software.</li>
+      <li>A few flexible hours a week — much of it remote.</li>
+    </ul>
+
+    <div class="mt-12 rounded-xl border border-[var(--border)] bg-[var(--card)] p-8">
+      <h3 class="font-sans text-xl font-semibold">Sound like you?</h3>
+      <p class="mt-2 text-[var(--muted-foreground)]">
+        Tell us a little about yourself and we'll find the right fit.
+      </p>
+      <div class="mt-5 flex flex-wrap gap-3">
+        <Button href="/contact">Get in touch</Button>
+        <Button href="/volunteer" variant="outline">All volunteer roles</Button>
+      </div>
+    </div>
+  </section>
+</SiteLayout>

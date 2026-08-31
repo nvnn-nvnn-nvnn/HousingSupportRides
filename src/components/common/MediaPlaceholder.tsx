@@ -12,8 +12,8 @@ interface MediaPlaceholderProps {
 }
 
 /**
- * Stand-in for a real photograph. Renders a layered teal "water & light"
- * gradient so layout, aspect ratios, and hover effects all work now.
+ * Stand-in for a real photograph. Renders a layered maroon gradient so
+ * layout, aspect ratios, and hover effects all work now.
  *
  * TODO: replace each usage with a real <img> (see `hint` for art direction):
  *   <img src="…" alt={alt} className="h-full w-full object-cover" />
@@ -28,9 +28,9 @@ function MediaPlaceholder({ alt, hint, className, chip = true }: MediaPlaceholde
       style={{
         backgroundColor: 'var(--primary)',
         backgroundImage:
-          'radial-gradient(120% 85% at 18% 12%, hsla(42, 60%, 92%, 0.55), transparent 55%),' +
-          'radial-gradient(90% 75% at 88% 95%, hsla(196, 55%, 14%, 0.65), transparent 60%),' +
-          'linear-gradient(158deg, hsl(186, 44%, 46%), hsl(186, 58%, 26%) 58%, hsl(196, 46%, 20%))',
+          'radial-gradient(120% 85% at 18% 12%, hsla(42, 60%, 92%, 0.5), transparent 55%),' +
+          'radial-gradient(90% 75% at 88% 95%, hsla(0, 55%, 9%, 0.65), transparent 60%),' +
+          'linear-gradient(158deg, hsl(3, 52%, 38%), hsl(359, 73%, 27%) 58%, hsl(0, 60%, 15%))',
       }}
     >
       {chip && (

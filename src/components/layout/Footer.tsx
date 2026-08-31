@@ -1,15 +1,14 @@
-import { AlertTriangle } from 'lucide-react'
-import BrandMark from '../common/BrandMark'
+import { LifeBuoy } from 'lucide-react'
 import { NAV_LINKS } from '../../lib/content'
 
 const PROGRAM_LINKS = [
-  'Water Quality Monitoring',
-  'Streambank Restoration',
-  'Advocacy & Permits',
-  'Watershed Education',
+  'Housing Placement',
+  'Rides & Transportation',
+  'Support & Case Management',
+  'Community & Resources',
 ]
 
-const INVOLVE_LINKS = ['Volunteer', 'Become a Steward', 'Give Monthly', 'The Current']
+const INVOLVE_LINKS = ['Volunteer', 'Become a Driver', 'Give Monthly', 'Partner With Us']
 
 function Footer() {
   return (
@@ -18,13 +17,17 @@ function Footer() {
         <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-4">
           {/* Brand + mission */}
           <div>
-            <div className="flex items-center gap-2.5">
-              <BrandMark className="h-8 w-8 text-[hsl(42,40%,92%)]" />
-              <span className="font-serif text-lg font-semibold tracking-tight">Housing Support Rides</span>
-            </div>
-            <p className="mt-4 font-serif text-lg italic text-white/80">Monitor. Restore. Defend.</p>
+           
+            <img
+              src="/logo.svg"
+              alt="Housing Support Rides"
+              // className="h-12 w-auto [filter:brightness(0)_invert(1)]"
+              className="h-24 w-auto mx-auto "
+            />
+            <p className="mt-4 font-serif text-lg italic text-white/80">Housing. Rides. Belonging.</p>
             <p className="mt-4 text-sm leading-relaxed text-white/60">
-              Watershed protection across three counties since 1997.
+              Non-emergency medical transport and reintegration support in Saint
+              Paul, Minnesota — since 2023.
             </p>
           </div>
 
@@ -67,13 +70,13 @@ function Footer() {
             </h3>
             <address className="mt-4 space-y-3 text-sm not-italic text-white/75">
               <p>
-                118 Mill Race Road
+                917 Edmund Ave
                 <br />
-                Fairhaven, VT 05743
+                Saint Paul, MN 55104
               </p>
               <p>
-                <a href="tel:+18025550119" className="transition-colors hover:text-white">
-                  (802) 555-0119
+                <a href="tel:+17635017764" className="transition-colors hover:text-white">
+                  (763) 501-7764
                 </a>
               </p>
               <p>
@@ -101,17 +104,17 @@ function Footer() {
         {/* Bottom strip */}
         <div className="mt-14 flex flex-col gap-4 border-t border-white/12 pt-6 text-xs text-white/55 md:flex-row md:items-center md:justify-between">
           <p>
-            EIN 45-2810394 · © 2026 Housing Support Rides. All rights reserved. ·{' '}
+            © 2026 Housing Support Rides, Inc. · NPI 1801751094 ·{' '}
             <a href="#" className="hover:text-white/85">
               Privacy Policy
             </a>
           </p>
           <a
-            href="#"
+            href="/contact"
             className="inline-flex items-center gap-1.5 font-medium text-[var(--rb-orange)] hover:brightness-110"
           >
-            <AlertTriangle className="h-4 w-4" />
-            Report a pollution incident
+            <LifeBuoy className="h-4 w-4" />
+            Need a ride or support? Get help
             <span aria-hidden="true">→</span>
           </a>
         </div>

@@ -1,23 +1,14 @@
 import { useEffect, useState } from 'react'
 import { AnimatePresence, motion } from 'motion/react'
 import { Menu, X } from 'lucide-react'
-import BrandMark from '../common/BrandMark'
 import Button from '../ui/Button'
 import { NAV_LINKS } from '../../lib/content'
 import { cn } from '../../lib/utils'
 
 function Wordmark() {
   return (
-    <a href="/" className="flex items-center gap-2.5" aria-label="Housing Support Rides home">
-      <BrandMark className="h-8 w-8 text-[var(--primary)]" />
-      <span className="flex flex-col leading-none">
-        <span className="font-serif text-lg font-semibold tracking-tight text-[var(--foreground)]">
-          Housing Support
-        </span>
-        <span className="font-sans text-[9px] font-semibold uppercase tracking-[0.28em] text-[var(--muted-foreground)]">
-          Rides
-        </span>
-      </span>
+    <a href="/" className="flex items-center" aria-label="Housing Support Rides home">
+      <img src="/HSRBlackSVG.svg" alt="Housing Support Rides" className="h-9 w-auto md:h-10" />
     </a>
   )
 }
@@ -42,48 +33,51 @@ function Navbar() {
   }, [open])
 
   return (
-    <header
-      className={cn(
-        'sticky top-0 z-40 h-[76px] w-full transition-shadow',
-        scrolled
-          ? 'border-b border-[var(--border)] bg-[var(--background)]/80 backdrop-blur-md'
-          : 'border-b border-transparent bg-[var(--background)]',
-      )}
-    >
-      <nav className="mx-auto flex h-full max-w-[1200px] items-center justify-between px-5 md:px-16">
-        <Wordmark />
+    <>
+      <header
+        className={cn(
+          'sticky top-0 z-40 h-[76px] w-full transition-shadow',
+          scrolled
+            ? 'border-b border-[var(--border)] bg-[#e5e5e5]/80 backdrop-blur-md'
+            : 'border-b border-transparent bg-[#e5e5e5]',
+        )}
+      >
+        <nav className="mx-auto flex h-full max-w-[1200px] items-center justify-between px-5 md:px-16">
+          <Wordmark />
 
-        {/* Center links — desktop only */}
-        <ul className="hidden items-center gap-8 lg:flex">
-          {NAV_LINKS.map((link) => (
-            <li key={link.href}>
-              <a
-                href={link.href}
-                className="text-[15px] text-[var(--foreground)] transition-colors hover:text-[var(--primary)]"
-              >
-                {link.label}
-              </a>
-            </li>
-          ))}
-        </ul>
+          {/* Center links — desktop only */}
+          <ul className="hidden items-center gap-8 lg:flex">
+            {NAV_LINKS.map((link) => (
+              <li key={link.href}>
+                <a
+                  href={link.href}
+                  className="text-[15px] font-medium text-[var(--foreground)] transition-colors hover:text-[var(--primary)]"
+                >
+                  {link.label}
+                </a>
+              </li>
+            ))}
+          </ul>
 
-        <div className="flex items-center gap-3">
-          <Button href="/#donate" size="sm" className="px-5">
-            Donate
-          </Button>
-          <button
-            type="button"
-            aria-label="Open menu"
-            aria-expanded={open}
-            onClick={() => setOpen(true)}
-            className="inline-flex h-10 w-10 items-center justify-center rounded-full text-[var(--foreground)] hover:bg-[var(--card)] lg:hidden"
-          >
-            <Menu className="h-6 w-6" />
-          </button>
-        </div>
-      </nav>
+          <div className="flex items-center gap-3">
+            <Button href="/#donate" size="sm" className="px-4 sm:px-5">
+              Donate
+            </Button>
+            <button
+              type="button"
+              aria-label="Open menu"
+              aria-expanded={open}
+              onClick={() => setOpen(true)}
+              className="inline-flex h-10 w-10 items-center justify-center rounded-full text-[var(--foreground)] hover:bg-black/5 lg:hidden"
+            >
+              <Menu className="h-6 w-6" />
+            </button>
+          </div>
+        </nav>
+      </header>
 
-      {/* Mobile full-screen overlay menu */}
+      {/* Mobile full-screen overlay menu — sibling of <header> so it isn't
+          trapped by the header's backdrop-filter containing block. */}
       <AnimatePresence>
         {open && (
           <motion.div
@@ -91,15 +85,15 @@ function Navbar() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="fixed inset-0 z-50 flex flex-col bg-[var(--background)] px-5 lg:hidden"
+            className="fixed inset-0 z-50 flex flex-col overflow-y-auto bg-[#e5e5e5] px-5 lg:hidden"
           >
-            <div className="flex h-[76px] items-center justify-between">
+            <div className="flex h-[76px] shrink-0 items-center justify-between">
               <Wordmark />
               <button
                 type="button"
                 aria-label="Close menu"
                 onClick={() => setOpen(false)}
-                className="inline-flex h-10 w-10 items-center justify-center rounded-full text-[var(--foreground)] hover:bg-[var(--card)]"
+                className="inline-flex h-10 w-10 items-center justify-center rounded-full text-[var(--foreground)] hover:bg-black/5"
               >
                 <X className="h-6 w-6" />
               </button>
@@ -124,7 +118,7 @@ function Navbar() {
               ))}
             </ul>
 
-            <div className="mt-8">
+            <div className="mt-8 pb-8">
               <Button href="/#donate" size="lg" className="w-full" onClick={() => setOpen(false)}>
                 Donate
               </Button>
@@ -132,7 +126,7 @@ function Navbar() {
           </motion.div>
         )}
       </AnimatePresence>
-    </header>
+    </>
   )
 }
 

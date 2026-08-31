@@ -23,10 +23,11 @@ This project uses Keystatic in **local mode** (`storage: { kind: 'local' }` in
 - Changes are **not shared** until you **commit them to git and push**.
 - So the workflow is: edit in `/keystatic` → save → `git add/commit/push`.
 
-This is perfect for a developer or one person publishing locally. To let
-non-technical staff publish from their own browser **without running the code**,
-switch Keystatic to **GitHub mode** (or Keystatic Cloud) at deploy time — see
-[deploying.md](./deploying.md#letting-staff-edit-in-production).
+This is local mode, used in dev. **In production the config switches to GitHub
+mode**, where multiple people sign in at `/keystatic` and each save becomes a
+commit — that's how you get several editors (and an admin for the news). Who can
+edit = who has write access to the GitHub repo. See
+[deploying.md](./deploying.md#multiple-editors-admin-for-news-etc) to turn it on.
 
 ## Drafts
 

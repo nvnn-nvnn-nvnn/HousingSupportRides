@@ -1,64 +1,93 @@
 /**
  * Central copy + data for the Housing Support Rides site.
  * Keeping strings here makes the components read cleanly and gives you one
- * place to edit real content later.
+ * place to edit real content later. All copy below is placeholder.
  */
 import type { LucideIcon } from 'lucide-react'
-import {
-  FlaskConical,
-  Sprout,
-  Scale,
-  GraduationCap,
-  Users,
-  MapPin,
-  Heart,
-} from 'lucide-react'
+import { Key, Car, Handshake, Users, Heart } from 'lucide-react'
 
 // Root-relative (with leading "/") so the links work from any page, including
 // the journal — "/#impact" jumps to the landing page and scrolls to the anchor.
 export const NAV_LINKS = [
-  { label: 'Our Work', href: '/#our-work' },
+  { label: 'What We Do', href: '/what-we-do' },
   { label: 'Impact', href: '/#impact' },
-  { label: 'Get Involved', href: '/#get-involved' },
-  { label: 'About', href: '/#transparency' },
+  { label: 'Volunteer', href: '/volunteer' },
+  { label: 'History', href: '/history' },
+  { label: 'FAQ', href: '/faq' },
   { label: 'News', href: '/journal' },
+  { label: 'Contact', href: '/contact' },
 ] as const
 
 export const IMPACT_STATS: { value: number; suffix?: string; label: string }[] = [
-  { value: 340, label: 'Miles of river monitored' },
-  { value: 1240, label: 'Volunteers active this year' },
-  { value: 86, label: 'Restoration projects completed' },
-  { value: 12400, label: 'Households with cleaner water' },
+  { value: 1850, label: 'Neighbors housed' },
+  { value: 24000, label: 'Rides provided' },
+  { value: 76, label: 'Partner organizations' },
+  { value: 610, label: 'Active volunteers' },
 ]
 
-export const PROGRAMS: { icon: LucideIcon; title: string; body: string }[] = [
+export const PROGRAMS: {
+  icon: LucideIcon
+  slug: string
+  title: string
+  body: string
+  /** Extra bullet points shown on the /what-we-do page. */
+  details: string[]
+}[] = [
   {
-    icon: FlaskConical,
-    title: 'Water Quality Monitoring',
-    body: 'Volunteers collect samples at 62 fixed sites every month, year-round. The data goes into a public database and into regulatory filings. When a number moves the wrong way, we know within weeks rather than years.',
+    icon: Key,
+    slug: 'housing',
+    title: 'Housing Placement',
+    body: 'We help people move from shelters, transitional programs, and unsafe situations into stable housing — and we stay with them through the move-in, the deposit, and the first hard months that follow.',
+    details: [
+      'Help navigating waitlists, applications, and inspections',
+      'Security deposits and first-month move-in costs',
+      'Move-in kits: furniture, dishes, and bedding',
+      'Follow-up support through the first months in a new home',
+    ],
   },
   {
-    icon: Sprout,
-    title: 'Streambank Restoration',
-    body: 'We stabilise eroding banks with native plantings and engineered log structures. Restored segments hold sediment, cool the water, and bring back the insects that everything else eats. Eighty-six projects completed since 2004.',
+    icon: Car,
+    slug: 'rides',
+    title: 'Rides & Transportation',
+    body: 'A missed ride can undo a week of progress. We provide non-emergency medical transportation and everyday rides — to clinics, work, court, and appointments — so people get where they need to be, reliably.',
+    details: [
+      'Non-emergency medical transportation (NEMT) to clinics and appointments',
+      'Rides to work, interviews, and court dates',
+      'Reliable pickups — including early mornings and off-hours',
+      'Trained, vetted drivers',
+    ],
   },
   {
-    icon: Scale,
-    title: 'Advocacy & Permits',
-    body: 'We read every discharge permit application in the watershed, and we comment on the ones that matter. It is unglamorous work that has prevented more pollution than any cleanup we have ever run.',
+    icon: Handshake,
+    slug: 'support',
+    title: 'Support & Case Management',
+    body: 'Every person we serve is paired with a coordinator who helps them navigate benefits, employment, healthcare, and paperwork — one steady point of contact instead of a maze of agencies.',
+    details: [
+      'One dedicated coordinator per person',
+      'Help with benefits, ID, and paperwork',
+      'Warm connections to healthcare and employment',
+      'A single point of contact, not a maze of agencies',
+    ],
   },
   {
-    icon: GraduationCap,
-    title: 'Watershed Education',
-    body: 'Field programs for 4,000 students a year, plus landowner workshops on riparian buffers and septic maintenance. The next generation of stewards is currently in sixth grade.',
+    icon: Users,
+    slug: 'community',
+    title: 'Community & Resources',
+    body: 'Reintegration is more than an address. We connect people to job training, peer groups, and local resources so they rebuild not just a home, but a place to belong.',
+    details: [
+      'Job training and skills referrals',
+      'Peer support groups and mentorship',
+      'Navigation to local resources and services',
+      'A community that stays after the crisis passes',
+    ],
   },
 ]
 
 export const DONATION_TIERS: { amount: number; impact: string }[] = [
-  { amount: 25, impact: 'provides a household water filter for one year' },
-  { amount: 60, impact: 'funds one week of river-quality monitoring' },
-  { amount: 150, impact: 'trains a volunteer steward for a full season' },
-  { amount: 400, impact: 'restores 100 feet of eroded streambank' },
+  { amount: 25, impact: 'covers a week of rides to work and appointments for one person' },
+  { amount: 60, impact: 'stocks a move-in kit for someone starting over in a new apartment' },
+  { amount: 150, impact: 'funds a month of transit passes for someone starting a job' },
+  { amount: 400, impact: 'helps cover a security deposit for a family moving into housing' },
 ]
 
 export const FIELD_STORIES: {
@@ -72,29 +101,29 @@ export const FIELD_STORIES: {
   feature?: boolean
 }[] = [
   {
-    category: 'Field Story',
-    title: 'Bringing the Muddy Fork back',
-    blurb: 'Four years, 1,800 native plants, and one very patient landowner. The trout returned in year three.',
-    imageAlt: 'Volunteers restoring a riverbank',
-    imageHint: 'Community volunteers planting native grasses along a riverbank, natural daylight, candid documentary photography, warm and hopeful mood',
-    slug: 'bringing-the-muddy-fork-back',
+    category: 'Client Story',
+    title: 'A ride to the interview that changed everything',
+    blurb: 'James had the skills and the references. What he did not have was a way to get across town by 9am. Here is what one ride set in motion.',
+    imageAlt: 'A volunteer driver dropping someone off downtown',
+    imageHint: 'A volunteer driver in a car dropping a person off outside an office building, warm morning light, hopeful documentary photography',
+    slug: 'a-ride-that-changed-everything',
     feature: true,
   },
   {
-    category: 'Advocacy',
-    title: 'The permit nobody else read',
-    blurb: 'How a routine-looking discharge application turned into an eighteen-month fight, and why we won it.',
-    imageAlt: 'Close-up of a river discharge outfall',
-    imageHint: 'A discharge pipe at a riverbank under gray sky, documentary style',
-    slug: 'the-permit-nobody-else-read',
+    category: 'Housing',
+    title: 'From a shelter cot to a set of keys',
+    blurb: 'Nine months, a dozen agencies, and one coordinator who never dropped the thread. How Maria found a door of her own.',
+    imageAlt: 'A person holding keys in front of an apartment door',
+    imageHint: 'A person holding apartment keys in front of a front door, smiling, natural light, candid documentary style',
+    slug: 'from-shelter-to-keys',
   },
   {
-    category: 'Cleanup',
-    title: 'Sixty-two volunteers, one Saturday',
-    blurb: 'Our largest single cleanup pulled 3.4 tons out of a two-mile stretch. Here is what we found.',
-    imageAlt: 'Volunteers bagging litter along a river',
-    imageHint: 'Large group of volunteers collecting trash along a river on a sunny day',
-    slug: 'sixty-two-volunteers-one-saturday',
+    category: 'Volunteers',
+    title: 'The drivers who show up at 6am',
+    blurb: 'Before most of us are awake, a handful of volunteers are already on the road. We rode along for a morning.',
+    imageAlt: 'A volunteer driver at dawn with a coffee',
+    imageHint: 'A volunteer driver at dawn beside a car with a coffee, early morning light, warm and candid',
+    slug: 'volunteer-drivers-who-show-up',
   },
 ]
 
@@ -103,31 +132,35 @@ export const INVOLVEMENT: {
   title: string
   body: string
   cta: string
+  href: string
 }[] = [
   {
     icon: Users,
     title: 'Volunteer',
-    body: 'Monthly cleanups, monitoring runs, and planting days. No experience needed, and we always feed you.',
-    cta: 'Find a workday',
+    body: 'Help at intake, sort donations, assemble move-in kits, or mentor a neighbor. No experience needed — just a few hours.',
+    cta: 'Find a role',
+    href: '/volunteer',
   },
   {
-    icon: MapPin,
-    title: 'Become a Steward',
-    body: 'Adopt a half-mile segment and walk it four times a year. Stewards are our early-warning system.',
-    cta: 'Adopt a segment',
+    icon: Car,
+    title: 'Become a Driver',
+    body: 'Give rides to work, appointments, and interviews on a schedule that fits your week. Mileage is covered.',
+    cta: 'Start driving',
+    href: '/volunteer/become-a-driver',
   },
   {
     icon: Heart,
     title: 'Give Monthly',
-    body: 'Join The Current, our monthly giving circle. Predictable funding is what lets us commit to multi-year restoration.',
-    cta: 'Join The Current',
+    body: 'Join our monthly giving circle. Steady, predictable support is what lets us commit to people for the long haul.',
+    cta: 'Give monthly',
+    href: '/volunteer/give-monthly',
   },
 ]
 
 export const BUDGET_SEGMENTS: { label: string; pct: number; color: string }[] = [
   { label: 'Programs', pct: 89, color: 'var(--primary)' },
   { label: 'Fundraising', pct: 7, color: 'var(--accent-warm)' },
-  { label: 'Administration', pct: 4, color: 'hsl(196, 20%, 60%)' },
+  { label: 'Administration', pct: 4, color: 'hsl(20, 12%, 58%)' },
 ]
 
 export const DOCUMENTS = [
@@ -138,10 +171,10 @@ export const DOCUMENTS = [
 ]
 
 export const PARTNERS = [
-  'State Water Trust',
-  'Fairhaven Community Fund',
-  'Northern Counties Coalition',
-  'Ridgeline Outdoor Co.',
-  'University Watershed Lab',
+  'County Housing Authority',
+  'Community Health Partners',
+  'Regional Transit Coalition',
+  'Second Chance Employment',
+  'United Way (placeholder)',
   'Anonymous Family Foundation',
 ]

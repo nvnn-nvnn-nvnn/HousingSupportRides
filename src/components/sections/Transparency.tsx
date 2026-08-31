@@ -48,8 +48,8 @@ function Transparency() {
 
           <p className="mt-6 max-w-lg text-[var(--muted-foreground)]" style={{ lineHeight: 1.78 }}>
             We publish our financials in full because we ask you to trust us with money.
-            Eighty-nine cents of every dollar goes directly to programs — monitoring,
-            restoration, advocacy, and education. The rest keeps the lights on and the
+            Eighty-nine cents of every dollar goes directly to programs — housing,
+            rides, support, and resources. The rest keeps the lights on and the
             grants coming.
           </p>
         </FadeUp>

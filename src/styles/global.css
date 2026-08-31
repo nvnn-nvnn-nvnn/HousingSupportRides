@@ -7,17 +7,17 @@
 
 :root {
   --background: hsl(42, 40%, 97%);        /* #fbf8f2 warm ivory */
-  --foreground: hsl(196, 32%, 15%);       /* #1a2f33 deep slate-teal */
-  --primary: hsl(186, 58%, 26%);          /* #1c6a6f deep teal */
+  --foreground: hsl(0, 10%, 15%);         /* warm near-black */
+  --primary: hsl(359, 73%, 29%);          /* #7f1416 brand maroon (from logo) */
   --primary-foreground: hsl(42, 40%, 98%);
-  --muted-foreground: hsl(196, 10%, 44%);
-  --border: hsl(40, 20%, 87%);
-  --card: hsl(42, 42%, 94%);
+  --muted-foreground: hsl(0, 6%, 45%);
+  --border: hsl(38, 18%, 86%);
+  --card: hsl(40, 40%, 95%);
   --accent-warm: hsl(24, 82%, 56%);       /* donate / urgency accent */
-  --accent-soft: hsl(186, 34%, 88%);      /* pale teal wash */
+  --accent-soft: hsl(18, 30%, 90%);       /* pale warm sand wash */
 
   --rb-ivory: #fbf8f2;
-  --rb-teal: #1c6a6f;
+  --rb-maroon: #7f1416;
   --rb-orange: #ef7c2b;
 }
 
@@ -39,7 +39,7 @@
   --color-accent-soft: var(--accent-soft);
 
   --color-rb-ivory: var(--rb-ivory);
-  --color-rb-teal: var(--rb-teal);
+  --color-rb-maroon: var(--rb-maroon);
   --color-rb-orange: var(--rb-orange);
 
   --font-serif: 'Source Serif 4', Georgia, serif;

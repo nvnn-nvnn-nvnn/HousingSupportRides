@@ -13,7 +13,7 @@ const journal = defineCollection({
     title: z.string(),
     publishedAt: z.coerce.date(),
     author: z.string().default('Housing Support Rides'),
-    category: z.string().default('Field Story'),
+    category: z.string().default('Client Story'),
     // Defaulted (not required) so an in-progress draft saved without an excerpt
     // doesn't crash the whole content sync. Keystatic still prompts for one.
     excerpt: z.string().default(''),

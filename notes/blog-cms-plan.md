@@ -75,14 +75,14 @@ and awkward boundaries between the two apps. Higher long-term maintenance.
 
 ## Reuse from the current build
 
-- Design tokens + Tailwind theme in `src/index.css` (Astro supports Tailwind v4).
+- Design tokens + Tailwind theme in `src/styles/global.css` (Astro supports Tailwind v4).
 - `BrandMark`, `Navbar`, `Footer`, `Button`, `Eyebrow`, `FadeUp`,
   `MediaPlaceholder` — reused as islands or converted to `.astro` components.
 - Copy/data in `src/lib/content.ts` stays for the landing page.
 
 ## Rough sequence (once Option A/B is chosen)
 
-1. Scaffold Astro + `@astrojs/react` + Tailwind v4; port `index.css` tokens.
+1. Scaffold Astro + `@astrojs/react` + Tailwind v4; port CSS tokens to `src/styles/global.css`.
 2. Move landing sections in; mark interactive ones as islands.
 3. Add Keystatic integration + the `posts` collection schema above.
 4. Build `/journal` index + `/journal/[slug]` templates using the design system.
