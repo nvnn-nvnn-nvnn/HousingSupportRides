@@ -7,38 +7,50 @@ npm run build     # → dist/
 npm run preview   # run the built site locally to check it
 ```
 
-Because Keystatic's admin needs to run on a server, the project uses an
-**adapter** (`@astrojs/node`) and builds in **server mode**. Don't let that
-worry you:
+Because Keystatic's admin needs to run on a server, the project uses a **host
+adapter** and builds in **server mode**. Don't let that worry you:
 
 - **All public pages** (`/`, `/journal`, every article, `/rss.xml`, sitemap) are
   **prerendered to static HTML** — fast and SEO-friendly.
 - **Only** the `/keystatic` admin and its API render on-demand.
 
-## Option 1 — Deploy to a modern host (recommended)
+## ⚠️ Deploying to Vercel (current setup — READ THIS FIRST)
 
-Netlify, Vercel, and Cloudflare all run Astro server output. Swap the adapter to
-match your host:
+**The adapter MUST match the host. This project is configured for Vercel with
+`@astrojs/vercel`.**
 
-```bash
-# example: Netlify
-npm install @astrojs/netlify
-```
-```js
-// astro.config.mjs
-import netlify from '@astrojs/netlify'
-export default defineConfig({
-  adapter: netlify(),      // replaces node()
-  // ...everything else unchanged
-})
-```
-(For Vercel use `@astrojs/vercel`; for Cloudflare `@astrojs/cloudflare`.)
+> **The #1 gotcha:** `@astrojs/node` builds a standalone Node server that **Vercel
+> cannot serve** — the deploy "succeeds" but the site doesn't work. Vercel needs
+> `@astrojs/vercel`, which emits `.vercel/output/`. (Same idea for Netlify /
+> Cloudflare — each needs its own adapter.) If you ever see a green Vercel build
+> but a broken site, **check the adapter first.**
 
-Then connect the repo to the host and deploy. Set **`site`** in
-`astro.config.mjs` to your real domain first — it's used for canonical URLs, the
-sitemap, and RSS.
+Current config ([astro.config.mjs](../astro.config.mjs)): `adapter: vercel()`.
 
-## Option 2 — Pure static hosting (no server)
+To deploy:
+
+1. **Push to GitHub `main`.** Vercel deploys from the repo
+   (`devvdevvdevv/HousingSuportRides`) — nothing ships until you push.
+2. **Import the repo in Vercel.** Framework preset auto-detects **Astro**; leave
+   build command / output at the defaults (the adapter handles output).
+3. **Set env vars** (Vercel → Project → Settings → Environment Variables) so the
+   `/keystatic` admin works in production (GitHub mode). Without them the public
+   site still works, but `/keystatic` errors:
+   - `KEYSTATIC_GITHUB_CLIENT_ID`
+   - `KEYSTATIC_GITHUB_CLIENT_SECRET`
+   - `KEYSTATIC_SECRET`
+
+   (You get these when you create the Keystatic GitHub App — see "Multiple
+   editors" below.)
+4. Set **`site`** in `astro.config.mjs` to the real domain (used for canonical
+   URLs, sitemap, RSS).
+
+### Switching to a different host later
+Swap the adapter — e.g. `npm install @astrojs/netlify` then
+`import netlify from '@astrojs/netlify'` and `adapter: netlify()`
+(Cloudflare: `@astrojs/cloudflare`). One adapter at a time.
+
+## Pure static hosting (no server)
 
 If you'd rather host plain static files (e.g. GitHub Pages) and **don't** need
 the live `/keystatic` route on the deployed site:

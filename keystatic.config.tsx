@@ -17,7 +17,7 @@ export default config({
   // how-to/deploying.md. For editors without GitHub accounts, use Keystatic Cloud.
   storage: import.meta.env.DEV
     ? { kind: 'local' }
-    : { kind: 'github', repo: 'OWNER/housing-support-rides' },
+    : { kind: 'github', repo: 'devvdevvdevv/HousingSuportRides' },
   ui: {
     brand: { name: 'Housing Support Rides' },
   },

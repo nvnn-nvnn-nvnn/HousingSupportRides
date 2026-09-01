@@ -16,6 +16,7 @@
     "@astrojs/react": "^6.0.2",
     "@astrojs/rss": "^4.0.19",
     "@astrojs/sitemap": "^3.7.3",
+    "@astrojs/vercel": "^11.0.9",
     "@keystatic/astro": "^5.2.0",
     "@keystatic/core": "^0.6.4",
     "@radix-ui/react-toggle-group": "^1.1.19",

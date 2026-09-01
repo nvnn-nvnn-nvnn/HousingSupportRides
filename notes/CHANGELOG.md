@@ -4,6 +4,30 @@ A running log of notable work. Most recent first. For *why* behind big
 decisions, see [blog-cms-plan.md](./blog-cms-plan.md); for how-tos, see
 [../how-to/](../how-to/).
 
+## 2026-09-01
+
+### ⚠️ Vercel deploy fix — adapter (IMPORTANT)
+**Vercel was not working because the adapter was `@astrojs/node`.** Vercel cannot
+serve the Node adapter's standalone server — it needs `@astrojs/vercel`, which
+emits `.vercel/output/`. A Node-adapter build looks green but the site is broken.
+- Installed `@astrojs/vercel`; `astro.config.mjs` now `adapter: vercel()`.
+- Fixed the Keystatic repo string to the real repo
+  `devvdevvdevv/HousingSuportRides` (note: repo name misspells "Support").
+- Added `.vercel` to `.gitignore`.
+- **Still required for `/keystatic` in prod:** set `KEYSTATIC_GITHUB_CLIENT_ID`,
+  `KEYSTATIC_GITHUB_CLIENT_SECRET`, `KEYSTATIC_SECRET` in Vercel env vars, and
+  push to GitHub `main` (Vercel deploys from there). Full steps + the adapter
+  gotcha are in [../how-to/deploying.md](../how-to/deploying.md).
+
+### Mobile fixes: navbar drawer + logo size
+- Mobile drawer was rendering transparent/collapsed because the `fixed` overlay
+  lived inside `<header>`, whose `backdrop-blur` (a `backdrop-filter`) creates a
+  containing block for fixed children. Moved the overlay to be a **sibling of
+  `<header>`** and gave it a solid `bg-[#e5e5e5]`.
+- Navbar logo was `h-32` (128px) on mobile — shrank it to `h-9 md:h-10`.
+- Hero text no longer clips into the image (text column constrained to the left
+  half; image set to `md:w-1/2`).
+
 ## 2026-08-29
 
 ### Hero overlap fix + multi-editor CMS setup

@@ -1,5 +1,12 @@
 # Housing Support Rides — Developer Notes
 
+> ## ⚠️ DEPLOY (read before touching hosting)
+> This site deploys to **Vercel** and MUST use the **`@astrojs/vercel`** adapter
+> in `astro.config.mjs`. **Do NOT use `@astrojs/node` for Vercel** — the build
+> goes green but the site won't serve. Vercel deploys from GitHub `main`
+> (`devvdevvdevv/HousingSuportRides`); `/keystatic` needs `KEYSTATIC_*` env vars
+> set in Vercel. Full steps + the gotcha: [../how-to/deploying.md](../how-to/deploying.md).
+
 A warm, evidence-led nonprofit website for Housing Support Rides. Soft ivory +
 deep teal, humanist type, an impact section on real numbers, a donation flow
 that stays in view — plus a **journal / blog**.
