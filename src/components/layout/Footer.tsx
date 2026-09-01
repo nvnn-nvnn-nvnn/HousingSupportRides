@@ -22,7 +22,7 @@ function Footer() {
               src="/logo.svg"
               alt="Housing Support Rides"
               // className="h-12 w-auto [filter:brightness(0)_invert(1)]"
-              className="h-24 w-auto mx-auto "
+              className="mx-auto h-24 w-auto sm:mx-0 mb-8"
             />
             <p className="mt-4 font-serif text-lg italic text-white/80">Housing. Rides. Belonging.</p>
             <p className="mt-4 text-sm leading-relaxed text-white/60">

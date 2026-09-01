@@ -32,7 +32,7 @@ function DonateBlock() {
           <p className="eyebrow text-[var(--accent-soft)]">Give</p>
           <h2
             className="mt-3 font-serif font-semibold"
-            style={{ fontSize: 'clamp(32px, 4vw, 44px)', lineHeight: 1.1 }}
+            style={{ fontSize: 'clamp(32px, 4vw, 44px)', lineHeight: 1.1 , color: '#fff'}}
           >
             Choose an amount. See what it does.
           </h2>
