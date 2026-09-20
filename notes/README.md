@@ -11,14 +11,21 @@ A warm, evidence-led nonprofit website for Housing Support Rides. Soft ivory +
 deep teal, humanist type, an impact section on real numbers, a donation flow
 that stays in view — plus a **journal / blog**.
 
-> Rebranded from "Riverbend Foundation." The name is updated throughout; some
-> body copy (mission line, impact stats, address) is still the watershed draft —
-> update it in `src/lib/content.ts` and the footer/hero when the real copy lands.
+> Rebranded from "Riverbend Foundation." The name is updated throughout.
+> **Mission, program names, and program details are now the real copy** — they
+> live in `MISSION`, `CHARITABLE_PURPOSE`, and `PROGRAMS` in
+> `src/lib/content.ts` (edit once, they update everywhere; see
+> [../how-to/editing-the-site.md](../how-to/editing-the-site.md)), and they
+> derive from [mission-and-programs.md](./mission-and-programs.md) — the
+> official program description, kept verbatim. That document wins any conflict.
+> **Still placeholder:** impact stats and the budget split — both are stated as
+> fact on the live site. See [todo-next-steps.md](./todo-next-steps.md) § 5.
 
 Start here, then read the companion docs:
 
 | Doc | What it covers |
 | --- | --- |
+| [mission-and-programs.md](./mission-and-programs.md) | **The official program description, verbatim** — source of truth for every mission/program claim on the site |
 | [folder-structure.md](./folder-structure.md) | Where every file lives and why |
 | [component-responsibilities.md](./component-responsibilities.md) | What each section/component does |
 | [todo-next-steps.md](./todo-next-steps.md) | Placeholders + what still needs wiring |
@@ -36,8 +43,15 @@ Start here, then read the companion docs:
 - **Tailwind CSS v4** (via `@tailwindcss/vite`) + design tokens in `global.css`.
 - **motion** (Framer Motion, `motion/react`) for animation.
 - **MDX content collection** for the blog (`src/content/journal/`).
-- **Keystatic** (git-based CMS, local mode) — the `/keystatic` editor.
-- **@astrojs/node** adapter (only Keystatic's admin route needs a server).
+- **Keystatic** (git-based CMS) — the `/keystatic` editor. Local mode in dev,
+  GitHub mode in production (multiple editors sign in and commit).
+- **@astrojs/vercel** adapter (deploys to Vercel; only Keystatic's admin route
+  needs a server — public pages are still static). ⚠️ Must stay `vercel()`,
+  not `node()` — see the DEPLOY warning above.
+- **Givebutter** — real donation processing via their widget custom elements,
+  wired into `DonateBlock`. Off by default until `GIVEBUTTER_ACCOUNT_ID` /
+  `GIVEBUTTER_CAMPAIGN_CODE` are set in `src/lib/content.ts` — see
+  [../how-to/deploying.md](../how-to/deploying.md).
 - **lucide-react** icons · **@radix-ui/react-toggle-group** · **clsx** + **tailwind-merge** (`cn()`).
 
 > History: this started as a Vite React SPA. It was migrated to Astro when the
@@ -56,14 +70,15 @@ npm run preview  # run the built site
 npm run lint     # oxlint       ✅ clean
 ```
 
-**Version control:** this is a git repo (branch `master`). Blog posts are files,
-so committing is how you keep them — Keystatic saves in local mode don't publish
-until committed + pushed. See [../how-to/using-the-admin.md](../how-to/using-the-admin.md).
+**Version control:** this is a git repo (branch `main`, deployed via Vercel from
+GitHub). Blog posts are files, so committing is how you keep them — Keystatic
+saves in local mode don't publish until committed + pushed. See
+[../how-to/using-the-admin.md](../how-to/using-the-admin.md).
 
 ## The 30-second mental model
 
 ```
-astro.config.mjs      integrations: react, mdx, keystatic, sitemap; node adapter
+astro.config.mjs      integrations: react, mdx, keystatic, sitemap; vercel() adapter
   └─ src/pages/                       file-based routes
        ├─ index.astro                 landing → <App client:load/> (React island)
        ├─ journal/index.astro         blog list (static, from the collection)

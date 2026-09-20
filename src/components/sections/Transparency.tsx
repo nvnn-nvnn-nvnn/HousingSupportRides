@@ -2,7 +2,7 @@ import { motion } from 'motion/react'
 import { Download } from 'lucide-react'
 import Eyebrow from '../common/Eyebrow'
 import FadeUp from '../common/FadeUp'
-import { BUDGET_SEGMENTS, DOCUMENTS } from '../../lib/content'
+import { BUDGET_SEGMENTS, DOCUMENTS, CHARITABLE_PURPOSE } from '../../lib/content'
 
 function Transparency() {
   return (
@@ -54,9 +54,20 @@ function Transparency() {
           </p>
         </FadeUp>
 
-        {/* Right — document links */}
+        {/* Right — document links + charitable-purpose statement */}
         <FadeUp delay={0.1}>
-          <ul className="lg:mt-14">
+          <div className="border-l-2 border-[var(--primary)] pl-5 lg:mt-14">
+            {CHARITABLE_PURPOSE.map((para, i) => (
+              <p
+                key={i}
+                className={`text-sm text-[var(--muted-foreground)] ${i > 0 ? 'mt-4' : ''}`}
+                style={{ lineHeight: 1.75 }}
+              >
+                {para}
+              </p>
+            ))}
+          </div>
+          <ul className="mt-10">
             {DOCUMENTS.map((doc) => (
               <li key={doc}>
                 <a

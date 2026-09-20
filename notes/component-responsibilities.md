@@ -26,19 +26,38 @@
 
 | Section | id | What it does | Notable behavior |
 | --- | --- | --- | --- |
-| `Hero` | `#top` | Split layout: headline + CTAs left, image right. | Text staggers in on load; image reveals via `clipPath` inset 100%→0% (1.2s). Mobile: image becomes a scrimmed background. |
-| `ImpactCounters` | `#impact` | 4 headline numbers on the card tone. | **Effect 2** — each counts 0→value (2s ease-out) on view; a teal rule scales in from the left beneath it. |
-| `OurWork` | `#our-work` | 2×2 grid of the four programs. | Cards stagger in; hover lifts −4px and deepens shadow. |
-| `DonateBlock` | `#donate` | Teal band. Frequency toggle + 4 tiers + custom amount. | **Effect 1** — selecting a tier animates the impact sentence (`AnimatePresence`); the CTA label updates live, e.g. "Donate $60 Monthly". |
-| `FieldStories` | `#field-stories` | 3 story cards; first spans 2 cols / 2 rows on desktop. | **Effect 3** — teal duotone wash lifts + image scales on hover; caption gradient with category + serif title. |
-| `GetInvolved` | `#get-involved` | Pale-teal band, 3 involvement routes with icons + outline CTAs. | Cards stagger in. |
-| `Transparency` | `#transparency` | 2-col: animated 89/7/4 budget bar + legend + paragraph; document download list. | Bar segments animate width 0→% sequentially (stagger 0.15s). |
+| `Hero` | `#top` | **Full-width** community photo (aspect-ratio locked to match the actual photo, so nobody is cropped out), headline + CTAs overlaid on its lower portion via a dark scrim gradient. | Photo fades/scales in on load; text staggers in over it. Sizing/spacing scale down on mobile, up at `md:`. |
+| `ImpactCounters` | `#impact` | 4 headline numbers on the card tone. | **Effect 2** — each counts 0→value (2s ease-out) on view; a maroon rule scales in from the left beneath it. |
+| `OurWork` | `#our-work` | `MISSION.purpose` as the intro, then a 2×2 grid of the four programs. | Cards stagger in; hover lifts −4px and deepens shadow. "Learn more" deep-links to `/what-we-do#<slug>`. |
+| `DonateBlock` | `#donate` | Maroon band. Frequency toggle + 4 tiers + custom amount. | **Effect 1** — selecting a tier animates the impact sentence (`AnimatePresence`); the CTA label updates live, e.g. "Donate $60 Monthly". CTA is a real **Givebutter** `<givebutter-button>` once configured (see `src/lib/content.ts`); a disabled placeholder until then — no longer decorative-only. |
+| `FieldStories` | `#field-stories` | 3 story cards; first spans 2 cols / 2 rows on desktop. | **Effect 3** — dark duotone wash lifts + image scales on hover; caption gradient with category + serif title. |
+| `GetInvolved` | `#get-involved` | Pale-maroon band, 3 involvement routes with icons + outline CTAs. | Cards stagger in. |
+| `Transparency` | `#transparency` | 2-col: animated 89/7/4 budget bar (⚠️ placeholder figures) + legend + paragraph; `CHARITABLE_PURPOSE` statement + document download list. | Bar segments animate width 0→% sequentially (stagger 0.15s). |
 | `Partners` | — | Row of six text-only supporter badges. | Fades in. |
-| `Newsletter` | — | Teal band, inline email capture. | Submits to a local "thanks" state (no backend yet). |
+| `Newsletter` | — | Maroon band, inline email capture. | Submits to a local "thanks" state (no backend yet). |
+
+## Standalone page components
+
+| Component | Used by | Job | Worth knowing |
+| --- | --- | --- | --- |
+| `PageHeader.astro` | every non-landing page | Shared eyebrow + title + lead band. | Keeps the standalone pages visually consistent with the landing sections. |
+| `GalleryGrid.astro` | `/gallery` (twice: Highlights, then Archive) | Renders a list of resolved photos as clickable tiles that feed the lightbox. | `dense` prop gives the Archive tighter tiles. `<Image>` sets `width`/`height` explicitly — with only `widths`, the plain `src` fallback renders at the **source** size (~4000px). A photo whose file is missing renders a visible "Missing: …" tile instead of failing the build. |
+
+`/gallery` itself does the data work in frontmatter (glob resolution, date
+sort, the second larger render for the lightbox) and owns the `<dialog>` +
+zoom/pan script. See [CHANGELOG.md](./CHANGELOG.md) → "Gallery: Highlights/
+Archive grid" for the decisions behind it.
 
 ## Where the data comes from
 
-All of it is in **`src/lib/content.ts`**: `NAV_LINKS`, `IMPACT_STATS`,
-`PROGRAMS`, `DONATION_TIERS`, `FIELD_STORIES`, `INVOLVEMENT`,
-`BUDGET_SEGMENTS`, `DOCUMENTS`, `PARTNERS`. Sections are thin — they map over
-these arrays, so most content edits happen in that one file.
+All of it is in **`src/lib/content.ts`**: `MISSION`, `CHARITABLE_PURPOSE`,
+`NAV_LINKS`, `IMPACT_STATS`, `PROGRAMS`, `DONATION_TIERS`, `FIELD_STORIES`,
+`INVOLVEMENT`, `BUDGET_SEGMENTS`, `DOCUMENTS`, `PARTNERS`, `GALLERY_IMAGES`.
+Sections are thin — they map over these arrays, so most content edits happen in
+that one file.
+
+`MISSION` and `CHARITABLE_PURPOSE` are the mission copy, shared across the
+landing sections *and* the standalone pages (`/what-we-do`, `/history`) and the
+JSON-LD in `BaseLayout.astro`. They derive from
+[mission-and-programs.md](./mission-and-programs.md) — the official program
+description, verbatim.

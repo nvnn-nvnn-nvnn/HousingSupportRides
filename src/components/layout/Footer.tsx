@@ -1,11 +1,11 @@
 import { LifeBuoy } from 'lucide-react'
 import { NAV_LINKS } from '../../lib/content'
 
+// The three official program names, matching PROGRAMS in content.ts.
 const PROGRAM_LINKS = [
-  'Housing Placement',
-  'Rides & Transportation',
-  'Support & Case Management',
-  'Community & Resources',
+  'Housing Support Program',
+  'Transportation Support Program',
+  'Community Support and Resource Navigation',
 ]
 
 const INVOLVE_LINKS = ['Volunteer', 'Become a Driver', 'Give Monthly', 'Partner With Us']
@@ -26,8 +26,10 @@ function Footer() {
             />
             <p className="mt-4 font-serif text-lg italic text-white/80">Housing. Rides. Belonging.</p>
             <p className="mt-4 text-sm leading-relaxed text-white/60">
-              Non-emergency medical transport and reintegration support in Saint
-              Paul, Minnesota — since 2023.
+              A nonprofit charitable organization connecting neighbors facing
+              homelessness, housing instability, and transportation barriers with
+              safe housing, reliable rides, and community resources. Saint Paul,
+              Minnesota — since 2023.
             </p>
           </div>
 

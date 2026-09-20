@@ -2,23 +2,40 @@ import { ImageIcon } from 'lucide-react'
 import { cn } from '../../lib/utils'
 
 interface MediaPlaceholderProps {
-  /** Real alt text — reused verbatim when a real <img> replaces this. */
+  /** Real alt text — used on the <img> or as the placeholder's aria-label. */
   alt: string
+  /**
+   * Path to a real image (e.g. "/img/hero.jpg" from the public/ folder).
+   * When set, a real <img> is rendered; otherwise the gradient placeholder.
+   */
+  src?: string
   /** Art-direction note describing the intended photo. */
   hint?: string
   className?: string
-  /** Show the small corner "placeholder" chip (default true). */
+  /** Show the small corner "placeholder" chip when no image (default true). */
   chip?: boolean
+  /** Load the image eagerly (use for above-the-fold images like the hero). */
+  eager?: boolean
 }
 
 /**
- * Stand-in for a real photograph. Renders a layered maroon gradient so
- * layout, aspect ratios, and hover effects all work now.
- *
- * TODO: replace each usage with a real <img> (see `hint` for art direction):
- *   <img src="…" alt={alt} className="h-full w-full object-cover" />
+ * Renders a real photo when `src` is provided, or a layered maroon gradient
+ * stand-in when it isn't — so layout, aspect ratios, and hover effects work
+ * either way. Drop images in public/img/ and pass their path as `src`.
  */
-function MediaPlaceholder({ alt, hint, className, chip = true }: MediaPlaceholderProps) {
+function MediaPlaceholder({ alt, src, hint, className, chip = true, eager }: MediaPlaceholderProps) {
+  if (src) {
+    return (
+      <img
+        src={src}
+        alt={alt}
+        loading={eager ? 'eager' : 'lazy'}
+        decoding="async"
+        className={cn('h-full w-full object-cover', className)}
+      />
+    )
+  }
+
   return (
     <div
       role="img"

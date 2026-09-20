@@ -34,6 +34,7 @@ const dateFmt = new Intl.DateTimeFormat('en-US', {
             <a href={`/journal/${post.id}`} class="block overflow-hidden">
               <div class="aspect-[16/10] transition-transform duration-500 group-hover:scale-105">
                 <MediaPlaceholder
+                  src={post.data.cover}
                   alt={post.data.coverAlt ?? post.data.title}
                   chip={false}
                   className="h-full"

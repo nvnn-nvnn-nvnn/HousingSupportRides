@@ -1,6 +1,7 @@
 ---
 import SiteLayout from '../layouts/SiteLayout.astro'
 import PageHeader from '../components/PageHeader.astro'
+import { MISSION } from '../lib/content'
 ---
 
 <SiteLayout
@@ -10,16 +11,26 @@ import PageHeader from '../components/PageHeader.astro'
   <PageHeader
     eyebrow="Our Story"
     title="Our History"
-    lead="Placeholder intro — the founding story and the need that started it all."
+    lead="Housing Support Rides started from a simple observation: people were losing housing they had already qualified for because they had no way to get to the appointment that would have secured it."
   />
+
+  <section class="border-b border-[var(--border)] bg-[var(--card)] py-16">
+    <div class="mx-auto max-w-[760px] px-5">
+      <p class="eyebrow">Our Mission</p>
+      <p class="mt-4 font-serif text-xl text-[var(--foreground)] md:text-2xl" style="line-height: 1.6;">
+        {MISSION.statement}
+      </p>
+    </div>
+  </section>
 
   <section class="mx-auto max-w-[760px] px-5 py-16">
     <ol class="space-y-8">
       <li class="border-l-2 border-[var(--primary)] pl-6">
         <p class="font-serif text-2xl font-semibold text-[var(--primary)]">2023</p>
         <p class="mt-2 text-[var(--muted-foreground)]">
-          Housing Support Rides is founded to help neighbors get to housing, work,
-          and appointments. Placeholder milestone.
+          Housing Support Rides is founded to address two barriers at once —
+          the lack of stable housing and the lack of reliable transportation to
+          the appointments that make housing possible.
         </p>
       </li>
       <li class="border-l-2 border-[var(--border)] pl-6">

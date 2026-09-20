@@ -2,28 +2,60 @@
 import SiteLayout from '../layouts/SiteLayout.astro'
 import PageHeader from '../components/PageHeader.astro'
 import Button from '../components/ui/Button'
-import { PROGRAMS, IMPACT_STATS } from '../lib/content'
+import { Key, Car, Handshake } from 'lucide-react'
+import {
+  IMPACT_STATS,
+  MISSION,
+  CHARITABLE_PURPOSE,
+  PROGRAM_DESCRIPTION as DOC,
+} from '../lib/content'
+
+/**
+ * This page renders the organization's program description VERBATIM — every
+ * paragraph and bullet below comes from `PROGRAM_DESCRIPTION` in
+ * `src/lib/content.ts`, which is a straight transcription of the source
+ * document kept at `notes/mission-and-programs.md`.
+ *
+ * If a sentence here needs to change, change it in the source document first,
+ * then in `content.ts`. Don't edit the wording in this file.
+ */
+
+// The two programs that have a formal activities list. Community Support &
+// Resource Navigation follows them as a shorter, prose-only section.
+const programs = [
+  { icon: Key, ...DOC.housing },
+  { icon: Car, ...DOC.transportation },
+]
 ---
 
 <SiteLayout
   title="What We Do — Housing Support Rides"
-  description="A closer look at our programs — housing placement, rides, support, and community — and the impact behind them."
+  description="Our Housing Support and Transportation Support programs — what they cover, who they serve, and the charitable purpose behind them."
 >
-  <PageHeader
-    eyebrow="What We Do"
-    title="What We Do"
-    lead="Reintegrating into society takes more than one thing going right. Our programs work together — housing, rides, support, and community — so progress in one area isn't undone by a gap in another."
-  />
+  <PageHeader eyebrow="What We Do" title="What We Do" lead={DOC.intro} />
 
-  <!-- Programs, in depth -->
+  <!-- Organization Mission — verbatim -->
+  <section class="border-b border-[var(--border)] bg-[var(--card)] py-16">
+    <div class="mx-auto max-w-[820px] px-5">
+      <p class="eyebrow">Organization Mission</p>
+      <p
+        class="mt-4 font-serif text-xl text-[var(--foreground)] md:text-2xl"
+        style="line-height: 1.6;"
+      >
+        {MISSION.statement}
+      </p>
+    </div>
+  </section>
+
+  <!-- Housing Support Program + Transportation Support Program — verbatim -->
   <section class="mx-auto max-w-[820px] px-5 py-16">
     {
-      PROGRAMS.map((program, i) => {
+      programs.map((program, i) => {
         const Icon = program.icon
         return (
           <div
             id={program.slug}
-            class={`scroll-mt-24 ${i > 0 ? 'mt-12 border-t border-[var(--border)] pt-12' : ''}`}
+            class={`scroll-mt-24 ${i > 0 ? 'mt-16 border-t border-[var(--border)] pt-16' : ''}`}
           >
             <div class="flex items-center gap-4">
               <span class="inline-flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-[var(--accent-soft)] text-[var(--primary)]">
@@ -31,25 +63,80 @@ import { PROGRAMS, IMPACT_STATS } from '../lib/content'
               </span>
               <h2 class="font-serif text-2xl font-semibold md:text-3xl">{program.title}</h2>
             </div>
-            <p class="mt-5 text-[var(--muted-foreground)]" style="line-height: 1.78;">
-              {program.body}
+
+            {/* The plain-language description of the program */}
+            {program.plain.map((para) => (
+              <p class="mt-5 text-[var(--muted-foreground)]" style="line-height: 1.78;">
+                {para}
+              </p>
+            ))}
+
+            {/* The formal description + activity list */}
+            <p
+              class="mt-8 border-l-2 border-[var(--primary)] pl-5 text-[var(--foreground)]"
+              style="line-height: 1.78;"
+            >
+              {program.lead}
             </p>
-            <ul class="mt-5 grid gap-2 sm:grid-cols-2">
-              {program.details.map((d) => (
-                <li class="flex items-start gap-2 text-[var(--foreground)]">
-                  <span class="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--primary)]" aria-hidden="true" />
-                  <span>{d}</span>
+
+            <p class="mt-8 font-sans font-semibold text-[var(--foreground)]">
+              {program.activitiesLabel}
+            </p>
+            <ul class="mt-4 grid gap-3">
+              {program.activities.map((activity) => (
+                <li class="flex items-start gap-3 text-[var(--muted-foreground)]" style="line-height: 1.7;">
+                  <span
+                    class="mt-2.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--primary)]"
+                    aria-hidden="true"
+                  />
+                  <span>{activity}</span>
                 </li>
               ))}
             </ul>
+
+            <p class="mt-6 text-[var(--muted-foreground)]" style="line-height: 1.78;">
+              {program.close}
+            </p>
           </div>
         )
       })
     }
+
+    <!-- Community Support and Resource Navigation — verbatim -->
+    <div id={DOC.community.slug} class="mt-16 scroll-mt-24 border-t border-[var(--border)] pt-16">
+      <div class="flex items-center gap-4">
+        <span class="inline-flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-[var(--accent-soft)] text-[var(--primary)]">
+          <Handshake className="h-7 w-7" strokeWidth={1.6} />
+        </span>
+        <h2 class="font-serif text-2xl font-semibold md:text-3xl">{DOC.community.title}</h2>
+      </div>
+      {
+        DOC.community.body.map((para) => (
+          <p class="mt-5 text-[var(--muted-foreground)]" style="line-height: 1.78;">
+            {para}
+          </p>
+        ))
+      }
+    </div>
+  </section>
+
+  <!-- Overall Purpose — verbatim -->
+  <section class="border-y border-[var(--border)] bg-[var(--card)] py-16">
+    <div class="mx-auto max-w-[820px] px-5">
+      <p class="eyebrow">Overall Purpose</p>
+      <h2 class="mt-3 font-serif text-2xl font-semibold md:text-3xl">Two barriers, addressed together</h2>
+      {
+        DOC.overallPurpose.map((para) => (
+          <p class="mt-5 text-[var(--muted-foreground)]" style="line-height: 1.78;">
+            {para}
+          </p>
+        ))
+      }
+    </div>
   </section>
 
   <!-- Impact -->
-  <section class="bg-[var(--card)] py-16">
+  <section class="py-16">
     <div class="mx-auto max-w-[1200px] px-5 md:px-16">
       <p class="eyebrow">The Impact</p>
       <h2 class="mt-3 font-serif text-3xl font-semibold">What it adds up to</h2>
@@ -75,8 +162,23 @@ import { PROGRAMS, IMPACT_STATS } from '../lib/content'
     </div>
   </section>
 
+  <!-- Charitable Purpose — verbatim -->
+  <section class="border-t border-[var(--border)] py-16">
+    <div class="mx-auto max-w-[820px] px-5">
+      <p class="eyebrow">Charitable Purpose</p>
+      <h2 class="mt-3 font-serif text-2xl font-semibold md:text-3xl">Why we exist, on the record</h2>
+      {
+        CHARITABLE_PURPOSE.map((para) => (
+          <p class="mt-5 text-[var(--muted-foreground)]" style="line-height: 1.78;">
+            {para}
+          </p>
+        ))
+      }
+    </div>
+  </section>
+
   <!-- CTA -->
-  <section class="mx-auto max-w-[820px] px-5 py-16 text-center">
+  <section class="mx-auto max-w-[820px] px-5 pb-16 text-center">
     <h2 class="font-serif text-2xl font-semibold md:text-3xl">Want to be part of it?</h2>
     <p class="mx-auto mt-3 max-w-xl text-[var(--muted-foreground)]">
       Give someone a ride home — or the resources to keep it.

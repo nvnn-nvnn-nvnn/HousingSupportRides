@@ -2,8 +2,13 @@ import { useState } from 'react'
 import { AnimatePresence, motion } from 'motion/react'
 import * as ToggleGroup from '@radix-ui/react-toggle-group'
 import { Heart } from 'lucide-react'
-import { DONATION_TIERS } from '../../lib/content'
+import { DONATION_TIERS, GIVEBUTTER_CAMPAIGN_CODE } from '../../lib/content'
 import { cn } from '../../lib/utils'
+
+// Shared look for the CTA, applied to whichever element renders as the button
+// (a real <givebutter-button> once configured, a disabled <button> until then).
+const ctaClass =
+  'mt-4 flex w-full items-center justify-center gap-2 rounded-full px-7 py-4 text-base font-semibold shadow-sm transition-all duration-200'
 
 type Frequency = 'once' | 'monthly'
 
@@ -128,14 +133,31 @@ function DonateBlock() {
           </AnimatePresence>
         </div>
 
-        {/* CTA — label updates live */}
-        <button
-          type="button"
-          className="mt-4 flex w-full items-center justify-center gap-2 rounded-full bg-[var(--accent-warm)] px-7 py-4 text-base font-semibold text-white shadow-sm transition-all duration-200 hover:brightness-95 hover:shadow-md active:brightness-90"
-        >
-          <Heart className="h-5 w-5" fill="currentColor" aria-hidden="true" />
-          {ctaLabel}
-        </button>
+        {/* CTA — label updates live. Real Givebutter checkout once configured
+            (src/lib/content.ts); otherwise a clearly-disabled placeholder so
+            nothing looks broken before it's wired up. */}
+        {GIVEBUTTER_CAMPAIGN_CODE ? (
+          <givebutter-button
+            campaign={GIVEBUTTER_CAMPAIGN_CODE}
+            class={cn(
+              ctaClass,
+              'cursor-pointer bg-[var(--accent-warm)] text-white hover:brightness-95 hover:shadow-md active:brightness-90',
+            )}
+          >
+            <Heart className="h-5 w-5" fill="currentColor" aria-hidden="true" />
+            {ctaLabel}
+          </givebutter-button>
+        ) : (
+          <button
+            type="button"
+            disabled
+            title="Connect Givebutter in src/lib/content.ts to enable donations"
+            className={cn(ctaClass, 'cursor-not-allowed bg-white/20 text-white/70')}
+          >
+            <Heart className="h-5 w-5" aria-hidden="true" />
+            {ctaLabel}
+          </button>
+        )}
 
         {/* TODO: confirm 501(c)(3) status and add the real EIN before accepting
             donations. Do NOT claim tax-deductibility until verified. */}

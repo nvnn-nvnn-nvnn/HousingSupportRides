@@ -23,7 +23,7 @@ function StoryCard({ story, index }: { story: Story; index: number }) {
     >
       {/* Image (placeholder) — scales up on hover */}
       <div className="absolute inset-0 transition-transform duration-700 ease-out group-hover:scale-105">
-        <MediaPlaceholder alt={story.imageAlt} hint={story.imageHint} chip={false} className="h-full" />
+        <MediaPlaceholder src={story.image} alt={story.imageAlt} hint={story.imageHint} chip={false} className="h-full" />
       </div>
 
       {/* Teal duotone wash — lifts on hover */}

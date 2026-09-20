@@ -1,7 +1,11 @@
 /**
  * Central copy + data for the Housing Support Rides site.
  * Keeping strings here makes the components read cleanly and gives you one
- * place to edit real content later. All copy below is placeholder.
+ * place to edit real content later.
+ *
+ * The mission + program text below is VERBATIM from the organization's own
+ * program description — the source document is kept at
+ * notes/mission-and-programs.md. Don't paraphrase it here.
  */
 import type { LucideIcon } from 'lucide-react'
 import { Key, Car, Handshake, Users, Heart } from 'lucide-react'
@@ -12,11 +16,39 @@ export const NAV_LINKS = [
   { label: 'What We Do', href: '/what-we-do' },
   { label: 'Impact', href: '/#impact' },
   { label: 'Volunteer', href: '/volunteer' },
+  { label: 'Gallery', href: '/gallery' },
   { label: 'History', href: '/history' },
   { label: 'FAQ', href: '/faq' },
   { label: 'News', href: '/journal' },
   { label: 'Contact', href: '/contact' },
 ] as const
+
+/**
+ * Hero image. Drop a file in public/img/ and set the path here, e.g.
+ * '/img/hero.jpg'. Leave '' to keep the gradient placeholder.
+ */
+export const HERO_IMAGE = '/img/cover.jpg'
+
+/**
+ * Givebutter donation processor. Create a free account at givebutter.com,
+ * then set both of these — see how-to/deploying.md for the exact steps:
+ *   - GIVEBUTTER_ACCOUNT_ID:   Dashboard → Settings → Integrations
+ *   - GIVEBUTTER_CAMPAIGN_CODE: the 6-character code atop your campaign page
+ * Leave either blank and the Donate button stays a harmless placeholder —
+ * no widget script loads, nothing breaks.
+ */
+export const GIVEBUTTER_ACCOUNT_ID = ''
+export const GIVEBUTTER_CAMPAIGN_CODE = ''
+
+/**
+ * Web3Forms — powers the Contact and Volunteer intake forms (no backend
+ * server needed; submissions email straight to your inbox).
+ * Get a free key at https://web3forms.com — enter your email, they send you
+ * an access key. It's meant to be public/client-side, safe to commit.
+ * Leave blank and both forms show a friendly "not connected yet" message
+ * instead of silently failing. See how-to/deploying.md for setup steps.
+ */
+export const WEB3FORMS_ACCESS_KEY = ''
 
 export const IMPACT_STATS: { value: number; suffix?: string; label: string }[] = [
   { value: 1850, label: 'Neighbors housed' },
@@ -25,6 +57,113 @@ export const IMPACT_STATS: { value: number; suffix?: string; label: string }[] =
   { value: 610, label: 'Active volunteers' },
 ]
 
+/**
+ * Official mission + charitable-purpose language, VERBATIM from the
+ * organization's program description. See notes/mission-and-programs.md for
+ * the full source document — do not paraphrase these on the site.
+ */
+export const MISSION = {
+  /** One line. Works as a tagline, a social bio, or an email signature. */
+  short:
+    'Housing, transportation, and community resources for neighbors facing homelessness, housing instability, and economic hardship.',
+  /** "Organization Mission" — verbatim. */
+  statement:
+    'Housing Support Rides (HSR) is a nonprofit charitable organization dedicated to assisting individuals and families experiencing homelessness, housing instability, economic hardship, and transportation barriers. Our mission is to improve stability, independence, and quality of life by connecting vulnerable individuals with safe housing, reliable transportation, community resources, and supportive services.',
+  /** The "what we provide" line — the one plain-language rewrite, used as a pull quote. */
+  purpose:
+    'Providing a trustworthy community, stable housing, and reliable transportation — the three things people need at the same time, not one at a time. Together we make sure a missing ride never costs someone their home, their health, or their job.',
+} as const
+
+/** "Charitable Purpose" — verbatim, both paragraphs. */
+export const CHARITABLE_PURPOSE: string[] = [
+  "HSR's housing, transportation, outreach, and resource-navigation activities are conducted in furtherance of its charitable purposes. The organization's programs are designed primarily to assist individuals and families experiencing homelessness, economic hardship, housing instability, transportation barriers, and related circumstances.",
+  "Housing Support Rides does not operate these programs for the private benefit of its officers, directors, or other individuals. Its programs and resources are used to advance the organization's charitable mission and benefit the communities it serves.",
+]
+
+/**
+ * The full program description, VERBATIM. Rendered in order on /what-we-do.
+ * Every string below is the organization's own wording — if you need to
+ * reword something for the web, do it in a component, not here.
+ * Source of truth: notes/mission-and-programs.md
+ */
+export const PROGRAM_DESCRIPTION = {
+  /** "Program Description" — the opening paragraph. */
+  intro:
+    'Housing Support Rides (HSR) is a nonprofit organization dedicated to helping individuals in need by providing housing and transportation services that promote stability, safety, and access to essential resources.',
+
+  housing: {
+    slug: 'housing',
+    title: 'Housing Support Program',
+    /** "Housing Program" — the plain-language description. */
+    plain: [
+      'Housing Support Rides provides housing for individuals who need a safe and stable place to live. Our housing program is designed to assist individuals experiencing homelessness, housing instability, or other circumstances that make it difficult for them to maintain stable housing.',
+      'Through this program, HSR works to provide a safe and supportive living environment while helping individuals maintain stability and access resources that support their well-being and independence.',
+    ],
+    /** "Housing Support Program" — the formal description. */
+    lead: 'The Housing Support Program assists individuals and families who are homeless, at risk of homelessness, or experiencing housing instability.',
+    activitiesLabel: 'Program activities include:',
+    activities: [
+      'Assisting individuals experiencing homelessness in locating safe and stable housing.',
+      'Providing temporary and supportive housing assistance when resources and appropriate housing are available.',
+      'Helping participants navigate housing applications and community housing resources.',
+      'Connecting participants with public benefits and other programs that may help maintain housing stability.',
+      'Providing referrals to shelters, supportive housing programs, food assistance, employment resources, healthcare, and other community services.',
+      'Assisting participants with developing plans toward permanent housing and greater self-sufficiency.',
+      'Coordinating with government agencies, nonprofit organizations, landlords, and community partners when appropriate.',
+      'Conducting outreach to individuals and families experiencing homelessness or housing insecurity.',
+    ],
+    close:
+      'The program is intended to reduce homelessness and help economically disadvantaged individuals and families achieve long-term housing stability.',
+  },
+
+  transportation: {
+    slug: 'rides',
+    title: 'Transportation Support Program',
+    /** "Transportation Program" — the plain-language description. */
+    plain: [
+      'Housing Support Rides provides transportation for individuals who need assistance getting to important appointments and essential services.',
+      'Transportation may be provided for medical appointments, social-service appointments, housing-related appointments, government appointments, employment-related appointments, and other necessary appointments.',
+      'The purpose of the transportation program is to ensure that a lack of reliable transportation does not prevent individuals from accessing essential services and resources.',
+    ],
+    /** "Transportation Support Program" — the formal description. */
+    lead: 'The Transportation Support Program helps individuals experiencing economic hardship or other barriers obtain transportation necessary to access essential services and opportunities.',
+    activitiesLabel:
+      'Transportation assistance may include rides or transportation coordination for:',
+    activities: [
+      'Housing appointments and housing searches.',
+      'Medical and healthcare appointments.',
+      'Employment, job interviews, and workforce-development activities.',
+      'Government and public-benefit appointments.',
+      'Food shelves and community meal programs.',
+      'Social-service appointments.',
+      'Educational and training programs.',
+      'Other essential community resources.',
+    ],
+    close:
+      'Transportation services are provided to reduce transportation barriers that could otherwise prevent individuals from obtaining housing, healthcare, employment, food, public assistance, and other essential services.',
+  },
+
+  /** "Community Support and Resource Navigation" — verbatim. */
+  community: {
+    slug: 'community',
+    title: 'Community Support and Resource Navigation',
+    body: [
+      'Housing Support Rides also helps participants identify and access community resources appropriate to their individual circumstances. HSR works to connect individuals with existing nonprofit, government, and community programs rather than unnecessarily duplicating services already available within the community.',
+    ],
+  },
+
+  /** "Overall Purpose" — verbatim. */
+  overallPurpose: [
+    'Together, our housing and transportation programs address two significant barriers faced by vulnerable individuals: lack of stable housing and lack of reliable transportation.',
+    'Housing Support Rides is committed to helping individuals achieve greater stability by providing housing and ensuring they can attend the appointments and services necessary to support their health, well-being, and independence.',
+  ],
+} as const
+
+/**
+ * The three programs, as cards on the home page. Bodies are verbatim sentences
+ * from the program description; `details` are the verbatim activity lists.
+ * The full text lives in PROGRAM_DESCRIPTION above and renders on /what-we-do.
+ */
 export const PROGRAMS: {
   icon: LucideIcon
   slug: string
@@ -36,50 +175,23 @@ export const PROGRAMS: {
   {
     icon: Key,
     slug: 'housing',
-    title: 'Housing Placement',
-    body: 'We help people move from shelters, transitional programs, and unsafe situations into stable housing — and we stay with them through the move-in, the deposit, and the first hard months that follow.',
-    details: [
-      'Help navigating waitlists, applications, and inspections',
-      'Security deposits and first-month move-in costs',
-      'Move-in kits: furniture, dishes, and bedding',
-      'Follow-up support through the first months in a new home',
-    ],
+    title: 'Housing Support Program',
+    body: 'Housing Support Rides provides housing for individuals who need a safe and stable place to live. Our housing program is designed to assist individuals experiencing homelessness, housing instability, or other circumstances that make it difficult for them to maintain stable housing.',
+    details: [...PROGRAM_DESCRIPTION.housing.activities],
   },
   {
     icon: Car,
     slug: 'rides',
-    title: 'Rides & Transportation',
-    body: 'A missed ride can undo a week of progress. We provide non-emergency medical transportation and everyday rides — to clinics, work, court, and appointments — so people get where they need to be, reliably.',
-    details: [
-      'Non-emergency medical transportation (NEMT) to clinics and appointments',
-      'Rides to work, interviews, and court dates',
-      'Reliable pickups — including early mornings and off-hours',
-      'Trained, vetted drivers',
-    ],
+    title: 'Transportation Support Program',
+    body: 'Housing Support Rides provides transportation for individuals who need assistance getting to important appointments and essential services. Transportation may be provided for medical appointments, social-service appointments, housing-related appointments, government appointments, employment-related appointments, and other necessary appointments.',
+    details: [...PROGRAM_DESCRIPTION.transportation.activities],
   },
   {
     icon: Handshake,
-    slug: 'support',
-    title: 'Support & Case Management',
-    body: 'Every person we serve is paired with a coordinator who helps them navigate benefits, employment, healthcare, and paperwork — one steady point of contact instead of a maze of agencies.',
-    details: [
-      'One dedicated coordinator per person',
-      'Help with benefits, ID, and paperwork',
-      'Warm connections to healthcare and employment',
-      'A single point of contact, not a maze of agencies',
-    ],
-  },
-  {
-    icon: Users,
     slug: 'community',
-    title: 'Community & Resources',
-    body: 'Reintegration is more than an address. We connect people to job training, peer groups, and local resources so they rebuild not just a home, but a place to belong.',
-    details: [
-      'Job training and skills referrals',
-      'Peer support groups and mentorship',
-      'Navigation to local resources and services',
-      'A community that stays after the crisis passes',
-    ],
+    title: 'Community Support and Resource Navigation',
+    body: 'Housing Support Rides also helps participants identify and access community resources appropriate to their individual circumstances. HSR works to connect individuals with existing nonprofit, government, and community programs rather than unnecessarily duplicating services already available within the community.',
+    details: [],
   },
 ]
 
@@ -96,6 +208,8 @@ export const FIELD_STORIES: {
   blurb: string
   imageAlt: string
   imageHint: string
+  /** Image path in public/ (e.g. '/img/story.jpg'). Empty = gradient placeholder. */
+  image: string
   /** Slug of the matching post in src/content/journal/. */
   slug: string
   feature?: boolean
@@ -106,6 +220,7 @@ export const FIELD_STORIES: {
     blurb: 'James had the skills and the references. What he did not have was a way to get across town by 9am. Here is what one ride set in motion.',
     imageAlt: 'A volunteer driver dropping someone off downtown',
     imageHint: 'A volunteer driver in a car dropping a person off outside an office building, warm morning light, hopeful documentary photography',
+    image: '',
     slug: 'a-ride-that-changed-everything',
     feature: true,
   },
@@ -115,6 +230,7 @@ export const FIELD_STORIES: {
     blurb: 'Nine months, a dozen agencies, and one coordinator who never dropped the thread. How Maria found a door of her own.',
     imageAlt: 'A person holding keys in front of an apartment door',
     imageHint: 'A person holding apartment keys in front of a front door, smiling, natural light, candid documentary style',
+    image: '',
     slug: 'from-shelter-to-keys',
   },
   {
@@ -123,9 +239,112 @@ export const FIELD_STORIES: {
     blurb: 'Before most of us are awake, a handful of volunteers are already on the road. We rode along for a morning.',
     imageAlt: 'A volunteer driver at dawn with a coffee',
     imageHint: 'A volunteer driver at dawn beside a car with a coffee, early morning light, warm and candid',
+    image: '',
     slug: 'volunteer-drivers-who-show-up',
   },
 ]
+
+/**
+ * Photo gallery (/gallery).
+ *
+ * `file` is the BARE FILENAME of a photo in `src/assets/img/gallery/` — not a
+ * path and not a `/public` URL. The page resolves it with `import.meta.glob`
+ * so Astro can optimize it (resize + WebP). Drop a new photo in that folder,
+ * add an entry here, done. See how-to/images.md.
+ *
+ * ⚠️ Most `alt` / `title` / `blurb` values below are PLACEHOLDER. Three entries
+ * are real (marked ✓) because they were actually reviewed. Before launch:
+ *   1. Confirm photo consent — these show identifiable faces at recovery
+ *      events. See notes/todo-next-steps.md.
+ *   2. Replace the placeholder text. `alt` is what screen readers announce,
+ *      so shipping "Placeholder —" strings is an accessibility failure.
+ *   3. Rename the files to something meaningful; IMG_2026… doesn't scale.
+ *
+ * `date` drives newest-first ordering and the Highlights/Archive split. These
+ * are all the import date, not the date each photo was taken — fix per photo.
+ */
+export type GalleryPhoto = {
+  /** Bare filename inside src/assets/img/gallery/ */
+  file: string
+  /** Required. What a screen reader announces. */
+  alt: string
+  /** Short heading under the photo. */
+  title: string
+  /** Sentence under the title; also shown in the lightbox. */
+  blurb: string
+  /** ISO 'YYYY-MM-DD'. Newest first; top HIGHLIGHT_COUNT become Highlights. */
+  date: string
+}
+
+const PLACEHOLDER_ALT = 'Placeholder — describe this photo for screen readers'
+const PLACEHOLDER_BLURB = 'Placeholder caption — replace with what is happening here.'
+
+export const GALLERY_IMAGES: GalleryPhoto[] = [
+  // ✓ reviewed
+  {
+    file: 'cover.jpg',
+    alt: 'A large group of people gathered outdoors on a lawn, several holding printed certificates',
+    title: 'Celebrating milestones together',
+    blurb: 'A large group gathered outdoors, several holding printed recovery milestone certificates.',
+    date: '2026-09-20',
+  },
+  // ✓ reviewed
+  {
+    file: 'IMG_20260920_024642.jpg',
+    alt: 'Three volunteers posing playfully beside folding tables and stacked chairs in a community room',
+    title: 'Setting up the room',
+    blurb: 'Volunteers setting up (and clowning around) before an event.',
+    date: '2026-09-20',
+  },
+  // ✓ reviewed
+  {
+    file: 'IMG_20260920_024720.jpg',
+    alt: 'A group standing outdoors beside a large "Recovery Is Everywhere" story banner at an outdoor event',
+    title: 'Walk for Recovery',
+    blurb: 'At the Walk for Recovery, beside a banner of personal recovery stories.',
+    date: '2026-09-20',
+  },
+
+  // --- placeholder text below; files are real, descriptions are not ---------
+  { file: 'IMG_20260920_024632.jpg', alt: PLACEHOLDER_ALT, title: 'Placeholder title', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
+  { file: 'IMG_20260920_024633.jpg', alt: PLACEHOLDER_ALT, title: 'Placeholder title', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
+  { file: 'IMG_20260920_024640.jpg', alt: PLACEHOLDER_ALT, title: 'Placeholder title', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
+  { file: 'IMG_20260920_024645.jpg', alt: PLACEHOLDER_ALT, title: 'Placeholder title', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
+  { file: 'IMG_20260920_024647.jpg', alt: PLACEHOLDER_ALT, title: 'Placeholder title', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
+  { file: 'IMG_20260920_024649.jpg', alt: PLACEHOLDER_ALT, title: 'Placeholder title', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
+  { file: 'IMG_20260920_024653.jpg', alt: PLACEHOLDER_ALT, title: 'Placeholder title', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
+  { file: 'IMG_20260920_024654.jpg', alt: PLACEHOLDER_ALT, title: 'Placeholder title', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
+  { file: 'IMG_20260920_024657.jpg', alt: PLACEHOLDER_ALT, title: 'Placeholder title', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
+  { file: 'IMG_20260920_024659.jpg', alt: PLACEHOLDER_ALT, title: 'Placeholder title', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
+  { file: 'IMG_20260920_024701.jpg', alt: PLACEHOLDER_ALT, title: 'Placeholder title', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
+  { file: 'IMG_20260920_024703.jpg', alt: PLACEHOLDER_ALT, title: 'Placeholder title', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
+  { file: 'IMG_20260920_024705.jpg', alt: PLACEHOLDER_ALT, title: 'Placeholder title', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
+  { file: 'IMG_20260920_024707.jpg', alt: PLACEHOLDER_ALT, title: 'Placeholder title', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
+  { file: 'IMG_20260920_024710.jpg', alt: PLACEHOLDER_ALT, title: 'Placeholder title', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
+  { file: 'IMG_20260920_024711.jpg', alt: PLACEHOLDER_ALT, title: 'Placeholder title', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
+  { file: 'IMG_20260920_024714.jpg', alt: PLACEHOLDER_ALT, title: 'Placeholder title', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
+  { file: 'IMG_20260920_024715.jpg', alt: PLACEHOLDER_ALT, title: 'Placeholder title', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
+  { file: 'IMG_20260920_024716.jpg', alt: PLACEHOLDER_ALT, title: 'Placeholder title', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
+  { file: 'IMG_20260920_024718.jpg', alt: PLACEHOLDER_ALT, title: 'Placeholder title', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
+  { file: 'IMG_20260920_024724.jpg', alt: PLACEHOLDER_ALT, title: 'Placeholder title', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
+  { file: 'IMG_20260920_024726.jpg', alt: PLACEHOLDER_ALT, title: 'Placeholder title', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
+  { file: 'IMG_20260920_024727.jpg', alt: PLACEHOLDER_ALT, title: 'Placeholder title', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
+  { file: 'IMG_20260920_024729.jpg', alt: PLACEHOLDER_ALT, title: 'Placeholder title', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
+  { file: 'IMG_20260920_024730.jpg', alt: PLACEHOLDER_ALT, title: 'Placeholder title', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
+  { file: 'IMG_20260920_024732.jpg', alt: PLACEHOLDER_ALT, title: 'Placeholder title', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
+  { file: 'IMG_20260920_024733.jpg', alt: PLACEHOLDER_ALT, title: 'Placeholder title', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
+  { file: 'IMG_20260920_024735.jpg', alt: PLACEHOLDER_ALT, title: 'Placeholder title', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
+  { file: 'IMG_20260920_024739.jpg', alt: PLACEHOLDER_ALT, title: 'Placeholder title', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
+  { file: 'IMG_20260920_024743.png', alt: PLACEHOLDER_ALT, title: 'Placeholder title', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
+]
+
+/** How many of the most recent photos show under "Highlights". */
+export const HIGHLIGHT_COUNT = 6
+
+
+
+
+// Involvment - NOT GALLERY
 
 export const INVOLVEMENT: {
   icon: LucideIcon

@@ -2,14 +2,51 @@
 import SiteLayout from '../layouts/SiteLayout.astro'
 import PageHeader from '../components/PageHeader.astro'
 
-// Placeholder Q&A — replace answers with real content.
+// Answers drawn from the HSR program description. Two items are marked
+// CONFIRM — verify the specifics with the director before launch.
 const faqs = [
-  { q: 'Who can request a ride?', a: 'Placeholder answer describing eligibility.' },
-  { q: 'How do I book a ride?', a: 'Placeholder answer describing the booking process.' },
-  { q: 'How much does a ride cost?', a: 'Placeholder answer about cost / that rides are free.' },
-  { q: 'What areas do you serve?', a: 'Placeholder answer about the service area.' },
-  { q: 'How can I volunteer as a driver?', a: 'Placeholder answer pointing to the Volunteer page.' },
-  { q: 'Are donations tax-deductible?', a: 'Placeholder answer — yes, as a registered 501(c)(3).' },
+  {
+    q: 'What does Housing Support Rides actually do?',
+    a: 'Two things, and they work together. Our Housing Support Program helps people who are homeless, at risk of homelessness, or living somewhere unstable find and keep safe housing. Our Transportation Support Program gets people to the appointments that make that housing possible — medical, housing, employment, benefits, food, and more. We also help people navigate the community resources they already qualify for.',
+  },
+  {
+    q: 'Who is eligible for help?',
+    a: 'We serve individuals and families experiencing homelessness, housing instability, economic hardship, or transportation barriers. If you are not sure whether your situation fits, reach out anyway — if we are not the right program, we will point you toward one that is.',
+  },
+  {
+    q: 'What kinds of appointments can you drive me to?',
+    a: 'Housing appointments and housing searches, medical and healthcare visits, job interviews and workforce-development programs, government and public-benefit appointments, social-service appointments, food shelves and community meal programs, educational and training programs, and other essential community resources.',
+  },
+  {
+    q: 'How much does a ride cost?',
+    // CONFIRM: verify fee policy before publishing.
+    a: 'Nothing. Transportation is provided as part of our charitable programs so that the cost of getting across town never stands between someone and the housing, healthcare, or work they need.',
+  },
+  {
+    q: 'How do I request a ride or housing help?',
+    a: 'Call (763) 501-7764 or send a message through our contact page with what you need and when you need it. Give us as much notice as you can — appointments booked ahead are easier for us to cover than same-day requests.',
+  },
+  {
+    q: 'What areas do you serve?',
+    // CONFIRM: confirm the exact service radius.
+    a: 'We are based in Saint Paul, Minnesota and serve the surrounding communities. If you are outside our area, contact us anyway and we will try to connect you with a program that covers where you live.',
+  },
+  {
+    q: 'Do you provide the housing yourselves, or help me find it?',
+    a: 'Both, depending on what is available. We help people locate safe and stable housing, navigate applications and waitlists, and connect with community housing resources — and we provide temporary and supportive housing assistance when appropriate housing and resources are available.',
+  },
+  {
+    q: 'Do you duplicate services other organizations already offer?',
+    a: 'Deliberately not. Where a nonprofit, government, or community program already serves someone well, our job is to connect them to it rather than build a second version of it. We coordinate with agencies, nonprofits, landlords, and community partners to close the gap between a person and the help that already exists.',
+  },
+  {
+    q: 'How can I volunteer as a driver?',
+    a: 'Start on our Volunteer page. Drivers give rides on a schedule that fits their week, and mileage is covered. There are also coordination roles that can be done from home.',
+  },
+  {
+    q: 'Are donations tax-deductible?',
+    a: 'Yes. Housing Support Rides is a nonprofit charitable organization, and our programs and resources are used to advance our charitable mission — not for the private benefit of officers, directors, or individuals. Donations fund housing assistance, rides, and resource navigation for the people we serve.',
+  },
 ]
 ---
 

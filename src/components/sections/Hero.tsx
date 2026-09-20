@@ -1,6 +1,7 @@
 import { motion } from 'motion/react'
 import Button from '../ui/Button'
 import MediaPlaceholder from '../common/MediaPlaceholder'
+import { HERO_IMAGE, PROGRAM_DESCRIPTION } from '../../lib/content'
 
 const container = {
   hidden: {},
@@ -17,88 +18,79 @@ const item = {
 
 function Hero() {
   return (
-    <section id="top" className="relative min-h-[86vh] overflow-hidden">
-      {/* Desktop image — full-bleed to the right viewport edge */}
-      <div className="absolute inset-y-0 right-0 hidden md:block md:w-1/2">
-        <motion.div
-          className="h-full w-full"
-          initial={{ clipPath: 'inset(0 0 0 100%)' }}
-          animate={{ clipPath: 'inset(0 0 0 0%)' }}
-          transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
-        >
-          <MediaPlaceholder
-            alt="A volunteer driver helping a neighbor into a car"
-            hint="A volunteer driver opening a car door for a smiling person outside an apartment, warm morning light, hopeful documentary photography"
-            className="h-full"
-          />
-        </motion.div>
-      </div>
-
-      {/* Mobile image — background layer behind text with ivory scrim */}
-      <div className="absolute inset-0 md:hidden">
+    <section id="top" className="relative overflow-hidden bg-black">
+      {/* Full-width community photo. Aspect ratio matches the photo itself
+          (4:3), so object-cover shows 100% of it — nobody cropped, no bars. */}
+      <motion.div
+        className="relative w-full"
+        style={{ aspectRatio: '4 / 3' }}
+        initial={{ opacity: 0, scale: 1.03 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
+      >
         <MediaPlaceholder
-          alt="A volunteer driver helping a neighbor into a car"
-          hint="A volunteer helping a neighbor, warm morning light"
-          chip={false}
+          src={HERO_IMAGE}
+          eager
+          alt="A large group of Housing Support Rides clients, volunteers, and staff gathered outdoors, several holding recovery milestone certificates"
+          hint="A volunteer driver opening a car door for a smiling person outside an apartment, warm morning light, hopeful documentary photography"
         />
+
+        {/* Scrim so the overlaid text reads clearly, without hiding the photo */}
         <div
-          className="absolute inset-0"
+          className="absolute inset-x-0 bottom-0 h-3/4"
           style={{
             background:
-              'linear-gradient(to top, rgba(251,248,242,0.97), rgba(251,248,242,0.62))',
+              'linear-gradient(to top, rgba(10,6,6,0.92), rgba(10,6,6,0.5) 55%, transparent 100%)',
           }}
         />
-      </div>
 
-      {/* Text */}
-      <div className="relative mx-auto flex min-h-[86vh] max-w-[1200px] items-center px-5 md:px-16">
-        <motion.div
-          variants={container}
-          initial="hidden"
-          animate="show"
-          className="w-full max-w-[560px] py-24 md:w-1/2 md:max-w-none md:pr-10 md:py-20"
-        >
-          <motion.p variants={item} className="eyebrow">
-            Housing · Rides · Reintegration since 2023
-          </motion.p>
+        {/* Text — overlaid on the lower part of the photo, given more room
+            to breathe. Sizing/spacing scale down on mobile and up at md+. */}
+        <div className="absolute inset-x-0 bottom-0 mx-auto w-full max-w-[1200px] px-5 pb-6 pt-6 md:px-16 md:pb-16 md:pt-8">
+          <motion.div variants={container} initial="hidden" animate="show" className="max-w-2xl">
+            <motion.h1
+              variants={item}
+              className="font-serif font-semibold text-white"
+              style={{ fontSize: 'clamp(22px, 6vw, 56px)', lineHeight: 1.15 }}
+            >
+              Everyone deserves a way back home.
+            </motion.h1>
 
-          <motion.h1
-            variants={item}
-            className="mt-5 font-serif font-semibold text-[var(--foreground)]"
-            style={{ fontSize: 'clamp(38px, 5vw, 68px)', lineHeight: 1.1 }}
-          >
-            Everyone deserves <br className="hidden md:block" />
-            a way back <br className="hidden md:block" />
-            home.
-          </motion.h1>
+            <motion.p
+              variants={item}
+              className="mt-2 text-[10px] font-semibold uppercase tracking-[0.14em] text-[var(--primary)] md:mt-3 md:text-[11px] md:tracking-[0.16em]"
+            >
+              Housing · Transportation · Community Resources since 2023
+            </motion.p>
 
-          <motion.p
-            variants={item}
-            className="mt-6 max-w-lg text-[var(--muted-foreground)]"
-            style={{ fontSize: 17, lineHeight: 1.78 }}
-          >
-            Housing Support Rides helps people rebuilding their lives find stable
-            housing, reliable transportation, and a community that has their
-            back — one neighbor at a time.
-          </motion.p>
+            <motion.p
+              variants={item}
+              className="mt-2 max-w-lg text-sm text-white/85 md:mt-4 md:text-base"
+              style={{ lineHeight: 1.6 }}
+            >
+              {PROGRAM_DESCRIPTION.intro}
+            </motion.p>
 
-          <motion.div variants={item} className="mt-8 flex flex-wrap gap-3">
-            <Button href="#donate" size="lg">
-              Donate
-            </Button>
-            <Button href="#impact" variants={item} size="lg">
-              See Our Impact
-            </Button>
+            <motion.div variants={item} className="mt-3 flex flex-wrap gap-2.5 md:mt-6 md:gap-3">
+              <Button href="#donate" size="sm" className="md:px-7 md:py-3.5 md:text-base">
+                Donate
+              </Button>
+              <Button
+                href="#impact"
+                variant="outline-light"
+                size="sm"
+                className="md:px-7 md:py-3.5 md:text-base"
+              >
+                See Our Impact
+              </Button>
+            </motion.div>
+
+            <motion.p variants={item} className="mt-2 text-xs text-white/65 md:mt-5 md:text-sm">
+              A nonprofit charitable organization serving Saint Paul, Minnesota
+            </motion.p>
           </motion.div>
-
-          <motion.p
-            variants={item}
-            className="mt-8 text-sm text-[var(--muted-foreground)]"
-          >
-            Charity Navigator 4-Star · 89 cents of every dollar goes to programs
-          </motion.p>
-        </motion.div>
-      </div>
+        </div>
+      </motion.div>
     </section>
   )
 }

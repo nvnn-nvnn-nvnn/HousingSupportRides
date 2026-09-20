@@ -9,6 +9,9 @@ Practical, task-focused guides for running the Housing Support Rides site.
 | [using-the-admin.md](./using-the-admin.md) | Run the Keystatic editor and understand drafts, images, publishing |
 | [deploying.md](./deploying.md) | Put the site online and let staff edit in production |
 | [editing-the-site.md](./editing-the-site.md) | Change landing-page copy, colors, or add a page/section |
+| [images.md](./images.md) | Add photos and get them optimized (start here before the two below) |
+| [hero-carousel.md](./hero-carousel.md) | Make the hero photo loop through several images |
+| [gallery-page.md](./gallery-page.md) | Build the gallery: Highlights/Archive, lightbox, scroll-reveal |
 
 ## First, run the site locally
 

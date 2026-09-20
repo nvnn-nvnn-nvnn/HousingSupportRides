@@ -1,5 +1,6 @@
 ---
 import '../styles/global.css'
+import { GIVEBUTTER_ACCOUNT_ID, MISSION } from '../lib/content'
 
 interface Props {
   title: string
@@ -10,11 +11,43 @@ interface Props {
 
 const {
   title,
-  description = 'Housing Support Rides — a nonprofit helping people rebuild their lives with stable housing, reliable transportation, support, and community.',
+  description = `Housing Support Rides — ${MISSION.short}`,
   ogImage,
 } = Astro.props
 
 const canonical = new URL(Astro.url.pathname, Astro.site)
+
+/**
+ * Structured data for search engines and social previews. Tells Google (and
+ * anything else that reads schema.org) that HSR is a nonprofit, what it does,
+ * and how to reach it — which is what powers the knowledge panel and the
+ * "donate" affordances in search results.
+ */
+const orgSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'NGO',
+  name: 'Housing Support Rides',
+  alternateName: 'HSR',
+  url: Astro.site?.toString(),
+  description: MISSION.statement,
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: '917 Edmund Ave',
+    addressLocality: 'Saint Paul',
+    addressRegion: 'MN',
+    postalCode: '55104',
+    addressCountry: 'US',
+  },
+  telephone: '+1-763-501-7764',
+  email: 'hello@housingsupportrides.org',
+  areaServed: 'Saint Paul, Minnesota',
+  knowsAbout: [
+    'Housing assistance',
+    'Homelessness services',
+    'Transportation assistance',
+    'Community resource navigation',
+  ],
+}
 ---
 
 <!doctype html>
@@ -35,6 +68,20 @@ const canonical = new URL(Astro.url.pathname, Astro.site)
     <meta property="og:url" content={canonical} />
     {ogImage && <meta property="og:image" content={new URL(ogImage, Astro.site)} />}
     <meta name="twitter:card" content="summary_large_image" />
+
+    <!-- Nonprofit structured data — see orgSchema above -->
+    <script type="application/ld+json" set:html={JSON.stringify(orgSchema)} />
+
+    <!-- Givebutter donation widgets — only loads once GIVEBUTTER_ACCOUNT_ID
+         is set in src/lib/content.ts. See how-to/deploying.md. -->
+    {
+      GIVEBUTTER_ACCOUNT_ID && (
+        <script
+          async
+          src={`https://widgets.givebutter.com/latest.umd.cjs?acct=${GIVEBUTTER_ACCOUNT_ID}`}
+        />
+      )
+    }
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />

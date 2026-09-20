@@ -1,0 +1,364 @@
+---
+import type { ImageMetadata } from 'astro'
+import { getImage } from 'astro:assets'
+import SiteLayout from '../layouts/SiteLayout.astro'
+import PageHeader from '../components/PageHeader.astro'
+import GalleryGrid from '../components/GalleryGrid.astro'
+import { GALLERY_IMAGES, HIGHLIGHT_COUNT } from '../lib/content'
+
+/**
+ * Photos live in src/assets/ so Astro can optimize them — which means we can't
+ * build an import path out of a variable. `import.meta.glob` is the way round
+ * that: Vite resolves this literal pattern at build time into a lookup map
+ * keyed by path. See how-to/images.md.
+ */
+const files = import.meta.glob<{ default: ImageMetadata }>(
+  '../assets/img/gallery/*.{jpg,jpeg,png,webp}',
+  { eager: true },
+)
+
+// Newest first — ISO dates sort correctly as plain strings.
+const sorted = [...GALLERY_IMAGES].sort((a, b) => b.date.localeCompare(a.date))
+
+const photos = await Promise.all(
+  sorted.map(async (photo) => {
+    const img = files[`../assets/img/gallery/${photo.file}`]?.default ?? null
+    // A larger render for the lightbox, so zooming in stays sharp.
+    // `quality` is explicit on purpose: the default is high enough that a
+    // 2000px WebP off a 4000px source can come out BIGGER than the original.
+    const full = img
+      ? await getImage({ src: img, width: 2000, format: 'webp', quality: 72 })
+      : null
+    return { ...photo, img, fullSrc: full?.src ?? '' }
+  }),
+)
+
+const highlights = photos.slice(0, HIGHLIGHT_COUNT)
+const archive = photos.slice(HIGHLIGHT_COUNT)
+---
+
+<SiteLayout
+  title="Gallery — Housing Support Rides"
+  description="Photos from the road, from move-in days, and from the community we serve in Saint Paul."
+>
+  <PageHeader
+    eyebrow="Gallery"
+    title="Moments From the Work"
+    lead="Rides given, keys handed over, milestones celebrated — a look at what this looks like day to day."
+  />
+
+  <section class="mx-auto max-w-[1200px] px-5 py-16 md:px-16">
+    <h2 class="font-serif text-2xl font-semibold">Highlights</h2>
+    <div class="mt-6">
+      <GalleryGrid photos={highlights} />
+    </div>
+
+    {
+      archive.length > 0 && (
+        <>
+          <h2 class="mt-20 font-serif text-2xl font-semibold">Archive</h2>
+          <p class="mt-2 text-[var(--muted-foreground)]">Earlier moments.</p>
+          <div class="mt-6">
+            <GalleryGrid photos={archive} dense />
+          </div>
+        </>
+      )
+    }
+  </section>
+
+  {/*
+    Lightbox — native <dialog> gives us Esc-to-close and focus trapping free.
+
+    ⚠️ `m-auto` is load-bearing: Tailwind's preflight sets `margin: 0` on every
+    element, which overrides the UA stylesheet's `margin: auto` that normally
+    centers a modal dialog. Without it the dialog pins to the top-left corner.
+  */}
+  <dialog
+    id="lightbox"
+    class="m-auto max-h-[92vh] max-w-[95vw] overflow-hidden rounded-xl bg-[var(--background)] p-0 backdrop:bg-black/80"
+  >
+    <div class="relative">
+      {/* Controls */}
+      <div class="absolute right-3 top-3 z-10 flex items-center gap-1.5">
+        <button
+          id="lb-zoom-out"
+          type="button"
+          aria-label="Zoom out"
+          class="flex h-9 w-9 items-center justify-center rounded-full bg-black/60 text-lg font-semibold leading-none text-white hover:bg-black/80 disabled:cursor-not-allowed disabled:opacity-40"
+        >−</button>
+        <button
+          id="lb-zoom-in"
+          type="button"
+          aria-label="Zoom in"
+          class="flex h-9 w-9 items-center justify-center rounded-full bg-black/60 text-lg font-semibold leading-none text-white hover:bg-black/80 disabled:cursor-not-allowed disabled:opacity-40"
+        >+</button>
+        <button
+          id="lightbox-close"
+          type="button"
+          aria-label="Close image"
+          class="rounded-full bg-black/60 px-3 py-1.5 text-sm font-medium text-white hover:bg-black/80"
+        >Close</button>
+      </div>
+
+      {/* Viewport — no scrollbars. The photo is moved with a CSS transform and
+          panned by dragging. `touch-action: none` stops the browser from
+          hijacking drag/pinch for its own scrolling. */}
+      <div
+        id="lb-viewport"
+        class="flex max-h-[92vh] max-w-[95vw] items-center justify-center overflow-hidden"
+        style="touch-action: none;"
+      >
+        <img
+          id="lightbox-img"
+          src=""
+          alt=""
+          draggable="false"
+          class="max-h-[92vh] w-auto max-w-full select-none will-change-transform"
+        />
+      </div>
+    </div>
+  </dialog>
+
+  <script>
+    const dialog = document.querySelector<HTMLDialogElement>('#lightbox')
+    const img = document.querySelector<HTMLImageElement>('#lightbox-img')
+    const viewport = document.querySelector<HTMLElement>('#lb-viewport')
+    const zoomInBtn = document.querySelector<HTMLButtonElement>('#lb-zoom-in')
+    const zoomOutBtn = document.querySelector<HTMLButtonElement>('#lb-zoom-out')
+
+    const MIN_ZOOM = 1
+    const MAX_ZOOM = 5
+    const STEP = 0.5
+    /** Movement (px) past which a press counts as a drag rather than a click. */
+    const DRAG_SLOP = 4
+
+    // Current view. The photo is drawn as translate(tx, ty) scale(scale).
+    let scale = MIN_ZOOM
+    let tx = 0
+    let ty = 0
+    /** Size the photo renders at when fitted — the scale-1 baseline. */
+    let baseW = 0
+    let baseH = 0
+
+    let dragging = false
+
+    /**
+     * Centre of the viewport, in page coordinates. The photo is flex-centred,
+     * so at scale 1 this is also the centre of the photo — which is what the
+     * zoom maths below measures everything relative to.
+     */
+    function viewportBox() {
+      const r = viewport!.getBoundingClientRect()
+      return { x: r.left + r.width / 2, y: r.top + r.height / 2, w: r.width, h: r.height }
+    }
+
+    /**
+     * Keep the photo covering the frame: once zoomed, its edges cannot come
+     * inside the viewport. At scale 1 this pins it back to dead centre.
+     */
+    function clampPan() {
+      const vp = viewportBox()
+      const maxX = Math.max(0, (baseW * scale - vp.w) / 2)
+      const maxY = Math.max(0, (baseH * scale - vp.h) / 2)
+      tx = Math.min(maxX, Math.max(-maxX, tx))
+      ty = Math.min(maxY, Math.max(-maxY, ty))
+    }
+
+    function render(animate = false) {
+      if (!img) return
+      img.style.transition = animate ? 'transform 180ms ease-out' : 'none'
+      img.style.transform = `translate(${tx}px, ${ty}px) scale(${scale})`
+      img.style.cursor = scale > MIN_ZOOM ? (dragging ? 'grabbing' : 'grab') : 'zoom-in'
+      if (zoomOutBtn) zoomOutBtn.disabled = scale <= MIN_ZOOM
+      if (zoomInBtn) zoomInBtn.disabled = scale >= MAX_ZOOM
+    }
+
+    /**
+     * Zoom to `next`, keeping whatever sits under (px, py) pinned to that spot.
+     *
+     * Let u be the cursor measured from the photo centre. The content under the
+     * cursor lives at (u - t) / scale in the photo own coordinates. To keep that
+     * same content under the cursor once the scale changes:
+     *
+     *     t2 = u - (u - t) * (next / scale)
+     *
+     * That is the whole trick, and no scrollbars are involved.
+     */
+    function zoomTo(next: number, px: number, py: number, animate = false) {
+      const target = Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, next))
+      const vp = viewportBox()
+      const ux = px - vp.x
+      const uy = py - vp.y
+      const ratio = target / scale
+
+      tx = ux - (ux - tx) * ratio
+      ty = uy - (uy - ty) * ratio
+      scale = target
+
+      clampPan()
+      render(animate)
+    }
+
+    function zoomAtCentre(next: number) {
+      const vp = viewportBox()
+      zoomTo(next, vp.x, vp.y, true)
+    }
+
+    function resetView() {
+      scale = MIN_ZOOM
+      tx = 0
+      ty = 0
+      render()
+    }
+
+    /** Re-measure the fitted size with the transform temporarily cleared. */
+    function measureBase() {
+      if (!img) return
+      const prev = img.style.transform
+      img.style.transform = 'none'
+      const r = img.getBoundingClientRect()
+      baseW = r.width
+      baseH = r.height
+      img.style.transform = prev
+    }
+
+    // ---- open / close ------------------------------------------------------
+
+    document.querySelectorAll<HTMLButtonElement>('[data-lightbox]').forEach((tile) => {
+      tile.addEventListener('click', () => {
+        if (!dialog || !img) return
+        const src = tile.dataset.src
+        if (!src) return
+
+        img.src = src
+        img.alt = tile.dataset.alt ?? ''
+        dialog.showModal()
+
+        // Measure only once the browser has laid the new image out — measuring
+        // too early captures the previous photo dimensions.
+        const onReady = () =>
+          requestAnimationFrame(() => {
+            measureBase()
+            resetView()
+          })
+
+        if (img.complete) onReady()
+        else img.addEventListener('load', onReady, { once: true })
+      })
+    })
+
+    document.querySelector('#lightbox-close')?.addEventListener('click', () => dialog?.close())
+
+    // Click the backdrop (the dialog itself, not its contents) to dismiss
+    dialog?.addEventListener('click', (e) => {
+      if (e.target === dialog) dialog.close()
+    })
+
+    // Always reopen fitted, never at the previous photo zoom level
+    dialog?.addEventListener('close', resetView)
+
+    // ---- zoom buttons ------------------------------------------------------
+
+    zoomInBtn?.addEventListener('click', () => zoomAtCentre(scale + STEP))
+    zoomOutBtn?.addEventListener('click', () => zoomAtCentre(scale - STEP))
+
+    // ---- wheel: zoom at the cursor ----------------------------------------
+
+    viewport?.addEventListener(
+      'wheel',
+      (e) => {
+        e.preventDefault()
+        // Exponential, so one notch feels the same at every zoom level
+        zoomTo(scale * Math.exp(-e.deltaY * 0.0015), e.clientX, e.clientY)
+      },
+      { passive: false },
+    )
+
+    // ---- pointer: drag to pan, pinch to zoom, click to toggle -------------
+
+    const pointers = new Map<number, { x: number; y: number }>()
+    let moved = false
+    let downX = 0
+    let downY = 0
+    let downTarget: EventTarget | null = null
+    let pinchDist = 0
+
+    viewport?.addEventListener('pointerdown', (e) => {
+      viewport.setPointerCapture(e.pointerId)
+      pointers.set(e.pointerId, { x: e.clientX, y: e.clientY })
+
+      if (pointers.size === 1) {
+        dragging = true
+        moved = false
+        downX = e.clientX
+        downY = e.clientY
+        downTarget = e.target
+        render()
+      } else if (pointers.size === 2) {
+        // Second finger down: switch from panning to pinching
+        dragging = false
+        const [a, b] = [...pointers.values()]
+        pinchDist = Math.hypot(a.x - b.x, a.y - b.y)
+      }
+    })
+
+    viewport?.addEventListener('pointermove', (e) => {
+      if (!pointers.has(e.pointerId)) return
+      const prev = pointers.get(e.pointerId)!
+      pointers.set(e.pointerId, { x: e.clientX, y: e.clientY })
+
+      if (pointers.size >= 2) {
+        const [a, b] = [...pointers.values()]
+        const dist = Math.hypot(a.x - b.x, a.y - b.y)
+        if (pinchDist > 0) {
+          // Zoom about the midpoint between the two fingers
+          zoomTo(scale * (dist / pinchDist), (a.x + b.x) / 2, (a.y + b.y) / 2)
+        }
+        pinchDist = dist
+        moved = true
+        return
+      }
+
+      if (!moved && Math.hypot(e.clientX - downX, e.clientY - downY) > DRAG_SLOP) {
+        moved = true
+      }
+
+      if (dragging && scale > MIN_ZOOM) {
+        tx += e.clientX - prev.x
+        ty += e.clientY - prev.y
+        clampPan()
+        render()
+      }
+    })
+
+    function endPointer(e: PointerEvent) {
+      pointers.delete(e.pointerId)
+      if (pointers.size < 2) pinchDist = 0
+      if (pointers.size > 0) return
+
+      if (!moved) {
+        if (downTarget === img) {
+          // Tap the photo: toggle fitted vs 2.5x, anchored where you tapped
+          zoomTo(scale > MIN_ZOOM ? MIN_ZOOM : 2.5, e.clientX, e.clientY, true)
+        } else {
+          // Tapped the empty space around the photo — close, as most lightboxes do
+          dialog?.close()
+        }
+      }
+
+      dragging = false
+      render()
+    }
+
+    viewport?.addEventListener('pointerup', endPointer)
+    viewport?.addEventListener('pointercancel', endPointer)
+
+    // Keep the framing correct if the window is resized while open
+    window.addEventListener('resize', () => {
+      if (!dialog?.open) return
+      measureBase()
+      clampPan()
+      render()
+    })
+  </script>
+</SiteLayout>

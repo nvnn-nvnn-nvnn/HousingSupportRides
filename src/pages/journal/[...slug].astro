@@ -65,6 +65,7 @@ const dateFmt = new Intl.DateTimeFormat('en-US', {
       <div class="-mt-8 overflow-hidden rounded-xl shadow-sm md:-mt-10">
         <div class="aspect-[16/9]">
           <MediaPlaceholder
+            src={post.data.cover}
             alt={post.data.coverAlt ?? post.data.title}
             hint={post.data.coverAlt ?? undefined}
             className="h-full"

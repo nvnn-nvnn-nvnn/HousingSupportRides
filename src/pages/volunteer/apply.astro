@@ -1,0 +1,89 @@
+---
+import SiteLayout from '../../layouts/SiteLayout.astro'
+import PageHeader from '../../components/PageHeader.astro'
+
+const inputClass =
+  'w-full rounded-lg border border-[var(--border)] bg-[var(--background)] px-4 py-3 text-[var(--foreground)] placeholder:text-[var(--muted-foreground)] focus:border-[var(--primary)] focus:outline-none focus:ring-2 focus:ring-[var(--accent-soft)]'
+---
+
+<SiteLayout
+  title="Volunteer Application — Housing Support Rides"
+  description="Tell us how you'd like to help and we'll follow up about next steps."
+>
+  <PageHeader
+    eyebrow="Volunteer"
+    title="Tell Us How You'd Like to Help"
+    lead="One quick form covers every volunteer role — pick as many as you like and we'll follow up about next steps."
+  />
+
+  <section class="mx-auto max-w-[680px] px-5 py-16">
+    <!-- Submits via Web3Forms (no backend needed) — see src/lib/web3forms.ts
+         and src/lib/content.ts (WEB3FORMS_ACCESS_KEY) for setup. -->
+    <form id="volunteer-form" class="grid gap-5">
+      <input type="hidden" name="subject" value="New volunteer interest — Housing Support Rides" />
+      <input type="checkbox" name="botcheck" class="hidden" tabindex="-1" autocomplete="off" />
+
+      <div class="grid gap-5 sm:grid-cols-2">
+        <label class="grid gap-2 text-sm font-medium text-[var(--foreground)]">
+          Name
+          <input class={inputClass} type="text" name="name" autocomplete="name" placeholder="Your name" required />
+        </label>
+        <label class="grid gap-2 text-sm font-medium text-[var(--foreground)]">
+          Email
+          <input class={inputClass} type="email" name="email" autocomplete="email" placeholder="you@example.com" required />
+        </label>
+      </div>
+
+      <label class="grid gap-2 text-sm font-medium text-[var(--foreground)]">
+        Phone <span class="font-normal text-[var(--muted-foreground)]">(optional)</span>
+        <input class={inputClass} type="tel" name="phone" autocomplete="tel" placeholder="(000) 000-0000" />
+      </label>
+
+      <fieldset class="grid gap-2">
+        <legend class="text-sm font-medium text-[var(--foreground)]">How would you like to help?</legend>
+        <label class="flex items-center gap-2 text-[var(--foreground)]">
+          <input id="interest-driver" type="checkbox" name="interest_driver" value="Become a Driver" class="h-4 w-4 accent-[var(--primary)]" />
+          Become a Driver
+        </label>
+        <label class="flex items-center gap-2 text-[var(--foreground)]">
+          <input id="interest-coordinator" type="checkbox" name="interest_coordinator" value="Help Coordinate" class="h-4 w-4 accent-[var(--primary)]" />
+          Help Coordinate
+        </label>
+        <label class="flex items-center gap-2 text-[var(--foreground)]">
+          <input type="checkbox" name="interest_other" value="Other / not sure yet" class="h-4 w-4 accent-[var(--primary)]" />
+          Other / not sure yet
+        </label>
+      </fieldset>
+
+      <label class="grid gap-2 text-sm font-medium text-[var(--foreground)]">
+        Availability & anything else <span class="font-normal text-[var(--muted-foreground)]">(optional)</span>
+        <textarea class={inputClass} name="message" rows="4" placeholder="Days/times that work for you, questions, etc."></textarea>
+      </label>
+
+      <div>
+        <button
+          type="submit"
+          class="rounded-full bg-[var(--accent-warm)] px-7 py-3.5 font-semibold text-white transition-all duration-200 hover:brightness-95 active:brightness-90 disabled:cursor-not-allowed disabled:opacity-60"
+        >
+          Send application
+        </button>
+        <p id="volunteer-form-status" class="mt-3 text-sm text-[var(--muted-foreground)]" role="status"></p>
+      </div>
+    </form>
+
+    <script>
+      import { initWeb3Form } from '../../lib/web3forms'
+
+      const form = document.querySelector<HTMLFormElement>('#volunteer-form')
+      const status = document.querySelector<HTMLElement>('#volunteer-form-status')
+      if (form && status) initWeb3Form(form, status)
+
+      // Pre-check the relevant box when arriving from a specific role page,
+      // e.g. /volunteer/apply?role=driver or ?role=coordinator
+      const role = new URLSearchParams(location.search).get('role')
+      const checkboxId = role === 'driver' ? 'interest-driver' : role === 'coordinator' ? 'interest-coordinator' : null
+      const checkbox = checkboxId ? document.querySelector<HTMLInputElement>(`#${checkboxId}`) : null
+      if (checkbox) checkbox.checked = true
+    </script>
+  </section>
+</SiteLayout>

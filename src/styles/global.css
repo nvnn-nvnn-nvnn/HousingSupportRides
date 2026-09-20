@@ -39,51 +39,59 @@
   --color-accent-soft: var(--accent-soft);
 
   --color-rb-ivory: var(--rb-ivory);
-  --color-rb-maroon: var(--rb-maroon);
+  --color-rb-teal: var(--rb-teal);
   --color-rb-orange: var(--rb-orange);
 
   --font-serif: 'Source Serif 4', Georgia, serif;
   --font-sans: 'Inter', system-ui, sans-serif;
 }
 
-* {
-  box-sizing: border-box;
-  border-color: var(--border);
-}
+/*
+ * These base element resets are wrapped in @layer base so Tailwind utility
+ * classes (text-white, etc.) can override them. An unlayered rule beats every
+ * layered rule regardless of specificity — without this, e.g. `text-white`
+ * on an <h1> would silently lose to the plain `h1 { color: ... }` rule below.
+ */
+@layer base {
+  * {
+    box-sizing: border-box;
+    border-color: var(--border);
+  }
 
-html {
-  scroll-behavior: smooth;
-  scroll-padding-top: 76px; /* clear the sticky navbar on anchor jumps */
-  color-scheme: light;      /* commit to the light ivory palette */
-}
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 76px; /* clear the sticky navbar on anchor jumps */
+    color-scheme: light;      /* commit to the light ivory palette */
+  }
 
-body {
-  margin: 0;
-  background: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-sans);
-  font-weight: 400;
-  font-size: 17px;
-  line-height: 1.78;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
+  body {
+    margin: 0;
+    background: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-sans);
+    font-weight: 400;
+    font-size: 17px;
+    line-height: 1.78;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
 
-h1,
-h2,
-h3,
-h4 {
-  margin: 0;
-  color: var(--foreground);
-}
+  h1,
+  h2,
+  h3,
+  h4 {
+    margin: 0;
+    color: var(--foreground);
+  }
 
-p {
-  margin: 0;
-}
+  p {
+    margin: 0;
+  }
 
-img {
-  max-width: 100%;
-  display: block;
+  img {
+    max-width: 100%;
+    display: block;
+  }
 }
 
 /* Respect reduced-motion: let Framer Motion fall back to no transforms. */

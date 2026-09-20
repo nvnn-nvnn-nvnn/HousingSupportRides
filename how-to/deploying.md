@@ -87,9 +87,82 @@ team). Everyone there can edit all collections, including the news/journal.
 and team management for you, so non-technical staff don't need GitHub logins.
 Keystatic itself has no per-collection roles yet; GitHub/Cloud access is all-or-nothing.
 
+## Connecting Givebutter (donations)
+
+The Donate button on the homepage (`#donate`) is wired to **Givebutter**
+(givebutter.com) — a nonprofit donation processor. Until it's configured, the
+button renders disabled/grayed out on purpose, so nothing looks broken.
+
+1. **Create a Givebutter account** and a campaign for Housing Support Rides.
+2. Get two values from the Givebutter dashboard:
+   - **Account ID** — Settings → Integrations
+   - **Campaign Code** — the 6-character code shown at the top of your campaign
+3. Set both in **[`src/lib/content.ts`](../src/lib/content.ts)**:
+   ```ts
+   export const GIVEBUTTER_ACCOUNT_ID = 'your-account-id'
+   export const GIVEBUTTER_CAMPAIGN_CODE = 'ABC123'
+   ```
+4. Rebuild/redeploy. This automatically:
+   - Loads Givebutter's widget script site-wide (`BaseLayout.astro`)
+   - Turns the Donate button in `DonateBlock.tsx` into a real
+     `<givebutter-button>` that opens Givebutter's secure checkout popup
+
+**How it works:** the tier selector / custom amount / one-time-vs-monthly toggle
+on the site is our own UI for showing *impact* ("$60 funds a month of transit
+passes…") — clicking the final button opens Givebutter's own trusted checkout,
+where the donor completes the actual payment. The dollar amount shown on our
+button is not currently passed into Givebutter's popup (no documented way to
+preset it was found); the donor selects/confirms the amount inside Givebutter.
+
+**Note for future editors:** `<givebutter-button>` is a real custom element
+(Web Component), not a normal React component. In React 19, custom elements
+need `class` (not `className`) for styling to apply — see the comment in
+`src/types/givebutter.d.ts` if you add more Givebutter widgets elsewhere
+(e.g. `<givebutter-goal-bar>` for a fundraising progress bar).
+
+## Connecting Web3Forms (Contact + Volunteer forms)
+
+The `/contact` and `/volunteer/apply` forms submit via **Web3Forms**
+(web3forms.com) — a free form-backend service: submissions email straight to
+your inbox, no server code to run or maintain. Until it's configured, both
+forms show a friendly "not connected yet" message instead of failing silently.
+
+Why Web3Forms over Formspree (the other common option): Web3Forms' free tier
+is 250 submissions/month vs. Formspree's 50/month, and it needs no dashboard —
+just an access key emailed to you. (Note: this isn't Squarespace's built-in
+form feature — that only exists for sites *built on* Squarespace. This site is
+custom Astro on Vercel, so it needs its own form backend regardless of where
+the domain is registered.)
+
+1. Go to **web3forms.com**, enter your email, and get a free access key
+   (arrives by email — no account/password needed).
+2. Set it in **[`src/lib/content.ts`](../src/lib/content.ts)**:
+   ```ts
+   export const WEB3FORMS_ACCESS_KEY = 'your-access-key'
+   ```
+3. Rebuild/redeploy. Both forms start working immediately — no other changes
+   needed. The access key is meant to be public/client-side (Web3Forms' own
+   design), so it's safe to commit.
+
+**How the volunteer flow works:** rather than a separate form per role, there's
+**one shared intake form** at `/volunteer/apply` with a "how would you like to
+help?" checkbox group. The role pages (`become-a-driver`, `help-coordinate`)
+link to it with `?role=driver` / `?role=coordinator`, which pre-checks the
+matching box. `give-monthly` is intentionally **not** part of this — its CTA
+goes straight to `/#donate` (Givebutter), since giving isn't a volunteer
+application. One form is simpler to maintain and gives staff one inbox to
+triage instead of several; role-specific vetting (license, background check,
+etc.) happens in the follow-up conversation, not the web form itself.
+
+**Spam protection:** both forms include a hidden honeypot field (`botcheck`) —
+real users never see or fill it; submissions with it checked are silently
+dropped client-side before ever reaching Web3Forms.
+
 ## Pre-launch checklist
 - [ ] `site` set to the real domain in `astro.config.mjs`
 - [ ] Adapter matches the host (or removed for pure-static)
 - [ ] `npm run build` passes
 - [ ] Real favicon in `public/`
 - [ ] Decide how staff publish (local commit vs GitHub mode vs Cloud)
+- [ ] Givebutter connected (`GIVEBUTTER_ACCOUNT_ID` + `GIVEBUTTER_CAMPAIGN_CODE`)
+- [ ] Web3Forms connected (`WEB3FORMS_ACCESS_KEY`) so Contact + Volunteer forms work
