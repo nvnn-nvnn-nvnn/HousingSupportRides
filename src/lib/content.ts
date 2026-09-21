@@ -203,6 +203,14 @@ export const DONATION_TIERS: { amount: number; impact: string }[] = [
   { amount: 400, impact: 'helps cover a security deposit for a family moving into housing' },
 ]
 
+/**
+ * Cards in the "From the field" section of the home page. Each one links to a
+ * real post in src/content/journal/ — `slug` must match a file there, or the
+ * "Read the story" link 404s.
+ *
+ * The section adapts to the number of entries: one story renders as a single
+ * full-width feature, several fall into the 3-column mosaic.
+ */
 export const FIELD_STORIES: {
   category: string
   title: string
@@ -216,32 +224,16 @@ export const FIELD_STORIES: {
   feature?: boolean
 }[] = [
   {
-    category: 'Client Story',
-    title: 'A ride to the interview that changed everything',
-    blurb: 'James had the skills and the references. What he did not have was a way to get across town by 9am. Here is what one ride set in motion.',
-    imageAlt: 'A volunteer driver dropping someone off downtown',
-    imageHint: 'A volunteer driver in a car dropping a person off outside an office building, warm morning light, hopeful documentary photography',
-    image: '',
-    slug: 'a-ride-that-changed-everything',
+    category: 'Community',
+    title: 'The 2026 Recovery Picnic',
+    blurb:
+      'PLACEHOLDER — one or two sentences about the day, matching the excerpt on the post itself.',
+    imageAlt:
+      'A large group of people gathered outdoors on a lawn, several holding printed certificates',
+    imageHint: 'A community picnic on a lawn, people gathered around tables, warm afternoon light',
+    image: '/img/cover.jpg',
+    slug: 'recovery-picnic-2026',
     feature: true,
-  },
-  {
-    category: 'Housing',
-    title: 'From a shelter cot to a set of keys',
-    blurb: 'Nine months, a dozen agencies, and one coordinator who never dropped the thread. How Maria found a door of her own.',
-    imageAlt: 'A person holding keys in front of an apartment door',
-    imageHint: 'A person holding apartment keys in front of a front door, smiling, natural light, candid documentary style',
-    image: '',
-    slug: 'from-shelter-to-keys',
-  },
-  {
-    category: 'Volunteers',
-    title: 'The drivers who show up at 6am',
-    blurb: 'Before most of us are awake, a handful of volunteers are already on the road. We rode along for a morning.',
-    imageAlt: 'A volunteer driver at dawn with a coffee',
-    imageHint: 'A volunteer driver at dawn beside a car with a coffee, early morning light, warm and candid',
-    image: '',
-    slug: 'volunteer-drivers-who-show-up',
   },
 ]
 

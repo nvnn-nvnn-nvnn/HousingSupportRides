@@ -7,6 +7,14 @@ import { cn } from '../../lib/utils'
 
 type Story = (typeof FIELD_STORIES)[number]
 
+/**
+ * With several stories this is a mosaic — the feature card spans two columns
+ * and two rows. With only one it has to become a plain full-width card:
+ * `col-span-2` inside a single-column grid creates an implicit second column
+ * and leaves a gap where the missing cards would have been.
+ */
+const single = FIELD_STORIES.length === 1
+
 function StoryCard({ story, index }: { story: Story; index: number }) {
   return (
     <motion.article
@@ -17,7 +25,7 @@ function StoryCard({ story, index }: { story: Story; index: number }) {
       className={cn(
         'group relative overflow-hidden rounded-xl',
         story.feature
-          ? 'min-h-[420px] md:col-span-2 lg:row-span-2 lg:min-h-[540px]'
+          ? cn('min-h-[420px] lg:min-h-[540px]', !single && 'md:col-span-2 lg:row-span-2')
           : 'min-h-[260px]',
       )}
     >
@@ -66,7 +74,12 @@ function FieldStories() {
           </h2>
         </FadeUp>
 
-        <div className="mt-12 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 lg:grid-rows-2">
+        <div
+          className={cn(
+            'mt-12 grid gap-6',
+            single ? 'grid-cols-1' : 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3 lg:grid-rows-2',
+          )}
+        >
           {FIELD_STORIES.map((story, i) => (
             <StoryCard key={story.title} story={story} index={i} />
           ))}

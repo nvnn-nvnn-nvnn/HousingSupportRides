@@ -248,6 +248,81 @@ caption — replace with what is happening here" across the bottom of the image.
 That is a useful kind of visible, and it is already tracked as a launch blocker
 alongside the alt text in [todo-next-steps.md](./todo-next-steps.md) § 7.
 
+### Journal reset: one real post instead of four invented ones
+
+Deleted `a-ride-that-changed-everything.mdx`, `from-shelter-to-keys.mdx`,
+`volunteer-drivers-who-show-up.mdx` and `testing.mdx`. The first three were
+fabricated client narratives — named people ("James", "Maria") with invented
+circumstances, published as though they were reporting. That is the worst
+category of placeholder the site carried: a visitor had no way to tell they
+were not real, and a nonprofit caught inventing client stories loses more than
+it could ever gain from having them.
+
+Replaced with a single post: `recovery-picnic-2026.mdx`, dated 2026-09-05, for
+the Recovery Picnic. Its body is **prompts rather than prose** — "lead with a
+person or a moment", "name the volunteers once you have confirmed each is happy
+to be named" — so nothing in it can be mistaken for finished copy. Cover is
+`/img/cover.jpg`, the same group photo as the hero and the first gallery entry.
+
+To hide it while it is being written: `draft: true` in the frontmatter. Drafts
+are filtered out of `/journal`, the post routes, and the RSS feed.
+
+#### Knock-on: the home page linked to three of the deleted posts
+
+`FIELD_STORIES` in `content.ts` carries a `slug` per card and the "Read the
+story" link resolves to `/journal/<slug>`. Three of those slugs pointed at files
+that no longer existed, so all three would have 404'd. Repointed to a single
+entry for the picnic.
+
+**That broke the layout, which is worth knowing about.** `FieldStories` is a
+3-column mosaic where the feature card carries `md:col-span-2 lg:row-span-2`.
+With one story, `col-span-2` inside a single-column grid creates an *implicit*
+second column and leaves a visible gap where the other cards used to be — CSS
+grid does not clamp a span to the columns you declared. The component now
+branches on `FIELD_STORIES.length === 1`: one story renders as a plain
+full-width card, more than one returns to the mosaic. Adding a second post
+restores the original layout with no further edits.
+
+The same trap applies anywhere a span is hard-coded against a variable-length
+list. If a grid ever shows phantom columns, look for a `col-span` larger than
+the number of items can fill.
+
+⚠️ Two strings still hold placeholder copy for this post and **they have to be
+written together**: the `excerpt` in the post's frontmatter, and the `blurb` in
+`FIELD_STORIES`. They are separate values and nothing keeps them in sync.
+
+⚠️ `/img/cover.jpg` is the unoptimized 2 MB / 4080×3072 file in `public/`. It is
+now the hero image, the first gallery entry, the social card source **and** this
+post's cover, so optimizing it pays off four times over. See
+[todo-next-steps.md](./todo-next-steps.md) § 1.
+
+### Questions outstanding with the Executive Director
+
+Everything still placeholder on the site now needs an answer from someone other
+than a developer. The full list was delivered in-session; the short version of
+what is blocked and where:
+
+| Placeholder | Lives in | Status |
+| --- | --- | --- |
+| 1,850 housed / 24,000 rides / 76 partners / 610 volunteers | `IMPACT_STATS` | invented |
+| Programs 89% / Fundraising 7% / Admin 4% | `BUDGET_SEGMENTS` + prose in `Transparency.tsx` | invented |
+| Six supporter names, one reading "United Way (placeholder)" | `PARTNERS` | invented |
+| Annual Report · 990 · Audited Financials · Board | `DOCUMENTS` | listed, all links dead |
+| $25 / $60 / $150 / $400 impact claims | `DONATION_TIERS` | uncosted guesses |
+| Rides are free; service area is "Saint Paul and surrounding" | `faq.astro`, marked `// CONFIRM` | unsourced |
+| 501(c)(3) status and EIN | FAQ + `DonateBlock.tsx` TODO | unverified, already claimed |
+| 2024 and "Today" milestones; board members | `history.astro` | empty |
+| ~29 gallery alt texts and captions | `GALLERY_IMAGES` | `PLACEHOLDER_ALT` |
+| Photo releases for identifiable faces | not a code issue | unknown |
+
+The founding story, founder background, dated milestones and named events are
+the largest gap — the history page is the one grantmakers read, and it is
+currently the weakest page on the site.
+
+**Standing principle for all of the above: a missing number is safer than a
+wrong one.** Where an answer does not come back, remove the claim rather than
+leave the placeholder standing in for it.
+
 #### Still open
 
 - ✅ The ‹ › on-screen buttons are in. Touch users can now navigate; arrow keys

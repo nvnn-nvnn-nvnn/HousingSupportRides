@@ -156,7 +156,10 @@ specific claims a donor or reporter could check, and **none of them appear in
       `/keystatic` (local mode in dev, **GitHub mode in production** — see
       [../how-to/deploying.md](../how-to/deploying.md) → "Multiple editors").
 - [x] "News" nav → `/journal`; RSS + sitemap.
-- [ ] The 3 posts are placeholder stories — see punch list #6.
+- [x] The 3 invented client stories and `testing.mdx` are deleted (2026-09-21).
+- [ ] `recovery-picnic-2026.mdx` is the only post and its body is still prompts,
+      not copy. Its `excerpt` and the `blurb` in `FIELD_STORIES` are separate
+      strings — write both together or the home page and the post disagree.
 - [ ] `testing.mdx` is still present in `src/content/journal/` — delete or
       finish it.
 
