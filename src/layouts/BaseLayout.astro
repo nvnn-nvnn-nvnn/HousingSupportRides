@@ -5,14 +5,19 @@ import { GIVEBUTTER_ACCOUNT_ID, MISSION } from '../lib/content'
 interface Props {
   title: string
   description?: string
-  /** Absolute or root-relative URL for social share image. */
+  /**
+   * Social share image (Facebook, LinkedIn, Slack, iMessage, X).
+   * Root-relative — anything in public/ is served from /, so
+   * public/img/social-card.jpg is '/img/social-card.jpg'.
+   * Must be a raster: every platform rejects SVG here.
+   */
   ogImage?: string
 }
 
 const {
   title,
   description = `Housing Support Rides — ${MISSION.short}`,
-  ogImage,
+  ogImage = '/img/social-card.jpg',
 } = Astro.props
 
 const canonical = new URL(Astro.url.pathname, Astro.site)
@@ -39,7 +44,7 @@ const orgSchema = {
     addressCountry: 'US',
   },
   telephone: '+1-763-501-7764',
-  email: 'hello@housingsupportrides.org',
+  email: 'hsr@housingsupportrides.org',
   areaServed: 'Saint Paul, Minnesota',
   knowsAbout: [
     'Housing assistance',
@@ -66,8 +71,11 @@ const orgSchema = {
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
-    {ogImage && <meta property="og:image" content={new URL(ogImage, Astro.site)} />}
+    <meta property="og:image" content={new URL(ogImage, Astro.site)} />
+
+
     <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content={new URL(ogImage, Astro.site)} />
 
     <!-- Nonprofit structured data — see orgSchema above -->
     <script type="application/ld+json" set:html={JSON.stringify(orgSchema)} />

@@ -5,6 +5,9 @@ each photo with a blurb, click-to-enlarge lightbox, scroll-reveal, responsive.
 
 Read [images.md](./images.md) first.
 
+This guide builds the page. For how the finished pipeline actually fits
+together, see [gallery-pipeline.md](../notes/gallery-pipeline.md).
+
 ## The mental model
 
 Three separate concerns. Build them in this order — each works on its own, so
@@ -352,6 +355,42 @@ Then in `gallery.astro`:
 
 The `archive.length > 0 &&` guard means the Archive heading simply doesn't
 appear until you actually have more than `HIGHLIGHT_COUNT` photos.
+
+### Why the prop is called `photos` and not `highlights`
+
+The name on the left of the `=` belongs to the **grid**. The name on the right
+belongs to the **page**. They're allowed to differ, and here they have to.
+
+```astro
+<GalleryGrid photos={highlights} />
+              │         │
+              │         └─ the VALUE: the page's variable, named whatever suits it
+              └─ the PROP NAME: what the grid calls it internally
+```
+
+Read it as *"set the prop called `photos` to the contents of my variable
+`highlights`."* It's the same as a function argument:
+
+```js
+function draw(photos) { … }   // inside, it's always `photos`
+draw(highlights)              // caller's name: highlights
+draw(archive)                 // caller's name: archive
+```
+
+`draw` never learns the words "highlights" or "archive."
+
+That's exactly why the prop is generic. Rename it to `highlights` and the
+second call site becomes `highlights={archive}` — now a lie. One neutral name
+is what lets a single component render both sections.
+
+If you ever do rename it, three places inside `GalleryGrid.astro` have to
+agree — the `Props` type, the destructure line, and the `.map()` — plus every
+call site. It's one name being matched up, not four separate ones.
+
+**Note what the grid does *not* do: import anything photographic.** Its imports
+are two erased types and the `<Image>` renderer. Photos arrive only through
+`const { photos, dense = false } = Astro.props`. The page fetches and prepares;
+the grid just receives — which is why it can't tell which pile it's holding.
 
 ---
 

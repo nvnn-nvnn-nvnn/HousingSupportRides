@@ -10,6 +10,10 @@
   --foreground: hsl(0, 10%, 15%);         /* warm near-black */
   --primary: hsl(359, 73%, 29%);          /* #7f1416 brand maroon (from logo) */
   --primary-foreground: hsl(42, 40%, 98%);
+  /* Same hue as --primary, lightened for dark surfaces. The maroon is far too
+     dark to read on the hero scrim (~1.4:1); this lands around 7:1. Use it
+     anywhere brand-colored text sits on a photo or a dark panel. */
+  --primary-on-dark: hsl(359, 80%, 72%);
   --muted-foreground: hsl(0, 6%, 45%);
   --border: hsl(38, 18%, 86%);
   --card: hsl(40, 40%, 95%);
@@ -32,6 +36,7 @@
   --color-foreground: var(--foreground);
   --color-primary: var(--primary);
   --color-primary-foreground: var(--primary-foreground);
+  --color-primary-on-dark: var(--primary-on-dark);
   --color-muted-foreground: var(--muted-foreground);
   --color-border: var(--border);
   --color-card: var(--card);

@@ -14,6 +14,7 @@ import { Key, Car, Handshake, Users, Heart } from 'lucide-react'
 // the journal — "/#impact" jumps to the landing page and scrolls to the anchor.
 export const NAV_LINKS = [
   { label: 'What We Do', href: '/what-we-do' },
+  { label: 'Meetings', href: '/recovery-meetings' },
   { label: 'Impact', href: '/#impact' },
   { label: 'Volunteer', href: '/volunteer' },
   { label: 'Gallery', href: '/gallery' },
@@ -270,23 +271,23 @@ export type GalleryPhoto = {
   alt: string
   /** Short heading under the photo. */
   title: string
-  /** Sentence under the title; also shown in the lightbox. */
+  /** Sentence under the title in the grid, and over the photo in the lightbox. */
   blurb: string
   /** ISO 'YYYY-MM-DD'. Newest first; top HIGHLIGHT_COUNT become Highlights. */
   date: string
 }
 
-const PLACEHOLDER_ALT = 'Placeholder — describe this photo for screen readers'
-const PLACEHOLDER_BLURB = 'Placeholder caption — replace with what is happening here.'
+const PLACEHOLDER_ALT = 'Recovery Highlights'
+const PLACEHOLDER_BLURB = 'Recovery Highlights'
 
 export const GALLERY_IMAGES: GalleryPhoto[] = [
   // ✓ reviewed
   {
     file: 'cover.jpg',
-    alt: 'A large group of people gathered outdoors on a lawn, several holding printed certificates',
+    alt: 'September 5th, 2026 - Housing Support Rides Picnic and Recovery Celebration',
     title: 'Celebrating milestones together',
-    blurb: 'A large group gathered outdoors, several holding printed recovery milestone certificates.',
-    date: '2026-09-20',
+    blurb: 'September 5th, 2026 - Housing Support Rides Picnic and Recovery Celebration',
+    date: '2026-09-05',
   },
   // ✓ reviewed
   {
@@ -306,36 +307,35 @@ export const GALLERY_IMAGES: GalleryPhoto[] = [
   },
 
   // --- placeholder text below; files are real, descriptions are not ---------
-  { file: 'IMG_20260920_024632.jpg', alt: PLACEHOLDER_ALT, title: 'Placeholder title', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
-  { file: 'IMG_20260920_024633.jpg', alt: PLACEHOLDER_ALT, title: 'Placeholder title', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
-  { file: 'IMG_20260920_024640.jpg', alt: PLACEHOLDER_ALT, title: 'Placeholder title', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
-  { file: 'IMG_20260920_024645.jpg', alt: PLACEHOLDER_ALT, title: 'Placeholder title', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
-  { file: 'IMG_20260920_024647.jpg', alt: PLACEHOLDER_ALT, title: 'Placeholder title', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
-  { file: 'IMG_20260920_024649.jpg', alt: PLACEHOLDER_ALT, title: 'Placeholder title', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
-  { file: 'IMG_20260920_024653.jpg', alt: PLACEHOLDER_ALT, title: 'Placeholder title', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
-  { file: 'IMG_20260920_024654.jpg', alt: PLACEHOLDER_ALT, title: 'Placeholder title', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
-  { file: 'IMG_20260920_024657.jpg', alt: PLACEHOLDER_ALT, title: 'Placeholder title', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
-  { file: 'IMG_20260920_024659.jpg', alt: PLACEHOLDER_ALT, title: 'Placeholder title', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
-  { file: 'IMG_20260920_024701.jpg', alt: PLACEHOLDER_ALT, title: 'Placeholder title', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
-  { file: 'IMG_20260920_024703.jpg', alt: PLACEHOLDER_ALT, title: 'Placeholder title', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
-  { file: 'IMG_20260920_024705.jpg', alt: PLACEHOLDER_ALT, title: 'Placeholder title', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
-  { file: 'IMG_20260920_024707.jpg', alt: PLACEHOLDER_ALT, title: 'Placeholder title', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
-  { file: 'IMG_20260920_024710.jpg', alt: PLACEHOLDER_ALT, title: 'Placeholder title', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
-  { file: 'IMG_20260920_024711.jpg', alt: PLACEHOLDER_ALT, title: 'Placeholder title', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
-  { file: 'IMG_20260920_024714.jpg', alt: PLACEHOLDER_ALT, title: 'Placeholder title', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
-  { file: 'IMG_20260920_024715.jpg', alt: PLACEHOLDER_ALT, title: 'Placeholder title', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
-  { file: 'IMG_20260920_024716.jpg', alt: PLACEHOLDER_ALT, title: 'Placeholder title', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
-  { file: 'IMG_20260920_024718.jpg', alt: PLACEHOLDER_ALT, title: 'Placeholder title', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
-  { file: 'IMG_20260920_024724.jpg', alt: PLACEHOLDER_ALT, title: 'Placeholder title', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
-  { file: 'IMG_20260920_024726.jpg', alt: PLACEHOLDER_ALT, title: 'Placeholder title', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
-  { file: 'IMG_20260920_024727.jpg', alt: PLACEHOLDER_ALT, title: 'Placeholder title', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
-  { file: 'IMG_20260920_024729.jpg', alt: PLACEHOLDER_ALT, title: 'Placeholder title', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
-  { file: 'IMG_20260920_024730.jpg', alt: PLACEHOLDER_ALT, title: 'Placeholder title', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
-  { file: 'IMG_20260920_024732.jpg', alt: PLACEHOLDER_ALT, title: 'Placeholder title', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
-  { file: 'IMG_20260920_024733.jpg', alt: PLACEHOLDER_ALT, title: 'Placeholder title', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
-  { file: 'IMG_20260920_024735.jpg', alt: PLACEHOLDER_ALT, title: 'Placeholder title', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
-  { file: 'IMG_20260920_024739.jpg', alt: PLACEHOLDER_ALT, title: 'Placeholder title', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
-  { file: 'IMG_20260920_024743.png', alt: PLACEHOLDER_ALT, title: 'Placeholder title', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
+  { file: 'IMG_20260920_024632.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
+  { file: 'IMG_20260920_024633.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
+  { file: 'IMG_20260920_024640.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
+  { file: 'IMG_20260920_024645.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
+  { file: 'IMG_20260920_024647.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
+  { file: 'IMG_20260920_024649.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
+  { file: 'IMG_20260920_024653.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
+  { file: 'IMG_20260920_024654.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
+  { file: 'IMG_20260920_024657.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
+  { file: 'IMG_20260920_024659.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
+  { file: 'IMG_20260920_024701.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
+  { file: 'IMG_20260920_024703.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
+  { file: 'IMG_20260920_024705.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
+  { file: 'IMG_20260920_024707.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
+  { file: 'IMG_20260920_024710.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
+  { file: 'IMG_20260920_024711.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
+  { file: 'IMG_20260920_024714.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
+  { file: 'IMG_20260920_024715.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
+  { file: 'IMG_20260920_024716.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
+  { file: 'IMG_20260920_024718.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
+  { file: 'IMG_20260920_024724.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
+  { file: 'IMG_20260920_024726.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
+  { file: 'IMG_20260920_024727.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
+  { file: 'IMG_20260920_024729.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
+  { file: 'IMG_20260920_024730.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
+  { file: 'IMG_20260920_024732.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
+  { file: 'IMG_20260920_024733.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
+  { file: 'IMG_20260920_024735.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
+  { file: 'IMG_20260920_024739.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
 ]
 
 /** How many of the most recent photos show under "Highlights". */
@@ -397,3 +397,59 @@ export const PARTNERS = [
   'United Way (placeholder)',
   'Anonymous Family Foundation',
 ]
+
+/**
+ * Weekly recovery meetings hosted by Housing Support Rides.
+ *
+ * Someone may be reading this in a bad moment, so the page that renders it
+ * ({@link file://./../pages/recovery-meetings.astro}) puts day/time/address
+ * above the description. Keep that order if you edit it.
+ *
+ * `mapQuery` is what gets handed to Google Maps. Keep it as the full one-line
+ * address so the link resolves to the building, not the street.
+ */
+export type RecoveryMeeting = {
+  /** Meeting name as people would say it out loud. */
+  name: string
+  /** Optional subtitle. Only Hnub Zoo has one. */
+  tagline?: string
+  /** Meeting type, shown as a small badge. */
+  kind: string
+  day: string
+  time: string
+  street: string
+  cityStateZip: string
+  /** Full address on one line, for the maps link. */
+  mapQuery: string
+  description: string
+}
+
+export const RECOVERY_MEETINGS: RecoveryMeeting[] = [
+  {
+    name: 'Hnub Zoo Recovery',
+    tagline: 'The Day Healing Starts',
+    kind: 'All Recovery Meeting',
+    day: 'Every Monday',
+    time: '5:30 PM',
+    street: '1440 Arcade Street',
+    cityStateZip: 'St. Paul, MN 55106',
+    mapQuery: '1440 Arcade Street, St. Paul, MN 55106',
+    description:
+      'Hnub Zoo is an All Recovery meeting for anyone suffering from addiction, mental-health struggles, grief, trauma, or other life challenges. Everyone is welcome to find encouragement, healing, hope, and support. You do not have to struggle alone.',
+  },
+  {
+    name: 'HSR Narcotics Anonymous Meeting',
+    kind: 'Narcotics Anonymous',
+    day: 'Every Saturday',
+    time: '6:30 PM',
+    street: '3207 Central Avenue NE',
+    cityStateZip: 'Minneapolis, MN 55418',
+    mapQuery: '3207 Central Avenue NE, Minneapolis, MN 55418',
+    description:
+      'A safe and supportive NA meeting for anyone seeking freedom from drug addiction. We celebrate clean-time milestones and recognize the hard work people put into their recovery. Come connect with others, share hope, and grow stronger in recovery.',
+  },
+]
+
+/** Closing line on the recovery meetings page. */
+export const RECOVERY_CLOSING =
+  'At Housing Support Rides, we believe nobody should walk through recovery alone.'

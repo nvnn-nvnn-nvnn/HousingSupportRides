@@ -1,0 +1,195 @@
+---
+/**
+ * Lightbox — your build. Currently NOT wired into any page.
+ *
+ * To switch it on, in src/pages/gallery.astro:
+ *   1. import Lightbox from '../components/Lightbox.astro'
+ *   2. delete the inline <dialog> + <script> at the bottom
+ *   3. drop <Lightbox /> in their place
+ *
+ * ⚠️ Don't do 1 and 3 without 2 — both copies use the same element ids, and
+ * duplicate ids mean querySelector picks whichever comes first. Confusing.
+ *
+ * ── The contract ───────────────────────────────────────────────────────────
+ *
+ * This component knows NOTHING about content.ts, GalleryGrid, or Astro images.
+ * It finds its photos entirely through markup that GalleryGrid already emits:
+ *
+ *   data-lightbox   a marker, no value — "I am clickable, open me"
+ *   data-src        URL of the big render (fullSrc, ~2000px)
+ *   data-alt        alt text, carried over so the dialog stays accessible
+ *
+ * That's the whole interface. Anything that reads those three works here.
+ */
+---
+
+<dialog
+  id="lightbox"
+  class="m-auto max-h-[92vh] max-w-[95vw] overflow-hidden rounded-xl bg-[var(--background)] p-0 backdrop:bg-black/80"
+>
+  {/*
+    `m-auto` is load-bearing: Tailwind's preflight sets `margin: 0` on every
+    element, which clobbers the UA stylesheet's `margin: auto` that normally
+    centers a modal dialog. Without it this pins to the top-left corner.
+  */}
+  <div class="relative">
+    {/* Controls */}
+    <div class="absolute right-3 top-3 z-10 flex items-center gap-1.5">
+      <button
+        id="lb-zoom-out"
+        type="button"
+        aria-label="Zoom out"
+        class="flex h-9 w-9 items-center justify-center rounded-full bg-black/60 text-lg font-semibold leading-none text-white hover:bg-black/80 disabled:cursor-not-allowed disabled:opacity-40"
+      >−</button>
+      <button
+        id="lb-zoom-in"
+        type="button"
+        aria-label="Zoom in"
+        class="flex h-9 w-9 items-center justify-center rounded-full bg-black/60 text-lg font-semibold leading-none text-white hover:bg-black/80 disabled:cursor-not-allowed disabled:opacity-40"
+      >+</button>
+      <button
+        id="lb-close"
+        type="button"
+        aria-label="Close image"
+        class="rounded-full bg-black/60 px-3 py-1.5 text-sm font-medium text-white hover:bg-black/80"
+      >Close</button>
+    </div>
+
+    {/*
+      Prev / next. Here because arrow keys alone are invisible to touch users
+      and to anyone who doesn't think to try them.
+    */}
+    <button
+      id="lb-prev"
+      type="button"
+      aria-label="Previous photo"
+      class="absolute left-3 top-1/2 z-10 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-black/60 text-xl leading-none text-white hover:bg-black/80 disabled:opacity-30"
+    >‹</button>
+    <button
+      id="lb-next"
+      type="button"
+      aria-label="Next photo"
+      class="absolute right-3 top-1/2 z-10 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-black/60 text-xl leading-none text-white hover:bg-black/80 disabled:opacity-30"
+    >›</button>
+
+    {/*
+      Viewport — no scrollbars. The photo is moved with a CSS transform and
+      panned by dragging. `touch-action: none` stops the browser hijacking
+      drag/pinch for its own scrolling.
+    */}
+    <div
+      id="lb-viewport"
+      class="flex max-h-[92vh] max-w-[95vw] items-center justify-center overflow-hidden"
+      style="touch-action: none;"
+    >
+      <img
+        id="lb-img"
+        src=""
+        alt=""
+        draggable="false"
+        class="max-h-[92vh] w-auto max-w-full select-none will-change-transform"
+      />
+    </div>
+  </div>
+</dialog>
+
+<script>
+  // ── Elements ──────────────────────────────────────────────────────────────
+
+  const dialog = document.querySelector<HTMLDialogElement>('#lightbox')
+  const img = document.querySelector<HTMLImageElement>('#lb-img')
+  const viewport = document.querySelector<HTMLElement>('#lb-viewport')
+  const zoomInBtn = document.querySelector<HTMLButtonElement>('#lb-zoom-in')
+  const zoomOutBtn = document.querySelector<HTMLButtonElement>('#lb-zoom-out')
+  const prevBtn = document.querySelector<HTMLButtonElement>('#lb-prev')
+  const nextBtn = document.querySelector<HTMLButtonElement>('#lb-next')
+
+  /**
+   * Every clickable tile on the page, in DOM order.
+   *
+   * Note this spans BOTH grids — Highlights first, then Archive — so moving
+   * past the last highlight lands you on the first archive photo. Decide
+   * whether you want that or per-section navigation.
+   */
+  const tiles = [...document.querySelectorAll<HTMLButtonElement>('[data-lightbox]')]
+
+  // ── State ─────────────────────────────────────────────────────────────────
+
+  const MIN_ZOOM = 1
+  const MAX_ZOOM = 5
+  const STEP = 0.5
+  /** Movement (px) past which a press counts as a drag rather than a click. */
+  const DRAG_SLOP = 4
+
+  // The photo is drawn as translate(tx, ty) scale(scale). Three numbers, and
+  // every control below is just a different way of changing them.
+  let scale = MIN_ZOOM
+  let tx = 0
+  let ty = 0
+
+  /** Size the photo renders at when fitted — the scale-1 baseline. */
+  let baseW = 0
+  let baseH = 0
+
+  /** Which tile is currently open. -1 when the dialog is closed. */
+  let current = -1
+
+  // ── Painting ──────────────────────────────────────────────────────────────
+
+  /** Write the three numbers to the DOM. Nothing else should touch style.transform. */
+  function render(animate = false) {
+    // TODO: set img.style.transform, cursor, and the zoom buttons' disabled state
+  }
+
+  /** Re-measure the fitted size with the transform temporarily cleared. */
+  function measureBase() {
+    // TODO: clear transform → getBoundingClientRect() → baseW/baseH → restore
+  }
+
+  /** Back to fitted and centered. */
+  function resetView() {
+    // TODO
+  }
+
+  // ── Zoom ──────────────────────────────────────────────────────────────────
+
+  /** Centre of the viewport in page coordinates — what zoom measures against. */
+  function viewportBox() {
+    // TODO: return { x, y, w, h }
+  }
+
+  /** Keep the photo covering the frame: its edges can never come inside. */
+  function clampPan() {
+    // TODO
+  }
+
+  /** Zoom to `next`, keeping whatever sits under (px, py) pinned to that spot. */
+  function zoomTo(next: number, px: number, py: number, animate = false) {
+    // TODO
+  }
+
+  // ── Open / close / navigate ───────────────────────────────────────────────
+
+  /**
+   * Show tile `i`. The single entry point — the click handler, the arrow keys,
+   * and the prev/next buttons should all go through here rather than each
+   * setting img.src themselves.
+   */
+  function show(i: number) {
+    // TODO: bounds (wrap or clamp?), set current, load the photo, reset the view
+  }
+
+  function open(i: number) {
+    // TODO: show(i), then dialog.showModal()
+  }
+
+  // ── Wiring ────────────────────────────────────────────────────────────────
+
+  // TODO: tiles.forEach((tile, i) => tile.addEventListener('click', () => open(i)))
+  // TODO: close button, backdrop click, reset on close
+  // TODO: zoom buttons
+  // TODO: wheel → zoomTo at the cursor
+  // TODO: pointerdown/move/up → drag to pan, pinch to zoom, tap to toggle
+  // TODO: prev/next buttons + arrow keys
+  // TODO: window resize → measureBase, clampPan, render
+</script>

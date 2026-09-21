@@ -4,7 +4,558 @@ A running log of notable work. Most recent first. For *why* behind big
 decisions, see [blog-cms-plan.md](./blog-cms-plan.md); for how-tos, see
 [../how-to/](../how-to/).
 
+## 2026-09-21
+
+### Lightbox: arrow-key navigation
+
+Left/right arrows now move between photos while the lightbox is open, across
+both grids — `tiles` is `[...6 highlights, ...27 archive]` in DOM order, so it
+behaves as one continuous gallery.
+
+Built by following [../how-to/lightbox-navigation.md](../how-to/lightbox-navigation.md).
+For how a photo reaches the dialog in the first place, see
+[gallery-pipeline.md](./gallery-pipeline.md).
+
+#### The shape
+
+Two pieces of state and one entry point:
+
+```
+tiles     every [data-lightbox] button, in DOM order   — the list
+current   index of the photo on screen                 — the bookmark
+show(i)   the ONLY thing that assigns img.src
+```
+
+Clicks, arrow keys, and any prev/next buttons added later all call `show()`.
+They differ only in which number they hand it. That is the whole design, and
+it is why the key handler is two lines: it adds or subtracts one and trusts
+`show()` to land somewhere valid.
+
+`show()` and `open()` are deliberately separate — `open()` is `show()` plus
+`dialog.showModal()`. Arrow keys need the first without the second, because
+**`showModal()` throws `InvalidStateError` on an already-open dialog.**
+
+#### Wrap, not clamp
+
+```js
+const n = tiles.length
+i = (i + n) % n
+```
+
+Past the last photo you land on the first. Chosen over clamping because `tiles`
+already spans a section boundary the user cannot see, so it is functioning as
+one continuous sequence; asserting an endpoint that is invisible in the UI would
+be arbitrary. Clamping would also mean disabling `#lb-prev`/`#lb-next` at the
+ends — a button that silently does nothing is worse than either behaviour — so
+it is not the one-liner it looks like.
+
+Revisit this if a position indicator ("7 of 33") is ever added. Once people can
+see where they are, silently teleporting them to the start reads as a bug.
+
+⚠️ **The `+ n` is load-bearing, and this is the classic bug in this feature.**
+JavaScript's `%` is *remainder*, not modulo — it keeps the sign of the left
+operand, so `-1 % 33` is `-1`, not `32`. Without the `+ n`, pressing ← on the
+first photo evaluates `tiles[-1]`, which is `undefined`, and the dialog goes
+blank **with nothing in the console**. Test for it directly: open the first
+photo, press ←, expect the last archive photo.
+
+It also only survives being *one* step out of range, which is all the current
+callers ever do. If something is added that can pass an arbitrary index — a
+thumbnail strip, "press 5 for photo 5" — it needs the general form
+`((i % n) + n) % n`.
+
+#### Four bugs worth remembering, because three were silent
+
+Found while wiring this up:
+
+1. **A duplicate click handler.** The original inline `forEach` over
+   `[data-lightbox]` was still present alongside the new `tiles.forEach`, so
+   every tile had two listeners. Both fired: `open(i)` opened the dialog, then
+   the old handler called `showModal()` on it again and threw. The *new* code
+   looked broken when it was not. **When extracting logic into a function,
+   delete the original in the same edit** — there is now only one
+   `querySelectorAll('[data-lightbox]')` in the file, and that is the invariant
+   to preserve.
+2. **`dialog.modal()`** instead of `showModal()` — no such method.
+3. **`querySelectorAll` without the `<HTMLButtonElement>` generic** returns
+   `Element[]`, and `Element` has no `.dataset`, so `tile.dataset.src` will not
+   typecheck. This script is TypeScript; the generic is not optional.
+4. **`img.alt = tile.dataset.alt ?? ' '`** — a space, not an empty string.
+   `alt=""` means "decorative, skip this"; `alt=" "` is a character some screen
+   readers announce. Use `''`.
+
+Only #2 produced a build error. The rest either failed at runtime or degraded
+accessibility quietly.
+
+#### Prev/next buttons — two traps found while wiring them
+
+**Never call `addEventListener` inside another event handler.**
+
+```js
+// ✗ every keypress registers two MORE click listeners
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'ArrowRight') show(current + 1)
+  prevBtn?.addEventListener('click', () => show(current - 1))
+  nextBtn?.addEventListener('click', () => show(current + 1))
+})
+
+// ✓ registered once, in the straight-line body of the script
+document.addEventListener('keydown', (e) => { … })
+
+prevBtn?.addEventListener('click', () => show(current - 1))
+nextBtn?.addEventListener('click', () => show(current + 1))
+```
+
+The outer handler runs on every keypress, so the inner registrations pile up and
+nothing removes them. After twenty arrow presses one click on › calls `show()`
+twenty times and jumps twenty photos. It degrades as the visitor browses, which
+makes it look intermittent rather than wrong.
+
+The rule that prevents it: **`addEventListener` is setup, not behaviour.** It
+belongs in code that runs exactly once. If it sits inside something that runs
+repeatedly, it is a leak.
+
+**`?.` on a missing element fails silently.** `prevBtn` and `nextBtn` were being
+queried before the `#lb-prev` / `#lb-next` markup existed, so both were `null`,
+the optional chain swallowed it, and nothing attached — no error, no buttons, no
+clue. Worth remembering that `?.` converts a wiring mistake into silence; when a
+control does nothing at all, check the element was actually found before reading
+the handler.
+
+Note that [../how-to/lightbox-navigation.md](../how-to/lightbox-navigation.md)
+Step 6 claims the skeleton already contains `#lb-prev` and `#lb-next`. **It does
+not** — the dialog shipped with only zoom-out, zoom-in, and close. The markup has
+to be written as well as wired.
+
+#### Where the buttons go, and why
+
+Siblings of `#lb-viewport`, inside the `<div class="relative">` that is the
+positioning context — **not** children of the viewport. The viewport owns the
+pointerdown/move/up handlers for drag-panning and pinch-zoom, and a button
+inside it would compete with them for the same gestures.
+
+`h-11 w-11` (44px) rather than the `h-9 w-9` of the zoom controls: 44px is the
+accepted minimum touch target, and these are the primary navigation affordance on
+a phone, where there are no arrow keys at all.
+
+The glyphs are `‹` and `›`, not `<` and `>`. Raw angle brackets in text confuse
+the Astro template parser.
+
+The handlers are one line each — `show(current ± 1)`, identical to the arrow
+keys. No bounds checking, because `show()` normalizes. That is the payoff for
+routing everything through one entry point: a third input method costs two lines.
+
+#### The naming contract: an `id` does nothing by itself
+
+Every control in the lightbox is wired in **three steps, across two files-worth
+of context**, and all three have to agree on one string:
+
+```
+MARKUP                          SCRIPT
+id="lb-prev"   ←── matched ──→  querySelector('#lb-prev')
+                                       ↓
+                                prevBtn.addEventListener('click', …)
+```
+
+1. **Name it** — `id="lb-prev"` in the markup.
+2. **Find it** — `querySelector('#lb-prev')` in the script.
+3. **Give it behaviour** — `addEventListener` on what came back.
+
+An `id` is only a name tag. It grants no behaviour and creates no connection;
+it is useful solely because something else goes looking for that exact string.
+Writing the id and the handler without the lookup agreeing between them gets you
+a button that renders perfectly and does nothing.
+
+This bit once: the markup said `Ib-prev` (capital i) while the script queried
+`#lb-prev` (lowercase L). In most fonts those are the same glyph.
+`querySelector` returned `null`, `prevBtn?.addEventListener` shrugged, and there
+was no error anywhere — **asking for an element that does not exist is not a
+failure in the DOM, it just returns `null`.**
+
+When a control does nothing at all, check step 2 before suspecting the handler:
+
+```js
+console.log(document.querySelector('#lb-prev'))   // null means the names differ
+```
+
+It is the same contract the tiles already use — `data-lightbox` names them,
+`querySelectorAll('[data-lightbox]')` finds them (see
+[gallery-pipeline.md](./gallery-pipeline.md) Stage 5). Markup names things; the
+script finds them by name; the name is the interface. Rename one side and the
+feature goes quiet, not loud.
+
+⚠️ Related trap in the same family: `?.` is what converts this from a crash into
+silence. It is the right operator here — the script must not explode on a page
+without a lightbox — but it means a wiring mistake produces no signal at all.
+
+#### Lightbox captions — title and blurb over the photo
+
+`title` and `blurb` now reach the dialog. Previously they existed on the grid
+tile and stopped there, while `content.ts:274` claimed the blurb was "also shown
+in the lightbox" — a comment describing an intention that was never built.
+
+Same three-step naming contract as everything else here, run twice:
+
+| Step | Where |
+| --- | --- |
+| Emit | `data-title` / `data-blurb` on the tile button, `GalleryGrid.astro` |
+| Receive | `#lb-title` / `#lb-blurb` inside a `<figcaption>` in the dialog |
+| Connect | read `tile.dataset.title/.blurb` in `show()`, write with `textContent` |
+
+#### Five decisions, and why each went the way it did
+
+**Overlay, not stacked.** The caption sits on the bottom of the photo behind a
+`bg-gradient-to-t from-black/90 via-black/60 to-transparent` scrim, rather than
+in a strip below it. Stacking would force the image to give back height from the
+dialog's `max-h-[92vh]`, which hurts most on a phone in landscape where there is
+least to spare. The overlay also matches the Hero's existing treatment, so it
+reads as part of the site rather than a bolt-on.
+
+**It fades above 1×.** `render()` sets `opacity: 0` whenever `scale > MIN_ZOOM`.
+Someone who has zoomed to 4× is examining a face, and a paragraph across the
+bottom is in the way; back at fitted size the context is welcome again. One line,
+in a function that already ran on every zoom change, so it cost nothing.
+
+**`pointer-events-none` is load-bearing.** The caption overlays the viewport. A
+drag beginning anywhere in the bottom strip would otherwise land on the caption
+instead of `#lb-viewport`, and panning would die in that region — an
+intermittent-feeling bug that depends on where the user happens to grab. The
+property lets pointer events fall straight through.
+
+**The text is written inside `onReady()`, not beside `img.src`.** `textContent`
+is synchronous; the image download is not. Setting the caption early paints the
+new words over the *outgoing* photo for as long as the new one takes to arrive.
+Deferring to the same callback that runs `measureBase()` keeps words and picture
+in step.
+
+**`textContent`, never `innerHTML`.** These are plain strings out of
+`content.ts`. `textContent` keeps them incapable of injecting markup, which
+matters more once the copy is being edited by someone other than a developer.
+
+#### Markup change worth knowing
+
+`<div class="relative">` became `<figure class="relative m-0">`. `<figcaption>`
+is only valid inside `<figure>`, and the pairing is what lets a screen reader
+associate the words with the image rather than announcing them as unrelated
+text. The `relative` class is unchanged — it is still the positioning context
+that the controls, the ‹ › buttons and now the caption all resolve against.
+
+#### Side effect worth keeping
+
+The feature makes the placeholder copy impossible to ignore: every photo except
+the three marked `// ✓ reviewed` now shows "Placeholder title / Placeholder
+caption — replace with what is happening here" across the bottom of the image.
+That is a useful kind of visible, and it is already tracked as a launch blocker
+alongside the alt text in [todo-next-steps.md](./todo-next-steps.md) § 7.
+
+#### Still open
+
+- ✅ The ‹ › on-screen buttons are in. Touch users can now navigate; arrow keys
+  work; there is no visible affordance for navigation, which is a discoverability
+  gap on touch devices where there is no keyboard at all. **Swipe or visible
+  buttons should land before launch** — right now a phone user cannot move
+  between photos without closing and reopening the dialog.
+- Arrows navigate regardless of zoom level, and `resetView()` fits the new
+  photo. The alternative (pan while zoomed, navigate only at 1×) was rejected:
+  it makes the arrow keys mean two different things depending on state the user
+  cannot see.
+- `Lightbox.astro` is still the unused second implementation. This work went
+  into the live inline version in `gallery.astro`, so the two have now diverged
+  further — the component does not have navigation. Either port it or delete it;
+  leaving both is the confusing option.
+
 ## 2026-09-20
+
+### Logo assets, the social card, and why there is no vector logo
+
+**The new logo is a raster image. There is no vector version of it.**
+
+Three SVG exports out of Illustrator were tried (`NewLogoSVG.svg`,
+`NewLogoSVG2.svg`, `NewLogoSVG2-01/02.svg`) and all four contained zero vector
+paths. The linked variants were 463 bytes and reduced, in full, to:
+
+```xml
+<image width="1254" height="1254" xlink:href="newlogo.png" />
+```
+
+That is Illustrator reporting that the `.ai` document holds one placed PNG on
+the artboard and nothing else. The embedded variant was the same thing with the
+PNG base64'd inline, which is why it weighed 2 MB. This was not an export-settings
+mistake — there was no vector art to export. Getting a true vector means redrawing
+the mark or obtaining the original design source.
+
+**Do not put a wrapped-raster SVG on the site.** Shipping the embedded one would
+have loaded 2 MB on every page (the logo is in both the navbar and the footer)
+in place of the current 43 KB, for zero quality gain — it is still a fixed
+1254×1254 raster either way. The linked ones would render as a blank box, since
+the browser resolves `newlogo.png` relative to the SVG.
+
+For contrast, the *old* logo files are genuine vectors: `public/logo.svg` is
+14 KB with 20 real paths. That is what a true export looks like, and it is the
+quickest way to tell the two apart.
+
+#### What each logo file is now
+
+| File | What it is |
+| --- | --- |
+| `public/newlogo.png` | 320×320, 43 KB. **What the site serves** — navbar and footer. |
+| `assets/newlogo-1254.png` | 1254×1254, 1.5 MB, transparent. Extracted from the embedded SVG; the highest-resolution copy of the new logo that exists. Source file, not served. |
+| `assets/newlogo.png` | 1254×1254, 1.5 MB. The original Illustrator placed the artboard. |
+| `public/logo.svg`, `public/HSRBlackSVG.svg` | The **old** logo, as real vectors. Still referenced nowhere; kept for reference. |
+
+320px is not a shortcut: the logo renders at 48–96 px, so it is already past what
+a 2× retina screen asks for. The site is not worse for the logo being raster.
+
+#### The social card
+
+`public/img/social-card.jpg` — 1200×630, 57 KB, the logo centred on the site's
+ivory (`#fbf8f2`), generated from `assets/newlogo-1254.png` with sharp. Wired in
+`BaseLayout.astro` as the default `ogImage`, so every page has a share image
+without passing anything; a journal post can still override it with its cover.
+
+Three constraints worth remembering if you regenerate it:
+
+- **1200×630.** Facebook will not draw the large banner card much below ~600 px
+  wide — it falls back to a small square thumbnail — and `twitter:card` is set to
+  `summary_large_image`, which crops to roughly 2:1. A square logo loses its top
+  and bottom.
+- **Opaque, and a raster.** Transparent PNGs get composited onto each platform's
+  own background and they disagree (Slack and Discord dark, Facebook white), so a
+  logo tuned for one looks wrong on the other. And **SVG is rejected everywhere**
+  for `og:image` — that was the original reason the SVG hunt was a dead end.
+- **The URL must be absolute.** `new URL(ogImage, Astro.site)` handles that, which
+  makes `site` in `astro.config.mjs` load-bearing for social previews, not just
+  for the sitemap.
+
+#### ⚠️ The logo and the site are different brands
+
+The new logo is **navy blue and gold**. The entire site palette is **maroon** —
+`--primary: #7f1416`, and the comment beside it in `global.css` still reads
+"brand maroon (from logo)", which was true of the *old* logo and is not true of
+this one. Nothing is broken, but a visitor sees a navy logo sitting on maroon
+buttons and maroon section bands.
+
+That is a decision, not a bug, and it is worth making deliberately before launch:
+either restate the site palette around the logo's navy and gold, or accept the
+mismatch, or revisit the logo. Whichever way it goes, fix the misleading comment
+on `global.css` line 11.
+
+
+### Program sections get their own "contact us" buttons
+
+`/what-we-do` now ends each of the two formal program sections with an outline
+CTA to `/contact`:
+
+| Section | Button |
+| --- | --- |
+| Housing Support Program | Request housing support → |
+| Transportation Support Program | Request a ride → |
+
+Labels are per-program rather than a generic "Contact us," because someone who
+has just finished reading what a program covers is at the moment of deciding
+whether to ask for *that* thing. The label is set in the local `programs` array
+in `what-we-do.astro`, **after** the `...DOC` spread so a future
+`PROGRAM_DESCRIPTION` key named `cta` can't silently clobber it.
+
+Community Support & Resource Navigation deliberately has no button — it is a
+navigation/referral service rather than something you apply for, and the
+page-level CTA below it already covers the general case.
+
+**Not done:** the contact form has no topic field, so the buttons can't prefill
+what the person is asking about (the volunteer form's `?role=` pattern has no
+equivalent here). Adding a topic `<select>` to `contact.astro` and passing
+`?topic=housing` / `?topic=rides` would let staff triage incoming messages
+without reading each one first. Worth doing if inbound volume grows.
+
+### Footer now leads with the badge; the old lockup kept as a colophon mark
+
+`Footer.tsx` brand column renders `/newlogo.png` at `h-28`. The badge carries
+its own gold rim and light interior, so it needs no filter on the near-black
+footer (`--foreground`, `hsl(0, 10%, 15%)`).
+
+**The old `logo.svg` stayed on the page, moved to the bottom strip** beside the
+copyright line, at `h-9` with `opacity-50` and
+`[filter:brightness(0)_invert(1)]`.
+
+Two reasons for that treatment rather than dropping it in as-is:
+
+- **Contrast.** `logo.svg` is maroon (`#7F1416` / `#7A121B`) plus off-white
+  (`#F1F2F2`). At `h-9` on a near-black background the maroon portions would
+  read as broken fragments. Flattening it to white keeps the shape legible;
+  the opacity keeps it subordinate to the badge above.
+- **Hierarchy.** Badge as the identity, original lockup as the colophon mark —
+  a normal way to retain a legacy mark without implying two active brands.
+
+It carries `alt=""` and `aria-hidden="true"`: the copyright line immediately
+beside it already says "Housing Support Rides, Inc.", so a real alt would make
+a screen reader announce the organization twice in a row.
+
+Logo usage now: **navbar + footer brand = new badge; footer colophon =
+`logo.svg`; `HSRBlackSVG.svg` = retained in `public/`, unreferenced.**
+
+### New page: `/recovery-meetings` — weekly recovery meetings
+
+Real, time-sensitive information supplied by the user: two standing weekly
+meetings HSR hosts. New `src/pages/recovery-meetings.astro`, data in
+`RECOVERY_MEETINGS` / `RECOVERY_CLOSING` in `content.ts`, and a `Meetings`
+entry added to `NAV_LINKS` (second position, right after "What We Do").
+
+| | Hnub Zoo Recovery | HSR Narcotics Anonymous |
+| --- | --- | --- |
+| Type | All Recovery | Narcotics Anonymous |
+| When | Mondays, 5:30 PM | Saturdays, 6:30 PM |
+| Where | 1440 Arcade Street, St. Paul, MN 55106 | 3207 Central Avenue NE, Minneapolis, MN 55418 |
+
+**The layout is deliberately boring, and that's the point.** Someone may open
+this page in a bad moment, so: day/time/address sit *above* the descriptive
+prose on every card, nothing is behind an accordion or tab, and the address is
+a tap-to-navigate Google Maps link rather than text to copy out. If you edit
+the page, keep that order.
+
+**Nav label is "Meetings," not "Recovery Meetings."** The desktop nav renders at
+`lg:` with `gap-8` inside a 1200px container and now carries nine items; the
+longer label risked overflow. "Meetings" is also the word people in recovery
+actually use. The page's own `<h1>` is explicit, so nothing is lost for someone
+who lands from search.
+
+⚠️ **One unverified claim, marked `CONFIRM` in the page.** The "Need a ride to
+a meeting?" block offers transportation to the meetings. Rides to recovery
+meetings are **not** named in
+[mission-and-programs.md](./mission-and-programs.md), which lists medical,
+housing, employment, benefit and food appointments. HSR hosts these meetings so
+it's plausible, and the wording is hedged ("we will do what we can") rather than
+a guarantee — but confirm with the director or delete the block.
+
+#### Not done, deliberately
+
+- **No crisis-line information.** A page about addiction, mental health, grief
+  and trauma is a reasonable place for the 988 Suicide & Crisis Lifeline, but
+  what safety resources a nonprofit publishes is the organization's call, not a
+  default. Offered to the user; not added.
+- **No `Event` structured data.** Recurring-event schema would make these
+  meetings eligible for rich results when people search for meetings nearby —
+  worth considering given the page's purpose. The site already emits NGO schema
+  in `BaseLayout.astro`, so the pattern exists.
+- **No footer link.** The footer's "Programs" column maps every label to
+  `/#our-work` rather than to real routes, so adding one entry properly would
+  mean restructuring that column.
+
+### Navbar logo swapped to the new circular badge (old logo kept)
+
+`Navbar.tsx` now renders `/newlogo.png` — the circular navy-and-gold badge
+(hands forming a heart over a house and a van, "PEOPLE · TRANSPORT · HOUSING ·
+BRIGHTER TOMORROWS" around the rim). **The old logo was not removed**: the
+footer still renders `logo.svg`, and `HSRBlackSVG.svg` remains in `public/`
+and still ships, just unreferenced.
+
+Where the files ended up:
+
+| File | Role |
+| --- | --- |
+| `assets/newlogo.png` | 1254×1254 master, **not served** — lives with the other brand masters |
+| `public/newlogo.png` | 320×320, 43 KB — what the site actually loads |
+| `public/logo.svg` | old logo, still used by the footer |
+| `public/HSRBlackSVG.svg` | old navbar logo, retained, no longer referenced |
+
+**It was in the gallery — and was being rendered as one of the photos.** The
+file sat at `src/assets/img/gallery/`, inside the gallery's `import.meta.glob`
+path, and `GALLERY_IMAGES` had a real entry for it (committed in `2e477ba` as
+`IMG_20260920_024743.png`, later renamed to `Newlogo.png` on disk). So the logo
+was appearing in the public gallery as an event photo, captioned "Placeholder
+title" with placeholder alt text.
+
+Moving the file out left that entry dangling, which surfaced as a maroon
+"Missing file:" tile — the fallback in `GalleryGrid.astro` doing exactly its
+job. The entry has been deleted from `content.ts`.
+
+**The gallery count was therefore wrong in earlier notes.** It was described as
+33 photos; it was 32 photos plus the logo. Now 32 entries, 32 files on disk,
+0 missing tiles — verified in the built output.
+
+⚠️ **It was 1.5 MB at 1254×1254**, and the navbar displays it at 48–56 px. That
+is exactly the trap in [../how-to/images.md](../how-to/images.md): a raster in
+`public/` is served untouched, so every visitor on every page would have
+downloaded 1.5 MB to fill a 56 px box. Resized to 320 px (enough for 3× DPR)
+via sharp → **43 KB, a 97% reduction.** Regenerate from the master if the
+display size ever changes.
+
+**Sizing changed too.** The old mark was a horizontal wordmark at `h-9 md:h-10`.
+A circular badge reads much smaller at the same height, so it is now
+`h-12 md:h-14`. The header is a fixed `h-[76px]` — **do not exceed `h-14`** or
+the logo will crowd or overflow the bar.
+
+#### Open questions raised by the new logo (not acted on)
+
+- **It clashes with the maroon theme.** The badge is navy + gold; the site
+  palette is maroon (`--primary: hsl(359, 73%, 29%)`, derived from the previous
+  logo's `#7f1416`) and was chosen deliberately. Navy/gold next to maroon reads
+  as two brands. Either the palette follows the logo, or the logo is treated as
+  a seal used sparingly. A decision, not a bug.
+- **The rim text cannot be read at 56 px** — inherent to badge logos in
+  navbars. Fine if treated as a mark rather than a wordmark, but it means the
+  header no longer spells out the org name anywhere.
+- **There is a visual artifact in the source image** — a red/yellow/black smudge
+  in the lower middle, behind the hands. Looks unintentional; worth checking
+  against the original artwork before launch.
+- **The favicon still uses the old mark** (`public/favicon.svg`), as does the
+  footer. If the badge is now the identity, those want updating for consistency.
+
+### Admin accounts: researched, documented, deliberately not built
+
+New: [../how-to/admin-accounts.md](../how-to/admin-accounts.md). **No code.**
+The user is writing this themselves and asked for a study guide, so the doc is
+concepts, shapes and exercises — it contains no paste-ready implementation on
+purpose.
+
+The question was whether admins could log in from inside the site without each
+needing a GitHub account, "like Eleventy does."
+
+**The answer turns on a mechanic worth writing down.** Keystatic is a git-based
+CMS: there is no content database, so every save must become a commit, and
+GitHub only accepts commits from an authenticated identity. That leaves exactly
+two shapes — each editor authenticates as themselves (what we have), or a
+server holds one token and commits on everyone's behalf (a **token broker**).
+Every "in-site login, no GitHub" product is the second shape with the broker
+hosted by someone else.
+
+**The Eleventy memory is the deprecated path.** That setup was Decap CMS +
+Netlify Identity + **Git Gateway**, where Git Gateway was the broker. Netlify
+has deprecated Git Gateway; existing sites work, new ones are discouraged.
+Netlify Identity itself was un-deprecated in Feb 2026, but the CMS-through-Git-
+Gateway workflow specifically is on borrowed time. Recommended instead:
+**Keystatic Cloud** — same broker role, maintained, one `storage:` line, free
+to 3 users.
+
+**Two separate logins, not one.** Editing content (git, commits, low stakes)
+and viewing form submissions (database, PII, real stakes) are different
+problems and should not share an implementation until the tradeoff is
+understood. Today nothing stores submissions — Web3Forms emails them and keeps
+nothing — which is a better privacy position than a dashboard would be, and
+worth noticing before giving it up. For a transport org touching NEMT, a stored
+ride manifest is health information in all but name.
+
+**Correction recorded:** Better Auth was described to the user as a "managed
+provider" while scoping. It is not — it's a self-hosted library, and we would
+hold the password hashes ourselves. Clerk/WorkOS are the managed option. The
+distinction changes who owns a breach, so it's called out in the guide too.
+
+⚠️ **Astro-specific trap documented:** no `output` is set in
+`astro.config.mjs`, so pages prerender by default and middleware does not run
+for them. A protected page missing `export const prerender = false` ships as
+public static HTML — no error, no warning, and a login form that appears to
+work. The reliable check is whether the page lands in `dist/` after a build.
+
+### Placeholder content: decided "hide, don't fill" — deferred
+
+Recorded in [todo-next-steps.md](./todo-next-steps.md) § 5. Before launch, most
+placeholder content gets *removed from the page* rather than filled with
+invented numbers: an absent stats band reads as a young organization, a
+fabricated one is a checkable claim. Explicitly **not now** — placeholders keep
+layouts honest about their spacing while the site is still being built.
+
+Flagged for whoever does that pass: emptying the arrays in `content.ts` is the
+obvious lever, but whether each section actually *hides* versus rendering an
+empty shell is unverified. Check per section rather than assuming.
 
 ### `how-to/gallery-page.md` rewritten to match the shipped code
 

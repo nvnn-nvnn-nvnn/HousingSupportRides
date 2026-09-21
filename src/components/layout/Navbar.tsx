@@ -8,7 +8,9 @@ import { cn } from '../../lib/utils'
 function Wordmark() {
   return (
     <a href="/" className="flex items-center" aria-label="Housing Support Rides home">
-      <img src="/HSRBlackSVG.svg" alt="Housing Support Rides" className="h-9 w-auto md:h-10" />
+      {/* Circular badge, so it needs more height than the old horizontal
+          wordmark did to read at all. Header is 76px — don't exceed h-14. */}
+      <img src="/newlogo.png" alt="Housing Support Rides" className="h-12 w-auto md:h-14" />
     </a>
   )
 }

@@ -1,5 +1,11 @@
 # What Still Needs Wiring
 
+> **Tickable version:** https://claude.ai/artifact/D5JmZsPJVksw5Wwix3zh2p
+> — the same list as a checklist that saves what is ticked, including the
+> non-code launch work (DNS, accounts, insurance, photo releases) that does not
+> belong in this file. This file stays the engineering record; if the two drift,
+> this one wins for anything about the codebase.
+
 ## 🚀 Launch punch list (current priority)
 
 Domain purchased (Squarespace registrar) and a Givebutter account started, but
@@ -94,6 +100,24 @@ supported by our `@astrojs/vercel` v11). Comparison table lives in
 
 ## 5. Content — mission is real, numbers are not
 
+> **Decision (2026-09-20): hide, don't fill — but not yet.** For most of the
+> placeholder content below, the plan is to *remove it from the page* before
+> launch rather than invent numbers to fill it. An absent stats band reads as a
+> young organization; a fabricated one is a specific claim someone can check.
+>
+> **Timing is deliberate:** this is a pre-launch pass, not something to do while
+> the site is still being built out. Placeholders are useful right now — they
+> keep layouts honest about their own spacing. Pulling them early means
+> designing against empty sections for weeks.
+>
+> **When that pass happens,** the mechanism should mostly already be there: the
+> home page sections are driven by arrays in `src/lib/content.ts`, so emptying
+> an array is the natural lever. ⚠️ **Verify this per section rather than
+> assuming it.** Some components may render an empty shell — a heading and
+> padding with nothing under it — which looks more broken than a placeholder
+> does. Each one needs either a confirmed empty state or an explicit removal
+> from the page that calls it.
+
 - [x] Renamed/rebranded from the watershed draft to Housing Support Rides copy.
 - [x] **Mission + programs are the real thing** (2026-09-20) — `MISSION`,
       `CHARITABLE_PURPOSE`, and `PROGRAMS` in `src/lib/content.ts` come from the
@@ -142,11 +166,48 @@ specific claims a donor or reporter could check, and **none of them appear in
       which silently doesn't work on Vercel — see the ⚠️ in
       [README.md](./README.md) and [CHANGELOG.md](./CHANGELOG.md)).
 - [x] Domain — see punch list #1.
-- [ ] Add a real social share image (`ogImage` prop on the layouts).
+- [x] Social share image wired — `public/img/social-card.jpg` (1200×630) is the
+      default `ogImage` in `BaseLayout.astro`, so every page has a preview.
+- [ ] ⚠️ **Decide whether the site palette follows the logo.** The new logo is
+      navy and gold; the whole site is maroon. See [CHANGELOG.md](./CHANGELOG.md)
+      → "Logo assets, the social card…". Also fix the stale "(from logo)" comment
+      on `global.css` line 11.
+- [ ] No vector version of the new logo exists — would need redrawing. Not
+      blocking: the site displays it at 48–96px and the 320px PNG covers that.
 - [ ] Check keyboard nav + color contrast now that the theme is maroon (was
       teal at initial a11y pass).
 - [ ] `npm run build` should stay green — run before committing.
 - [ ] Optional: `npm audit fix` — a few transitive advisories exist in the toolchain.
+
+## 8. Admin accounts (researched 2026-09-20, nothing built)
+
+Study guide written at [../how-to/admin-accounts.md](../how-to/admin-accounts.md).
+No code exists — this is deliberately unimplemented; the user is writing it.
+
+The ask was "admins log in inside the site, without each needing a GitHub
+account, like Eleventy." Findings:
+
+- [ ] **The Eleventy pattern is the deprecated one.** Decap CMS + Netlify
+      **Git Gateway** was the token broker that made in-site login work.
+      Netlify has deprecated Git Gateway — existing sites keep working, new
+      setups are discouraged. Don't start there in 2026.
+- [ ] **Keystatic Cloud is the live equivalent** and is probably the whole
+      answer: editors sign in without GitHub accounts, one `storage:` change in
+      `keystatic.config.tsx`, free up to 3 users then $10/mo + $5/user. Try
+      this *before* building anything.
+- [ ] **A submissions dashboard is a separate, heavier project** — it means
+      storing volunteer/contact PII at rest, which we currently do **not** do
+      (Web3Forms emails it and keeps nothing). Answer the retention/deletion/
+      access questions in Part 7 of the guide before creating a table.
+- [ ] **Correction on record:** Better Auth was described here as a "managed
+      provider." It isn't — it's a self-hosted library; *we* would hold the
+      password hashes. Clerk/WorkOS are the managed ones.
+
+⚠️ **The Astro-specific trap**, if any protected page ever gets built: this
+project has no `output` set, so pages prerender by default and middleware never
+runs for them. A protected page without `export const prerender = false` ships
+as public static HTML with **no error and no warning**. Verify by checking
+whether the page appears in `dist/` after a build, not by clicking around.
 
 ## Housekeeping (low priority, found during a notes audit)
 - [ ] `src/components/layout/Header.tsx` is a 0-byte, unused file (not

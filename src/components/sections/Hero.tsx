@@ -19,10 +19,17 @@ const item = {
 function Hero() {
   return (
     <section id="top" className="relative overflow-hidden bg-black">
-      {/* Full-width community photo. Aspect ratio matches the photo itself
-          (4:3), so object-cover shows 100% of it — nobody cropped, no bars. */}
+      {/* Full-width community photo, 4:3 to match the source — so on phones the
+          whole frame shows, nobody cropped.
+
+          ⚠️ The max-height is what keeps this sane on a desktop. Width-driven
+          4:3 means a 1920px monitor gets a 1440px-tall hero: the visitor has to
+          scroll past a wall of photo before reaching any content. The cap takes
+          over once 4:3 would exceed it (roughly 1150px wide and up), and
+          object-cover trims top and bottom instead. min() so a 4K display
+          doesn't go back to enormous. */}
       <motion.div
-        className="relative w-full"
+        className="relative max-h-[min(86vh,900px)] w-full"
         style={{ aspectRatio: '4 / 3' }}
         initial={{ opacity: 0, scale: 1.03 }}
         animate={{ opacity: 1, scale: 1 }}
@@ -58,7 +65,7 @@ function Hero() {
 
             <motion.p
               variants={item}
-              className="mt-2 text-[10px] font-semibold uppercase tracking-[0.14em] text-[var(--primary)] md:mt-3 md:text-[11px] md:tracking-[0.16em]"
+              className="mt-2 text-[10px] font-semibold uppercase tracking-[0.14em] text-[var(--primary-on-dark)] md:mt-3 md:text-[11px] md:tracking-[0.16em]"
             >
               Housing · Transportation · Community Resources since 2023
             </motion.p>

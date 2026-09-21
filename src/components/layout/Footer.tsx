@@ -17,12 +17,13 @@ function Footer() {
         <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-4">
           {/* Brand + mission */}
           <div>
-           
+            {/* Primary mark: the circular badge. It carries its own gold rim
+                and light interior, so it reads on the near-black footer
+                without any filter. */}
             <img
-              src="/logo.svg"
+              src="/newlogo.png"
               alt="Housing Support Rides"
-              // className="h-12 w-auto [filter:brightness(0)_invert(1)]"
-              className="mx-auto h-24 w-auto sm:mx-0 mb-8"
+              className="mx-auto h-28 w-auto sm:mx-0 mb-8"
             />
             <p className="mt-4 font-serif text-lg italic text-white/80">Housing. Rides. Belonging.</p>
             <p className="mt-4 text-sm leading-relaxed text-white/60">
@@ -83,10 +84,10 @@ function Footer() {
               </p>
               <p>
                 <a
-                  href="mailto:hello@housingsupportrides.org"
+                  href="mailto:hsr@housingsupportrides.org"
                   className="transition-colors hover:text-white"
                 >
-                  hello@housingsupportrides.org
+                  hsr@housingsupportrides.org
                 </a>
               </p>
             </address>
@@ -105,12 +106,26 @@ function Footer() {
 
         {/* Bottom strip */}
         <div className="mt-14 flex flex-col gap-4 border-t border-white/12 pt-6 text-xs text-white/55 md:flex-row md:items-center md:justify-between">
-          <p>
-            © 2026 Housing Support Rides, Inc. · NPI 1801751094 ·{' '}
-            <a href="#" className="hover:text-white/85">
-              Privacy Policy
-            </a>
-          </p>
+          {/* The original maroon lockup, kept as a colophon mark beside the
+              copyright. It's maroon (#7F1416) on a near-black footer, which
+              would barely read at this size — the filter flattens it to white
+              and the low opacity keeps it secondary to the badge above.
+              alt="" because the copyright line already names the org; without
+              it a screen reader announces "Housing Support Rides" twice. */}
+          <div className="flex items-center gap-3.5">
+            <img
+              src="/logo.svg"
+              alt=""
+              aria-hidden="true"
+              className="h-9 w-auto shrink-0 opacity-50 [filter:brightness(0)_invert(1)]"
+            />
+            <p>
+              © 2026 Housing Support Rides, Inc. · NPI 1801751094 ·{' '}
+              <a href="#" className="hover:text-white/85">
+                Privacy Policy
+              </a>
+            </p>
+          </div>
           <a
             href="/contact"
             className="inline-flex items-center gap-1.5 font-medium text-[var(--rb-orange)] hover:brightness-110"

@@ -77,7 +77,9 @@ const archive = photos.slice(HIGHLIGHT_COUNT)
     id="lightbox"
     class="m-auto max-h-[92vh] max-w-[95vw] overflow-hidden rounded-xl bg-[var(--background)] p-0 backdrop:bg-black/80"
   >
-    <div class="relative">
+    {/* <figure> rather than <div> so the <figcaption> below is valid markup
+        and screen readers associate the words with the image. */}
+    <figure class="relative m-0">
       {/* Controls */}
       <div class="absolute right-3 top-3 z-10 flex items-center gap-1.5">
         <button
@@ -100,6 +102,25 @@ const archive = photos.slice(HIGHLIGHT_COUNT)
         >Close</button>
       </div>
 
+      {/* Prev / next. Siblings of the viewport, NOT children — the viewport owns
+          the drag/pinch pointer handlers, and a button inside it would fight
+          them for the same gestures. 44px (h-11) because these are the only way
+          to navigate on a phone, where there are no arrow keys.
+          Glyphs are ‹ › rather than < >, which the parser reads as markup. */}
+      <button
+        id="lb-prev"
+        type="button"
+        aria-label="Previous photo"
+        class="absolute left-3 top-1/2 z-10 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-black/60 text-2xl leading-none text-white hover:bg-black/80"
+      >‹</button>
+      <button
+        id="lb-next"
+        type="button"
+        aria-label="Next photo"
+        class="absolute right-3 top-1/2 z-10 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-black/60 text-2xl leading-none text-white hover:bg-black/80"
+      >›</button>
+
+
       {/* Viewport — no scrollbars. The photo is moved with a CSS transform and
           panned by dragging. `touch-action: none` stops the browser from
           hijacking drag/pinch for its own scrolling. */}
@@ -116,15 +137,116 @@ const archive = photos.slice(HIGHLIGHT_COUNT)
           class="max-h-[92vh] w-auto max-w-full select-none will-change-transform"
         />
       </div>
-    </div>
+
+      {/* Caption — overlaid on the photo rather than stacked beneath it, so the
+          image keeps the dialog's full 92vh instead of giving up room.
+          Outside the viewport for the same reason as the arrows, and
+          `pointer-events-none` so drags and taps pass straight through to the
+          photo underneath it.
+          Fades out above 1× — when someone has zoomed in to look at a face,
+          the words are in the way. Driven from render(). */}
+      <figcaption
+        id="lb-caption"
+        class="pointer-events-none absolute inset-x-0 bottom-0 z-10 bg-gradient-to-t from-black/90 via-black/60 to-transparent px-5 pb-5 pt-16 text-white transition-opacity duration-200"
+      >
+        <h2 id="lb-title" class="font-serif text-lg font-semibold text-white md:text-xl"></h2>
+        <p id="lb-blurb" class="mt-1 max-w-2xl text-sm text-white/80"></p>
+      </figcaption>
+    </figure>
   </dialog>
 
   <script>
     const dialog = document.querySelector<HTMLDialogElement>('#lightbox')
     const img = document.querySelector<HTMLImageElement>('#lightbox-img')
     const viewport = document.querySelector<HTMLElement>('#lb-viewport')
+
+    const prevBtn = document.querySelector<HTMLButtonElement>('#lb-prev')
+    const nextBtn = document.querySelector<HTMLButtonElement>('#lb-next')
+    const caption = document.querySelector<HTMLElement>('#lb-caption')
+    const captionTitle = document.querySelector<HTMLElement>('#lb-title')
+    const captionBlurb = document.querySelector<HTMLElement>('#lb-blurb')
+
     const zoomInBtn = document.querySelector<HTMLButtonElement>('#lb-zoom-in')
     const zoomOutBtn = document.querySelector<HTMLButtonElement>('#lb-zoom-out')
+
+    // ---- navigation state --------------------------------------------------
+
+    /** Every tile across both grids, in DOM order: Highlights then Archive. */
+    const tiles = [...document.querySelectorAll<HTMLButtonElement>('[data-lightbox]')]
+    /** Index of the photo currently in the dialog. */
+    let current = 0
+
+    /**
+     * Show tile `i`. The single entry point — clicks, arrow keys, and any
+     * prev/next buttons added later all route through here. Nothing else
+     * assigns img.src.
+     */
+    function show(i: number) {
+      if (!img) return
+
+      // Wrap at both ends. The `+ n` is load-bearing: JS % keeps the sign of
+      // the left operand, so -1 % 33 is -1, not 32 — and tiles[-1] is
+      // undefined, which blanks the dialog with no error. Only survives one
+      // step out of range, which is all the callers ever do.
+      const n = tiles.length
+      i = (i + n) % n
+
+      current = i
+
+      const tile = tiles[i]
+      img.src = tile.dataset.src ?? ''
+      img.alt = tile.dataset.alt ?? ''
+
+      // Measure only once the browser has laid the new image out — measuring
+      // too early captures the previous photo's dimensions. A cached photo is
+      // already complete and never fires 'load' again, hence the branch.
+      //
+      // The caption is written in here rather than above, alongside img.src:
+      // text swaps instantly while the image is still downloading, so setting
+      // it early shows the new words over the outgoing photo. textContent, not
+      // innerHTML — these are plain strings from content.ts and should stay
+      // incapable of injecting markup.
+      const onReady = () =>
+        requestAnimationFrame(() => {
+          if (captionTitle) captionTitle.textContent = tile.dataset.title ?? ''
+          if (captionBlurb) captionBlurb.textContent = tile.dataset.blurb ?? ''
+          measureBase()
+          resetView()
+        })
+
+      if (img.complete) onReady()
+      else img.addEventListener('load', onReady, { once: true })
+    }
+
+    /** show() plus reveal. Separate because showModal() throws if already open. */
+    function open(i: number) {
+      if (!dialog) return
+      show(i)
+      dialog.showModal()
+    }
+
+    // ---- open ----------------------------------------------------------------
+
+    // forEach supplies the index, so no indexOf lookup is needed.
+    tiles.forEach((tile, i) => {
+      tile.addEventListener('click', () => open(i))
+    })
+
+    document.addEventListener('keydown', (e) => {
+      if (!dialog?.open) return
+      if (e.key === 'ArrowRight') { e.preventDefault(); show(current + 1) }
+      if (e.key === 'ArrowLeft') { e.preventDefault(); show(current - 1) }
+    })
+
+    // Registered once, at module level — NOT inside the keydown handler, which
+    // would add a new listener on every keypress. See notes/CHANGELOG.md.
+    prevBtn?.addEventListener('click', () => show(current - 1))
+    nextBtn?.addEventListener('click', () => show(current + 1))
+
+
+
+
+
 
     const MIN_ZOOM = 1
     const MAX_ZOOM = 5
@@ -171,6 +293,8 @@ const archive = photos.slice(HIGHLIGHT_COUNT)
       img.style.cursor = scale > MIN_ZOOM ? (dragging ? 'grabbing' : 'grab') : 'zoom-in'
       if (zoomOutBtn) zoomOutBtn.disabled = scale <= MIN_ZOOM
       if (zoomInBtn) zoomInBtn.disabled = scale >= MAX_ZOOM
+      // Get the words out of the way once someone is inspecting the photo.
+      if (caption) caption.style.opacity = scale > MIN_ZOOM ? '0' : '1'
     }
 
     /**
@@ -222,30 +346,7 @@ const archive = photos.slice(HIGHLIGHT_COUNT)
       img.style.transform = prev
     }
 
-    // ---- open / close ------------------------------------------------------
-
-    document.querySelectorAll<HTMLButtonElement>('[data-lightbox]').forEach((tile) => {
-      tile.addEventListener('click', () => {
-        if (!dialog || !img) return
-        const src = tile.dataset.src
-        if (!src) return
-
-        img.src = src
-        img.alt = tile.dataset.alt ?? ''
-        dialog.showModal()
-
-        // Measure only once the browser has laid the new image out — measuring
-        // too early captures the previous photo dimensions.
-        const onReady = () =>
-          requestAnimationFrame(() => {
-            measureBase()
-            resetView()
-          })
-
-        if (img.complete) onReady()
-        else img.addEventListener('load', onReady, { once: true })
-      })
-    })
+    // ---- close --------------------------------------------------------------
 
     document.querySelector('#lightbox-close')?.addEventListener('click', () => dialog?.close())
 

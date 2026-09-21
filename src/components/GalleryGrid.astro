@@ -43,6 +43,8 @@ const { photos, dense = false } = Astro.props
           data-lightbox
           data-src={photo.fullSrc}
           data-alt={photo.alt}
+          data-title={photo.title}
+          data-blurb={photo.blurb}
         >
           <div class="aspect-[4/3] overflow-hidden">
             {photo.img ? (

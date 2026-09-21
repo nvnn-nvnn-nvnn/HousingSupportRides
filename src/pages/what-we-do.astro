@@ -22,9 +22,11 @@ import {
 
 // The two programs that have a formal activities list. Community Support &
 // Resource Navigation follows them as a shorter, prose-only section.
+// `cta` is set after the spread on purpose, so it can't be clobbered by a
+// future key of the same name in PROGRAM_DESCRIPTION.
 const programs = [
-  { icon: Key, ...DOC.housing },
-  { icon: Car, ...DOC.transportation },
+  { icon: Key, ...DOC.housing, cta: 'Request housing support' },
+  { icon: Car, ...DOC.transportation, cta: 'Request a ride' },
 ]
 ---
 
@@ -97,6 +99,14 @@ const programs = [
             <p class="mt-6 text-[var(--muted-foreground)]" style="line-height: 1.78;">
               {program.close}
             </p>
+
+            {/* Someone who has just read what a program covers is at the point
+                of deciding whether to ask for it — so the ask lives here, at
+                the end of each program, not only in the page-level CTA. */}
+            <Button href="/contact" variant="outline" size="lg" className="mt-8">
+              {program.cta}
+              <span aria-hidden="true">→</span>
+            </Button>
           </div>
         )
       })

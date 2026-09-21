@@ -25,6 +25,7 @@ Start here, then read the companion docs:
 
 | Doc | What it covers |
 | --- | --- |
+| [gallery-pipeline.md](./gallery-pipeline.md) | How a gallery photo gets from a filename in `content.ts` to the lightbox |
 | [mission-and-programs.md](./mission-and-programs.md) | **The official program description, verbatim** — source of truth for every mission/program claim on the site |
 | [folder-structure.md](./folder-structure.md) | Where every file lives and why |
 | [component-responsibilities.md](./component-responsibilities.md) | What each section/component does |

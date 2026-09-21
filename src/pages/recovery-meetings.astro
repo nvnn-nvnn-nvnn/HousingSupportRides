@@ -1,0 +1,144 @@
+---
+import SiteLayout from '../layouts/SiteLayout.astro'
+import PageHeader from '../components/PageHeader.astro'
+import { RECOVERY_MEETINGS, RECOVERY_CLOSING } from '../lib/content'
+
+/**
+ * Weekly recovery meetings.
+ *
+ * Someone may land here in a bad moment, so the layout is deliberately plain:
+ * day, time and address come before prose on every card, the address is a
+ * tap-to-navigate link, and nothing is hidden behind an accordion or a tab.
+ * Edit the meetings themselves in src/lib/content.ts, not here.
+ */
+const mapsUrl = (query: string) =>
+  `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`
+---
+
+<SiteLayout
+  title="Weekly Recovery Meetings — Housing Support Rides"
+  description="Free weekly recovery meetings in St. Paul and Minneapolis, hosted by Housing Support Rides. All Recovery on Mondays, Narcotics Anonymous on Saturdays. Everyone is welcome."
+>
+  <PageHeader
+    eyebrow="Recovery Support"
+    title="Weekly Recovery Meetings"
+    lead="Two meetings every week, open to anyone. No cost, no registration, no requirement to speak. Just show up."
+  />
+
+  <section class="mx-auto max-w-[1200px] px-5 py-16 md:px-16">
+    <div class="grid grid-cols-1 gap-8 lg:grid-cols-2">
+      {
+        RECOVERY_MEETINGS.map((m) => (
+          <article class="flex flex-col overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--card)]">
+            <div class="border-b border-[var(--border)] p-6 md:p-8">
+              <p class="eyebrow">{m.kind}</p>
+              <h2 class="mt-3 font-serif text-2xl font-semibold text-[var(--foreground)] md:text-3xl">
+                {m.name}
+              </h2>
+              {m.tagline && (
+                <p class="mt-1 font-serif text-lg italic text-[var(--muted-foreground)]">
+                  {m.tagline}
+                </p>
+              )}
+            </div>
+
+            {/* The part someone is actually here for. Kept above the prose. */}
+            <div class="space-y-5 bg-[var(--background)] p-6 md:p-8">
+              <div class="flex items-start gap-3">
+                <svg
+                  class="mt-1 h-5 w-5 shrink-0 text-[var(--primary)]"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  aria-hidden="true"
+                >
+                  <rect x="3" y="4" width="18" height="18" rx="2" />
+                  <path d="M16 2v4M8 2v4M3 10h18" />
+                </svg>
+                <p class="text-lg font-semibold leading-snug text-[var(--foreground)]">
+                  {m.day} at {m.time}
+                </p>
+              </div>
+
+              <div class="flex items-start gap-3">
+                <svg
+                  class="mt-1 h-5 w-5 shrink-0 text-[var(--primary)]"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  aria-hidden="true"
+                >
+                  <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" />
+                  <circle cx="12" cy="10" r="3" />
+                </svg>
+                <a
+                  href={mapsUrl(m.mapQuery)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="group text-[var(--foreground)] underline-offset-4 hover:underline"
+                >
+                  <span class="block font-medium">{m.street}</span>
+                  <span class="block text-[var(--muted-foreground)]">{m.cityStateZip}</span>
+                  <span class="mt-1 block text-sm font-medium text-[var(--primary)]">
+                    Open in Maps →
+                  </span>
+                </a>
+              </div>
+            </div>
+
+            <div class="p-6 md:p-8">
+              <p class="text-[var(--muted-foreground)]" style="line-height: 1.78;">
+                {m.description}
+              </p>
+            </div>
+          </article>
+        ))
+      }
+    </div>
+
+    {/* Rides are the whole point of the organization — say so here, because
+        getting there is the barrier this page is most likely to hit.
+
+        CONFIRM: rides to recovery meetings are NOT named in the official
+        program description (notes/mission-and-programs.md lists medical,
+        housing, employment, benefits and food appointments). HSR hosts these
+        meetings, so covering them is plausible — but confirm with the director
+        before launch, or delete this block. The wording is hedged ("we will do
+        what we can") rather than a guarantee. */}
+    <div
+      class="mt-12 rounded-2xl border border-[var(--border)] bg-[var(--card)] p-8 text-center md:p-10"
+    >
+      <h2 class="font-serif text-2xl font-semibold text-[var(--foreground)]">
+        Need a ride to a meeting?
+      </h2>
+      <p class="mx-auto mt-3 max-w-xl text-[var(--muted-foreground)]" style="line-height: 1.78;">
+        Transportation should never be the reason someone misses a meeting. Call us
+        or send a message and we will do what we can to get you there.
+      </p>
+      <div class="mt-6 flex flex-col items-center justify-center gap-3 sm:flex-row">
+        <a
+          href="tel:+17635017764"
+          class="w-full rounded-lg bg-[var(--primary)] px-6 py-3 font-semibold text-white transition-opacity hover:opacity-90 sm:w-auto"
+        >
+          Call (763) 501-7764
+        </a>
+        <a
+          href="/contact"
+          class="w-full rounded-lg border border-[var(--border)] px-6 py-3 font-semibold text-[var(--foreground)] transition-colors hover:bg-[var(--background)] sm:w-auto"
+        >
+          Send a message
+        </a>
+      </div>
+    </div>
+
+    <p
+      class="mx-auto mt-14 max-w-2xl text-center font-serif text-xl italic text-[var(--foreground)] md:text-2xl"
+    >
+      {RECOVERY_CLOSING}
+    </p>
+  </section>
+</SiteLayout>
