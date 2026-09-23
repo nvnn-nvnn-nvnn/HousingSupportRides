@@ -105,7 +105,38 @@ to show the domain as verified before sending anything real.
 
 ## Step 3 — Put a signup form on the site
 
-### ⚠️ First: the footer can't hold a React form
+### ⚠️ Start here: a signup section already exists
+
+[`src/components/sections/Newsletter.tsx`](../src/components/sections/Newsletter.tsx)
+is already built, already styled (maroon band, animated success state), and
+already mounted on the landing page in [`App.tsx`](../src/App.tsx). **Wire that
+up rather than building something new.**
+
+It lives inside the landing-page React island (`<App client:load />`), so it
+*is* hydrated — React state works there, unlike in the footer. All it needs is
+for its `onSubmit` to actually call the service.
+
+⚠️ **And it needs that urgently, because right now it lies.** The handler is:
+
+```tsx
+onSubmit={(e) => {
+  e.preventDefault()
+  // TODO: wire to a real newsletter provider
+  if (email) setSubmitted(true)
+}}
+```
+
+It shows "Thanks — check your inbox to confirm" without sending anything
+anywhere. The address is discarded. Anyone who has signed up on the live site
+believes they're subscribed and is not. Replace the `setSubmitted(true)` with a
+real POST before anything else in this guide.
+
+The helper in the next sections still applies — call it from that component's
+handler, or inline the `fetch`. The parts below about building a fresh
+`.astro` component are for adding a **second** signup point (the journal page is
+the obvious candidate), not for replacing what's already there.
+
+### The footer can't hold a React form
 
 The obvious home for a signup box is the footer, so it appears on every page.
 But look at [`SiteLayout.astro:16-21`](../src/layouts/SiteLayout.astro#L16-L21):

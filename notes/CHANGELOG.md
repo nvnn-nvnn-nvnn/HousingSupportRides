@@ -6,6 +6,126 @@ decisions, see [blog-cms-plan.md](./blog-cms-plan.md); for how-tos, see
 
 ## 2026-09-22
 
+### Gallery archive restored, first journal post published
+
+Two things that looked broken but were switched off on purpose.
+
+- **The Archive wasn't missing, it was empty.** 29 of the 32 `GALLERY_IMAGES`
+  entries were commented out, leaving 3 — and since `gallery.astro` does
+  `photos.slice(0, HIGHLIGHT_COUNT)` with `HIGHLIGHT_COUNT = 6`, all 3 landed in
+  Highlights and `slice(6)` returned nothing. The Archive block renders only
+  when `archive.length > 0`, so the whole section vanished with no error.
+  Worth remembering: **that section silently disappears any time the active
+  photo count drops to 6 or fewer.**
+- **Photo releases confirmed signed** for everyone pictured (asked before
+  restoring — the entries show identifiable faces at recovery events, and the
+  code comment had flagged releases as a precondition). All 29 uncommented;
+  gallery is back to 32 photos.
+- ⚠️ **Alt text is still the generic `PLACEHOLDER_ALT` on those 29.** The
+  accessibility gap the comment warned about is real and now shipping. Tracked
+  in [todo-next-steps.md](./todo-next-steps.md) § 7; the in-file comment was
+  rewritten to say what's still owed rather than why it was disabled.
+- Side effect: `PLACEHOLDER_ALT` / `PLACEHOLDER_BLURB` were tripping
+  `no-unused-vars` in oxlint. Now referenced, so lint is clean.
+- **`recovery-picnic-2026.mdx` published** (`draft: true` → `false`). It builds
+  to `/journal/recovery-picnic-2026` and appears in `rss.xml`.
+  ⚠️ **The notes describing this post as a placeholder were wrong** — it's real,
+  specific, bylined copy about the September 5 picnic at Western Hills Park.
+  Corrected in `todo-next-steps.md`, which had it queued for replacement.
+
+### Hero rebuilt for legibility
+
+Acted on a review of the hero: too much text over the photo, a scrim that only
+covered the bottom, and a mobile crop that squashed the image.
+
+- **The org paragraph moved off the image** into `OurWork`, as the lead
+  paragraph above `MISSION.purpose`. Body copy over a photo is hard to read at
+  any overlay strength, and it was pushing Donate down the frame. The hero now
+  carries headline → tagline → button → location line, and nothing else.
+- **The scrim covers the whole frame now.** It was `bottom-0 h-3/4`, which left
+  the top half bright — so nothing could be placed there and the upper edge of
+  the text block sat on unpredictable background. Now a flat `bg-black/40` over
+  everything, plus a bottom-weighted gradient on top of it: ~45% at the top,
+  ~88% at the very bottom.
+- **The tagline is no longer `--primary-on-dark`.** That light red was too low
+  contrast over a busy photo; near-white carries the same emphasis and actually
+  reads. Copy also changed to `Support · Transportation · Housing · Resources`.
+- **Mobile is 4:5, not 4:3.** A 4:3 frame on a 390px phone is ~290px tall — a
+  letterbox that wasted the photo and crammed the text. ⚠️ The taller crop
+  needed `object-[50%_32%]`, because the default centre crop cut heads off in
+  the narrower frame.
+- Headline is bolder and larger (`clamp(32px, 7.5vw, 64px)`, was
+  `clamp(22px, 6vw, 56px)`), the CTA is `size="lg"` and full-width on phones,
+  and all white text carries a subtle shadow for the bright patches.
+- **Scrim lightened after a first pass came out too dark.** Flat tint dropped
+  40% → 20% and the gradient eased (~82% at the bottom, ~20% at the top, from
+  ~88%/~45%). ⚠️ **Tune the gradient, not the flat tint** — the flat layer
+  covers the whole frame, so raising it dulls the photo everywhere, which is
+  exactly what went wrong the first time. Noted in the component.
+- **CTA is now "Learn More" → `/what-we-do`, not "Donate".** A first-time
+  visitor who doesn't yet know what HSR does isn't ready to give; `DonateBlock`
+  still carries the ask further down the page.
+- **[../how-to/hero-carousel.md](../how-to/hero-carousel.md) updated to match.**
+  It was written against the old single-ratio hero and would have produced a
+  broken carousel: Step 1 now covers both crops and the shifted mobile focal
+  point, `HERO_IMAGES` gains a per-image `focal` field, and Step 3 warns that
+  the slides must sit **beneath both scrim layers** — appending them after the
+  scrims makes each new slide fade in over the darkening and strip the text of
+  its background every six seconds.
+
+### Navbar logo enlarged
+
+Logo went from `h-12 md:h-14` to `h-16 md:h-20`; the header grew from a flat
+76px to `h-[88px] md:h-[100px]` to hold it with ~10px of breathing room.
+
+- ⚠️ **Three values must move together**, and the old code said so in a comment
+  ("Header is 76px — don't exceed h-14"): the sticky header height, the mobile
+  menu's header row (so the logo doesn't jump when the menu opens), and
+  `scroll-padding-top` in `global.css`. Miss the last one and anchor links land
+  with the target hidden behind the bar. `scroll-padding-top` needed a media
+  query since it can't take a responsive utility.
+- The comment in `Navbar.tsx` was updated to name all three, rather than left
+  describing the old 76px constraint.
+
+### Notes audit — found a false confirmation in the newsletter section
+
+No code changed here; recording a finding. `sections/Newsletter.tsx` sets a
+local `submitted` state and **discards the email address**, so the visitor is
+told "check your inbox to confirm" and is subscribed to nothing. Logged as 🚨 in
+[todo-next-steps.md](./todo-next-steps.md) § 3 — it must be wired or removed
+before launch.
+
+- **Worse than a visibly broken form**, because it reports success. Nobody
+  reports it, so it can sit there indefinitely while quietly losing every
+  signup.
+- Also corrected [../how-to/newsletter.md](../how-to/newsletter.md), which had
+  described building a signup component from scratch without noting that this
+  one already exists and is already hydrated inside the landing island.
+
+### Favicon switched to the new logo
+
+`public/favicon.svg` (the old mark) is no longer referenced. `BaseLayout.astro`
+now points at three PNGs generated from `public/newlogo.png` with sharp, which
+is already a dependency via `astro:assets` — no install needed.
+
+| File | Size | Purpose |
+| --- | --- | --- |
+| `favicon-32.png` | 32×32 | Browser tab |
+| `favicon-192.png` | 192×192 | Android / high-DPI |
+| `apple-touch-icon.png` | 180×180 | iOS home screen |
+
+- **The apple-touch icon is flattened onto `--background` (#fbf8f2).** iOS
+  composites transparency onto black for home-screen icons, so the transparent
+  logo would have sat in a black square. The tab icons keep their alpha, which
+  is what lets them work on light and dark tab bars.
+- **Replaced the SVG link rather than adding to it.** Browsers prefer
+  `type="image/svg+xml"` when it's offered, so leaving the old link in place
+  would have kept serving the old mark everywhere.
+- `public/favicon.svg` is still on disk, unreferenced. Safe to delete.
+- ⚠️ **No SVG version of the new logo exists** — only `newlogo.png`. An SVG
+  favicon would be sharper at every size and a fraction of the weight; it needs
+  the original vector file, which a PNG can't be converted back into cleanly.
+
 ### Corrected the mailing address
 
 Now **1351 3rd St E, Saint Paul, MN 55106**, replacing 917 Edmund Ave / 55104

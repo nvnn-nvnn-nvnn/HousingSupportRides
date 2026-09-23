@@ -17,30 +17,40 @@ Read [images.md](./images.md) first — where the files live affects this.
 Since the hero just needs to *loop on its own*, Framer Motion wins — it's
 already there, and `AnimatePresence` handles the crossfade for free.
 
-## Step 1 — Decide the aspect ratio first ⚠️
+## Step 1 — Understand the two crops first ⚠️
 
-This trips people up. Our hero currently locks the container to `4 / 3` because
-that's `cover.jpg`'s exact ratio — that's *why* the whole photo shows with no
-cropping and no black bars.
+**Updated 2026-09-22.** The hero no longer has one aspect ratio. It has two,
+plus a shifted focal point on mobile:
 
-**The moment you add a second photo with a different shape, that breaks.** You
-get one of two outcomes:
+```tsx
+className="relative aspect-[4/5] max-h-[min(86vh,900px)] w-full sm:aspect-[4/3]"
+// and on the image itself:
+className="object-[50%_32%] sm:object-center"
+```
 
-- **`object-cover`** → fills the frame, but crops the edges off any photo whose
-  ratio ≠ the container's. People at the edges of a group shot get cut.
-- **`object-contain`** → shows every photo whole, but letterboxes anything that
-  doesn't match, which is what we rejected earlier.
+So every photo you add has to survive **three** things, not one:
 
-So pick one **before** you build:
+| Constraint | What it means for your photo |
+| --- | --- |
+| `4:5` below `sm:` (640px) | A tall, narrow crop. Wide group shots lose both edges. |
+| `4:3` at `sm:` and up | The familiar landscape crop. |
+| `object-[50%_32%]` on mobile | The crop is biased **toward the top third**, because centring beheaded people in the 4:5 frame. A photo with its subject low in the frame will have them cut off on phones. |
 
-1. **Best-looking option:** crop/export all hero photos to the *same* aspect
-   ratio (4:3 to match what's there) before adding them. Then `object-cover` is
-   lossless and everything just works.
-2. **Pragmatic option:** keep `object-cover` and accept some cropping — but
-   choose photos where the subject is centered, and check each one on mobile.
+`object-cover` is doing the cropping in all cases — `object-contain` would
+letterbox, which is what we rejected.
 
-Don't skip this. It's the difference between a carousel that looks intentional
-and one that beheads people in group photos.
+Practically, that means:
+
+1. **Best-looking option:** choose photos where the subject sits in the **upper
+   middle** and has slack on the left and right. Those survive both crops. Then
+   you can leave `object-position` alone.
+2. **Pragmatic option:** accept that each photo may need its **own**
+   `object-position`. Step 2 makes that a per-image field for exactly this
+   reason — a group shot and a portrait rarely want the same focal point.
+
+⚠️ **Check every photo at 390px wide before committing it.** The 4:5 mobile
+crop is where faces get cut, and it's the crop most of your visitors see. The
+desktop view will look fine and tell you nothing.
 
 ## Step 2 — Add the image list
 
@@ -52,12 +62,16 @@ In `src/lib/content.ts`, replace the single `HERO_IMAGE` with a list:
  * ⚠️ Export all of these at the SAME aspect ratio (4:3) or they'll be cropped.
  * Empty list or single entry = no animation, just a static image.
  */
-export const HERO_IMAGES: { src: string; alt: string }[] = [
+export const HERO_IMAGES: { src: string; alt: string; focal?: string }[] = [
   {
     src: '/img/cover.jpg',
     alt: 'A large group of clients, volunteers, and staff gathered outdoors',
+    // Tailwind object-position classes. Omit to inherit the hero default
+    // (`object-[50%_32%] sm:object-center`). Override per photo when the
+    // subject isn't in the upper middle — see Step 1.
+    focal: 'object-[50%_32%] sm:object-center',
   },
-  // { src: '/img/hero-2.jpg', alt: '…' },
+  // { src: '/img/hero-2.jpg', alt: '…', focal: 'object-[50%_20%] sm:object-center' },
   // { src: '/img/hero-3.jpg', alt: '…' },
 ]
 ```
@@ -69,6 +83,23 @@ don't want to update every consumer at once.
 
 In `src/components/sections/Hero.tsx`. The existing structure stays — you're
 only swapping the single `<MediaPlaceholder>` for a cycling one.
+
+### ⚠️ What the 2026-09-22 hero rebuild changed here
+
+Three things about the current file that the code below has to respect:
+
+1. **There are two scrim layers above the image**, not one — a flat
+   `bg-black/20` and a gradient. The cycling images must go **where the single
+   `<MediaPlaceholder>` is now: first child, underneath both scrims.** Append
+   them after the scrims instead and each new slide fades in *over* the
+   darkening, so the text loses its background every six seconds.
+2. **`MediaPlaceholder` takes a `className`**, and the hero uses it for
+   `object-[50%_32%] sm:object-center`. Your carousel has to pass that through
+   per slide — see the `focal` field in Step 2 — or every photo reverts to a
+   centre crop on mobile and the faces go.
+3. **The text block is shorter now** (headline, tagline, one button). There's
+   more visible photo than there used to be, so a badly cropped slide is more
+   obvious, not less.
 
 Add the state and the timer:
 
@@ -117,6 +148,7 @@ const current = HERO_IMAGES[index]
     <MediaPlaceholder
       src={current?.src}
       alt={current?.alt ?? ''}
+      className={current?.focal ?? 'object-[50%_32%] sm:object-center'}
       eager={index === 0}
       chip={false}
     />
@@ -124,7 +156,7 @@ const current = HERO_IMAGES[index]
 </AnimatePresence>
 ```
 
-Three details that matter:
+Four details that matter:
 
 - **`key={index}`** is what makes `AnimatePresence` treat each slide as a new
   element. Without it, nothing animates.
@@ -132,6 +164,10 @@ Three details that matter:
   that's what produces a crossfade instead of a fade-to-blank-and-back.
 - **`absolute inset-0`** so both slides stack in the same box during the
   transition. The parent already has the aspect ratio and `position: relative`.
+- **The `className` fallback** repeats the hero's own default, so a slide with
+  no `focal` still gets the mobile crop correction rather than silently
+  reverting to `object-center`. `MediaPlaceholder` merges it with
+  `tailwind-merge`, so a per-image value cleanly overrides the default.
 
 ## Step 4 — Don't tank your LCP
 

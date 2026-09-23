@@ -161,8 +161,12 @@ dropped client-side before ever reaching Web3Forms.
 ## Pre-launch checklist
 - [ ] `site` set to the real domain in `astro.config.mjs`
 - [ ] Adapter matches the host (or removed for pure-static)
-- [ ] `npm run build` passes
-- [ ] Real favicon in `public/`
+- [x] `npm run build` passes
+- [x] Real favicon in `public/` — generated from `newlogo.png` (2026-09-22)
 - [ ] Decide how staff publish (local commit vs GitHub mode vs Cloud)
 - [ ] Givebutter connected (`GIVEBUTTER_ACCOUNT_ID` + `GIVEBUTTER_CAMPAIGN_CODE`)
-- [ ] Web3Forms connected (`WEB3FORMS_ACCESS_KEY`) so Contact + Volunteer forms work
+- [x] Web3Forms connected (`WEB3FORMS_ACCESS_KEY`) so Contact + Volunteer forms work
+- [ ] ⚠️ **Send one real test submission** and confirm it arrives — the key
+      being set is not proof that mail is being delivered
+- [ ] ⚠️ Spam protection on both forms ([form-spam-protection.md](./form-spam-protection.md))
+- [ ] Address is current everywhere, **including the NPI registry**

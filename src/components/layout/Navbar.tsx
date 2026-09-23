@@ -9,8 +9,11 @@ function Wordmark() {
   return (
     <a href="/" className="flex items-center" aria-label="Housing Support Rides home">
       {/* Circular badge, so it needs more height than the old horizontal
-          wordmark did to read at all. Header is 76px — don't exceed h-14. */}
-      <img src="/newlogo.png" alt="Housing Support Rides" className="h-12 w-auto md:h-14" />
+          wordmark did to read at all. Header is 88px / 100px at md — leave
+          ~10px of breathing room, so don't exceed h-16 / md:h-20. If you
+          change these, change the header height in BOTH places below AND
+          `scroll-padding-top` in global.css, or anchor links land wrong. */}
+      <img src="/newlogo.png" alt="Housing Support Rides" className="h-16 w-auto md:h-20" />
     </a>
   )
 }
@@ -38,7 +41,7 @@ function Navbar() {
     <>
       <header
         className={cn(
-          'sticky top-0 z-40 h-[76px] w-full transition-shadow',
+          'sticky top-0 z-40 h-[88px] md:h-[100px] w-full transition-shadow',
           scrolled
             ? 'border-b border-[var(--border)] bg-[#e5e5e5]/80 backdrop-blur-md'
             : 'border-b border-transparent bg-[#e5e5e5]',
@@ -89,7 +92,7 @@ function Navbar() {
             transition={{ duration: 0.2 }}
             className="fixed inset-0 z-50 flex flex-col overflow-y-auto bg-[#e5e5e5] px-5 lg:hidden"
           >
-            <div className="flex h-[76px] shrink-0 items-center justify-between">
+            <div className="flex h-[88px] md:h-[100px] shrink-0 items-center justify-between">
               <Wordmark />
               <button
                 type="button"

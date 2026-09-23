@@ -22,26 +22,56 @@ gave:
    **Donorbox**, **Zeffy** (no platform fee for nonprofits), or a plain
    **Stripe payment link** is a contained change, mostly in `DonateBlock.tsx`.
 
-3. **Contact form** ✅ — `/contact` now submits via Web3Forms. Just needs a
-   real `WEB3FORMS_ACCESS_KEY` in `src/lib/content.ts` to go live.
+3. **Contact form** ✅ — `/contact` submits via Web3Forms, and
+   `WEB3FORMS_ACCESS_KEY` is now set (2026-09-22). Verified inlined into the
+   built client bundle; **delivery itself is still unconfirmed** — that takes
+   one real submission landing in the registered inbox. Both forms now show a
+   proper success screen ([../how-to/form-feedback.md](../how-to/form-feedback.md)).
 4. **Volunteer form** ✅ — one shared intake form at `/volunteer/apply`
    (checkbox group, not a form per role); the driver/coordinator pages link
    to it pre-filled. Same `WEB3FORMS_ACCESS_KEY` powers both.
+   - [ ] ⚠️ **Spam protection before launch.** The access key is public in the
+         client bundle by design, so the client-side honeypot in `web3forms.ts`
+         does nothing against a bot POSTing straight to the Web3Forms API — and
+         the free tier keeps **no archive**, so a lost email is a lost enquiry.
+         Turnstile setup: [../how-to/form-spam-protection.md](../how-to/form-spam-protection.md).
 5. **Site content refresh** — mission, program names, program details, and the
-   FAQ are now **real copy** (2026-09-20). What's left: **impact stats**, the
-   **budget split**, team/leadership, and address details. See § 5 below — the
+   FAQ are now **real copy** (2026-09-20), and the **address is corrected** to
+   1351 3rd St E, Saint Paul, MN 55106 (2026-09-22). What's left: **impact
+   stats**, the **budget split**, and team/leadership. See § 5 below — the
    first two are the urgent ones, because they're stated as fact.
-6. **Blog refresh** — replace the 3 placeholder journal posts with real posts
-   (and delete `testing.mdx`).
+   - [ ] ⚠️ **The NPI registry still lists the old address** (917 Edmund Ave).
+         Update it at the source — grantors verify against that record.
+6. **Blog refresh** ✅ first real post is live (2026-09-22) —
+   `recovery-picnic-2026.mdx` published (`draft: false`); it builds to
+   `/journal/recovery-picnic-2026` and is in `rss.xml`.
+   ⚠️ **This item used to say "replace the 3 placeholder posts."** That was
+   stale on both counts: there is only **one** post in the collection, and it
+   isn't a placeholder — it's real, bylined copy about the September 5 picnic.
+   `testing.mdx` is already gone. Remaining:
+   - [ ] Write a second post, so `/journal` isn't a single-item list.
+   - [ ] Consider restoring `<FieldStories />` in `App.tsx` — it was disabled
+         *because* its only card was this post while it was an unpublished
+         placeholder. That reason no longer holds.
 7. **Gallery** ✅ mostly done (2026-09-20) — `/gallery` now splits into
    **Highlights** / **Archive** by date, with optimized tiles and a native
    `<dialog>` lightbox (zoom, drag-pan, pinch, wheel). See
    [CHANGELOG.md](./CHANGELOG.md) for the decisions. Remaining:
-   - [ ] ⚠️ **Placeholder `alt` text** — only the 3 entries marked `// ✓ reviewed`
-         in `GALLERY_IMAGES` have real alt/title/blurb. The rest share a generic
-         `PLACEHOLDER_ALT`, which is an **accessibility** gap, not just unfinished
-         copy. Screen-reader users get nothing useful from those 20-odd photos.
-   - [ ] Looping hero carousel (still unbuilt).
+   - [x] **All 32 photos are live again (2026-09-22).** 29 entries had been
+         commented out; photo releases were confirmed signed, so they were
+         restored. ⚠️ Note the failure mode for next time: the Archive section
+         renders only when `archive.length > 0`, and with `HIGHLIGHT_COUNT = 6`
+         that means **it silently disappears whenever 6 or fewer photos are
+         active** — no error, no empty state, just a missing section.
+   - [ ] 🚨 **Placeholder `alt` text — now shipping.** Only the 3 entries marked
+         `// ✓ reviewed` in `GALLERY_IMAGES` have real alt/title/blurb; the other
+         **29 share the generic `PLACEHOLDER_ALT`/`PLACEHOLDER_BLURB`**. This is
+         an **accessibility** gap, not unfinished copy — screen-reader users get
+         nothing useful from 29 of 32 photos. Was mitigated by those entries
+         being disabled; that mitigation is gone. Fix per photo and move each up
+         to the "✓ reviewed" group as you go.
+   - [ ] Looping hero carousel (still unbuilt). ⚠️ The guide was rewritten
+         2026-09-22 for the new two-crop hero — re-read Step 1 before starting.
    - [ ] Scroll-reveal on the tiles (still unbuilt — the `.reveal` hook described
          in the how-to is not wired up).
    Guides: [../how-to/images.md](../how-to/images.md),
@@ -88,9 +118,16 @@ supported by our `@astrojs/vercel` v11). Comparison table lives in
 ## 3. Forms
 - [x] **Contact** (`pages/contact.astro`) — see punch list #3.
 - [x] **Volunteer intake** (`pages/volunteer/apply.astro`) — see punch list #4.
-- [ ] **Newsletter** (`sections/Newsletter.tsx`) — sets a local "thanks" state
-      only; connect to Mailchimp/Buttondown/etc. (Could also just move to
-      Web3Forms like the other two, for consistency.)
+- [ ] 🚨 **Newsletter** (`sections/Newsletter.tsx`) — **shows a false
+      confirmation.** `onSubmit` sets `submitted` and discards the address;
+      the visitor reads "Thanks — check your inbox to confirm" and is not
+      subscribed to anything. This is worse than an obviously broken form,
+      because nobody reports it. **Either wire it to a real provider or remove
+      the section before launch** — shipping it as-is collects goodwill for a
+      list that doesn't exist. Setup:
+      [../how-to/newsletter.md](../how-to/newsletter.md) (MailerLite
+      recommended; RSS-to-email then mails new journal posts automatically,
+      since `rss.xml.js` already exists).
 
 ## 4. Links & documents
 - [x] "Learn more" (programs) → `/what-we-do#<slug>`; "Read the story" (field

@@ -65,8 +65,17 @@
 
   html {
     scroll-behavior: smooth;
-    scroll-padding-top: 76px; /* clear the sticky navbar on anchor jumps */
+    /* Clear the sticky navbar on anchor jumps. MUST match the header height
+       in Navbar.tsx (h-[88px] md:h-[100px]) — if they drift, anchor links
+       land with the target hidden behind the bar. */
+    scroll-padding-top: 88px;
     color-scheme: light;      /* commit to the light ivory palette */
+  }
+
+  @media (min-width: 768px) {
+    html {
+      scroll-padding-top: 100px;
+    }
   }
 
   body {

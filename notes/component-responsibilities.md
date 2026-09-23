@@ -9,7 +9,7 @@
 
 | File | Responsibility |
 | --- | --- |
-| `layout/Navbar.tsx` | 76px sticky bar. Gains a border + blur after 8px scroll. Desktop center links; mobile shows mark + Donate pill + hamburger → full-screen ivory overlay (locks body scroll). |
+| `layout/Navbar.tsx` | Sticky bar, `h-[88px] md:h-[100px]` (was a flat 76px until 2026-09-22, when the logo grew to `h-16 md:h-20`). ⚠️ **That height is duplicated in three places** — the header, the mobile-menu header row, and `scroll-padding-top` in `global.css`. Change one, change all three, or anchor links land behind the bar. Gains a border + blur after 8px scroll. Desktop center links; mobile shows mark + Donate pill + hamburger → full-screen ivory overlay (locks body scroll). |
 | `layout/Footer.tsx` | Deep slate-teal, 4 columns (brand/programs/get-involved/contact), legal strip with EIN + © + an orange **Report a pollution incident** link. |
 
 ## Common
@@ -27,9 +27,9 @@
 
 | Section | id | What it does | Notable behavior |
 | --- | --- | --- | --- |
-| `Hero` | `#top` | **Full-width** community photo (aspect-ratio locked to match the actual photo, so nobody is cropped out), headline + CTAs overlaid on its lower portion via a dark scrim gradient. | Photo fades/scales in on load; text staggers in over it. Sizing/spacing scale down on mobile, up at `md:`. |
+| `Hero` | `#top` | **Full-width** community photo — `4:5` on phones, `4:3` from `sm:` up, capped by `max-h-[min(86vh,900px)]`. Headline, tagline, and a single **Learn More** button (→ `/what-we-do`) overlaid on the lower portion. **Text is deliberately minimal** — the org paragraph moved to `OurWork` (2026-09-22). | Photo fades/scales in; text staggers over it. Scrim is two layers — a light flat `bg-black/20` across the whole frame plus a bottom-weighted gradient (~20% top, ~82% bottom). ⚠️ To adjust darkness, tune the **gradient**; raising the flat tint dulls the entire photo. ⚠️ Mobile uses `object-[50%_32%]`; the default centre crop beheads people in the taller 4:5 frame. |
 | `ImpactCounters` | `#impact` | 4 headline numbers on the card tone. | **Effect 2** — each counts 0→value (2s ease-out) on view; a maroon rule scales in from the left beneath it. |
-| `OurWork` | `#our-work` | `MISSION.purpose` as the intro, then a 2×2 grid of the four programs. | Cards stagger in; hover lifts −4px and deepens shadow. "Learn more" deep-links to `/what-we-do#<slug>`. |
+| `OurWork` | `#our-work` | `PROGRAM_DESCRIPTION.intro` as the lead paragraph (relocated from the hero), then `MISSION.purpose`, then one stacked row per program. | Cards stagger in; hover lifts −4px and deepens shadow. "Learn more" deep-links to `/what-we-do#<slug>`. |
 | `DonateBlock` | `#donate` | Maroon band. Frequency toggle + 4 tiers + custom amount. | **Effect 1** — selecting a tier animates the impact sentence (`AnimatePresence`); the CTA label updates live, e.g. "Donate $60 Monthly". CTA is a real **Givebutter** `<givebutter-button>` once configured (see `src/lib/content.ts`); a disabled placeholder until then — no longer decorative-only. |
 | `FieldStories` | `#field-stories` | 3 story cards; first spans 2 cols / 2 rows on desktop. | **Effect 3** — dark duotone wash lifts + image scales on hover; caption gradient with category + serif title. |
 | `GetInvolved` | `#get-involved` | Pale-maroon band, 3 involvement routes with icons + outline CTAs. | Cards stagger in. |

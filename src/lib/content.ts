@@ -324,39 +324,43 @@ export const GALLERY_IMAGES: GalleryPhoto[] = [
     date: '2026-09-20',
   },
 
-  // --- placeholder text below; files are real, descriptions are not ---------
-  // PLACEHOLDER — commented out until each photo has real alt text, a real
-  // caption, AND a signed photo release (these show identifiable faces at
-  // recovery events). Restore entries one at a time as they are reviewed.
-  // { file: 'IMG_20260920_024632.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
-  // { file: 'IMG_20260920_024633.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
-  // { file: 'IMG_20260920_024640.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
-  // { file: 'IMG_20260920_024645.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
-  // { file: 'IMG_20260920_024647.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
-  // { file: 'IMG_20260920_024649.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
-  // { file: 'IMG_20260920_024653.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
-  // { file: 'IMG_20260920_024654.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
-  // { file: 'IMG_20260920_024657.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
-  // { file: 'IMG_20260920_024659.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
-  // { file: 'IMG_20260920_024701.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
-  // { file: 'IMG_20260920_024703.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
-  // { file: 'IMG_20260920_024705.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
-  // { file: 'IMG_20260920_024707.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
-  // { file: 'IMG_20260920_024710.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
-  // { file: 'IMG_20260920_024711.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
-  // { file: 'IMG_20260920_024714.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
-  // { file: 'IMG_20260920_024715.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
-  // { file: 'IMG_20260920_024716.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
-  // { file: 'IMG_20260920_024718.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
-  // { file: 'IMG_20260920_024724.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
-  // { file: 'IMG_20260920_024726.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
-  // { file: 'IMG_20260920_024727.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
-  // { file: 'IMG_20260920_024729.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
-  // { file: 'IMG_20260920_024730.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
-  // { file: 'IMG_20260920_024732.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
-  // { file: 'IMG_20260920_024733.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
-  // { file: 'IMG_20260920_024735.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
-  // { file: 'IMG_20260920_024739.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
+  // --- files are real, descriptions are not ---------------------------------
+  // Restored 2026-09-22: photo releases are signed for everyone pictured, so
+  // these are cleared to publish.
+  // ⚠️ STILL OUTSTANDING: every entry below shares the generic PLACEHOLDER_ALT
+  // and PLACEHOLDER_BLURB. That's an accessibility gap, not just unfinished
+  // copy — screen-reader users get nothing useful from ~29 photos. Replace the
+  // alt/title/blurb per photo and move each one up to the "✓ reviewed" group
+  // above as you go. Tracked in notes/todo-next-steps.md § 7.
+  { file: 'IMG_20260920_024632.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
+  { file: 'IMG_20260920_024633.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
+  { file: 'IMG_20260920_024640.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
+  { file: 'IMG_20260920_024645.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
+  { file: 'IMG_20260920_024647.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
+  { file: 'IMG_20260920_024649.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
+  { file: 'IMG_20260920_024653.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
+  { file: 'IMG_20260920_024654.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
+  { file: 'IMG_20260920_024657.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
+  { file: 'IMG_20260920_024659.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
+  { file: 'IMG_20260920_024701.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
+  { file: 'IMG_20260920_024703.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
+  { file: 'IMG_20260920_024705.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
+  { file: 'IMG_20260920_024707.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
+  { file: 'IMG_20260920_024710.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
+  { file: 'IMG_20260920_024711.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
+  { file: 'IMG_20260920_024714.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
+  { file: 'IMG_20260920_024715.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
+  { file: 'IMG_20260920_024716.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
+  { file: 'IMG_20260920_024718.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
+  { file: 'IMG_20260920_024724.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
+  { file: 'IMG_20260920_024726.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
+  { file: 'IMG_20260920_024727.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
+  { file: 'IMG_20260920_024729.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
+  { file: 'IMG_20260920_024730.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
+  { file: 'IMG_20260920_024732.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
+  { file: 'IMG_20260920_024733.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
+  { file: 'IMG_20260920_024735.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
+  { file: 'IMG_20260920_024739.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
 ]
 
 /** How many of the most recent photos show under "Highlights". */

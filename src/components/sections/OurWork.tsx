@@ -1,7 +1,7 @@
 import { motion } from 'motion/react'
 import Eyebrow from '../common/Eyebrow'
 import FadeUp from '../common/FadeUp'
-import { PROGRAMS, MISSION } from '../../lib/content'
+import { PROGRAMS, MISSION, PROGRAM_DESCRIPTION } from '../../lib/content'
 
 function OurWork() {
   return (
@@ -12,7 +12,16 @@ function OurWork() {
           <h2 className="mt-3 font-serif font-semibold" style={{ fontSize: 'clamp(32px, 4vw, 44px)' }}>
             How We Help
           </h2>
-          <p className="mt-5 text-[var(--muted-foreground)]" style={{ lineHeight: 1.78 }}>
+          {/* Moved off the hero image (2026-09-22) — body copy over a photo is
+              hard to read and pushed the Donate button down. It lands here as
+              the lead paragraph, set larger than the purpose line below it. */}
+          <p
+            className="mt-5 text-lg text-[var(--foreground)] md:text-xl"
+            style={{ lineHeight: 1.7 }}
+          >
+            {PROGRAM_DESCRIPTION.intro}
+          </p>
+          <p className="mt-4 text-[var(--muted-foreground)]" style={{ lineHeight: 1.78 }}>
             {MISSION.purpose}
           </p>
         </FadeUp>
