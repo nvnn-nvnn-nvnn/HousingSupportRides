@@ -4,7 +4,75 @@ A running log of notable work. Most recent first. For *why* behind big
 decisions, see [blog-cms-plan.md](./blog-cms-plan.md); for how-tos, see
 [../how-to/](../how-to/).
 
+## 2026-09-22
+
+### Corrected the mailing address
+
+Now **1351 3rd St E, Saint Paul, MN 55106**, replacing 917 Edmund Ave / 55104
+everywhere it appeared: footer, contact page, and the `PostalAddress` in the
+schema.org block in `BaseLayout.astro`.
+
+- **The old address came from the NPI registry**, applied wholesale in the
+  entry below dated earlier in this log. ⚠️ **The registry itself still says
+  Edmund Ave.** Worth updating at source — grantors and donors verify against
+  that record, and a mismatch between it and the site invites questions.
+- **The structured data matters more than it looks.** `streetAddress` and
+  `postalCode` in the schema block feed Google's knowledge panel and map
+  results. Changing the visible footer but not the schema is the easy miss,
+  and leaves search engines serving the wrong address indefinitely.
+- **The earlier log entry was left as written.** It records what was true when
+  the NPI record was applied; correcting history in place would hide that the
+  address was ever wrong.
+
+### Forms now show a real success screen
+
+Submitting `/contact` or `/volunteer/apply` used to change one line of grey text
+under the button. On a phone, with the button under your thumb, that line was
+frequently off-screen — so the honest read of the old behavior is that a
+successful send looked identical to a broken one. New
+`components/common/FormResult.astro` replaces the whole form with a
+confirmation panel instead. See [../how-to/form-feedback.md](../how-to/form-feedback.md).
+
+- **Success and failure are deliberately asymmetric.** Success swaps the form
+  out entirely; failure *keeps the form and everything typed into it* and shows
+  a red banner. Resetting a long message because of a network blip costs us the
+  enquiry — and the person is unlikely to type it twice.
+- **The grid swap is free.** On `/contact` the form and the contact `<aside>`
+  are grid siblings. Because both the form and the panel toggle via Tailwind's
+  `hidden` (`display: none`), a hidden element creates no grid item, so the
+  panel lands in exactly the column the form vacated. No layout code needed.
+- **Focus moves to the panel** (`tabindex="-1"`, focused with
+  `preventScroll`, then scrolled deliberately). Without it a keyboard or screen
+  reader user is left focused on a submit button that no longer exists.
+- **The success panel is Astro, not React.** It needs no interactivity of its
+  own — `initWeb3Form` owns all of it — so there's no island and no hydration.
+- **`--muted` does not exist.** Reached for it out of habit while building the
+  panel; the surface token in `global.css` is `--card`.
+
 ## 2026-09-21
+
+### Founder's letter on /history
+
+Kong Meng Vang's letter, *Why I Founded Housing Support Rides*, now leads the
+history page, verbatim, from `FOUNDER_LETTER` in `content.ts`. Source copy
+appended to [mission-and-programs.md](./mission-and-programs.md).
+
+- **Replaced an invented founding story.** The page's previous lead — people
+  losing housing they had qualified for because they could not get to the
+  appointment — was a placeholder written during the build, not anything he
+  said. The real story is different: the organization grew out of his own
+  recovery. A useful reminder that placeholder copy in a plausible voice is the
+  hardest kind to spot later.
+- **Pull quote** — "someone willing to walk beside me, not in front of me or
+  behind me", lifted verbatim from paragraph two.
+- **The meetings he names are linked, not retyped.** Hnub Zoo Recovery and HSR
+  NA render from `RECOVERY_MEETINGS`, so the history page cannot drift from
+  the meetings page.
+- Leadership card now reads *Founder & Executive Director* and links back up to
+  the letter.
+
+Still open on this page: the timeline years (2023, 2024, "Today") remain
+unverified or empty — the letter gives the why, not the when.
 
 ### Lightbox: arrow-key navigation
 

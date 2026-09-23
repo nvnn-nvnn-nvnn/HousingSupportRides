@@ -12,6 +12,9 @@ Practical, task-focused guides for running the Housing Support Rides site.
 | [images.md](./images.md) | Add photos and get them optimized (start here before the two below) |
 | [hero-carousel.md](./hero-carousel.md) | Make the hero photo loop through several images |
 | [gallery-page.md](./gallery-page.md) | Build the gallery: Highlights/Archive, lightbox, scroll-reveal |
+| [newsletter.md](./newsletter.md) | Collect email signups and auto-send new journal posts |
+| [form-spam-protection.md](./form-spam-protection.md) | Stop bots hitting the contact + volunteer forms (Turnstile CAPTCHA) |
+| [form-feedback.md](./form-feedback.md) | Change the success & error screens the forms show after sending |
 | [lightbox-navigation.md](./lightbox-navigation.md) | Add ← / → navigation between photos inside the lightbox |
 | [admin-accounts.md](./admin-accounts.md) | Understand admin logins, sessions, and what to use instead of rolling your own |
 

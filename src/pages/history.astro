@@ -1,20 +1,72 @@
 ---
 import SiteLayout from '../layouts/SiteLayout.astro'
 import PageHeader from '../components/PageHeader.astro'
-import { MISSION } from '../lib/content'
+import { MISSION, FOUNDER_LETTER as LETTER, RECOVERY_MEETINGS } from '../lib/content'
+
+/**
+ * The founder's letter leads this page because it IS the history — the reason
+ * the organization exists. It renders verbatim from FOUNDER_LETTER in
+ * content.ts; edit the wording there only if Kong Meng Vang changes it.
+ *
+ * The meetings he names are pulled from RECOVERY_MEETINGS rather than typed
+ * here, so a change of day on the meetings page can't leave this one stale.
+ */
 ---
 
 <SiteLayout
   title="Our History — Housing Support Rides"
-  description="The story of Housing Support Rides — how we started and where we're headed."
+  description="How Housing Support Rides began — founder Kong Meng Vang's story, in his own words."
 >
   <PageHeader
     eyebrow="Our Story"
     title="Our History"
-    lead="Housing Support Rides started from a simple observation: people were losing housing they had already qualified for because they had no way to get to the appointment that would have secured it."
+    lead="Housing Support Rides was founded by Kong Meng Vang, out of his own recovery. This is his story, in his words."
   />
 
-  <section class="border-b border-[var(--border)] bg-[var(--card)] py-16">
+  <!-- Founder's letter — verbatim -->
+  <section id="founder" class="mx-auto max-w-[720px] scroll-mt-24 px-5 py-16">
+    <p class="eyebrow">From our founder</p>
+
+    <blockquote
+      class="mt-6 border-l-2 border-[var(--primary)] pl-6 font-serif text-2xl text-[var(--foreground)] md:text-3xl"
+      style="line-height: 1.35;"
+    >
+      “{LETTER.pullQuote}”
+    </blockquote>
+
+    <h2 class="mt-14 font-serif text-2xl font-semibold md:text-3xl">{LETTER.title}</h2>
+
+    <div class="mt-6 space-y-5 font-serif text-lg text-[var(--foreground)]" style="line-height: 1.75;">
+      {LETTER.paragraphs.map((para) => <p>{para}</p>)}
+    </div>
+
+    <p class="mt-10 font-serif text-lg">
+      — {LETTER.name}
+      <span class="mt-1 block font-sans text-sm text-[var(--muted-foreground)]">{LETTER.role}</span>
+    </p>
+
+    <!-- The meetings he names in the letter, so a reader can act on it -->
+    <div class="mt-12 rounded-xl border border-[var(--border)] bg-[var(--card)] p-6">
+      <p class="font-sans font-semibold">The meetings he founded run every week</p>
+      <ul class="mt-3 space-y-1.5 text-[var(--muted-foreground)]">
+        {
+          RECOVERY_MEETINGS.map((m) => (
+            <li>
+              <span class="text-[var(--foreground)]">{m.name}</span> · {m.day}
+            </li>
+          ))
+        }
+      </ul>
+      <a
+        href="/recovery-meetings"
+        class="mt-4 inline-flex items-center gap-1.5 text-sm font-medium text-[var(--primary)] hover:gap-2.5"
+      >
+        Times and places <span aria-hidden="true">→</span>
+      </a>
+    </div>
+  </section>
+
+  <section class="border-y border-[var(--border)] bg-[var(--card)] py-16">
     <div class="mx-auto max-w-[760px] px-5">
       <p class="eyebrow">Our Mission</p>
       <p class="mt-4 font-serif text-xl text-[var(--foreground)] md:text-2xl" style="line-height: 1.6;">
@@ -24,6 +76,12 @@ import { MISSION } from '../lib/content'
   </section>
 
   <section class="mx-auto max-w-[760px] px-5 py-16">
+    {/*
+      PLACEHOLDER — timeline hidden until the dates are confirmed. "2023" was a
+      guess made during the build, and 2024 / Today are empty. The founder's
+      letter gives the why but not the when. Restore once the Executive
+      Director supplies dated milestones.
+
     <ol class="space-y-8">
       <li class="border-l-2 border-[var(--primary)] pl-6">
         <p class="font-serif text-2xl font-semibold text-[var(--primary)]">2023</p>
@@ -42,11 +100,15 @@ import { MISSION } from '../lib/content'
         <p class="mt-2 text-[var(--muted-foreground)]">Placeholder milestone.</p>
       </li>
     </ol>
+    */}
 
-    <h2 class="mt-16 font-serif text-2xl font-semibold">Leadership</h2>
+    <h2 class="font-serif text-2xl font-semibold">Leadership</h2>
     <div class="mt-6 rounded-xl border border-[var(--border)] bg-[var(--card)] p-6">
-      <p class="font-sans text-lg font-semibold">Kong Meng Vang</p>
-      <p class="text-[var(--muted-foreground)]">Executive Director</p>
+      <p class="font-sans text-lg font-semibold">{LETTER.name}</p>
+      <p class="text-[var(--muted-foreground)]">{LETTER.role}</p>
+      <a href="#founder" class="mt-3 inline-block text-sm font-medium text-[var(--primary)] hover:underline">
+        Read his letter ↑
+      </a>
     </div>
   </section>
 </SiteLayout>

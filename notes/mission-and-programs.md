@@ -104,3 +104,26 @@ Housing Support Rides also helps participants identify and access community reso
 HSR's housing, transportation, outreach, and resource-navigation activities are conducted in furtherance of its charitable purposes. The organization's programs are designed primarily to assist individuals and families experiencing homelessness, economic hardship, housing instability, transportation barriers, and related circumstances.
 
 Housing Support Rides does not operate these programs for the private benefit of its officers, directors, or other individuals. Its programs and resources are used to advance the organization's charitable mission and benefit the communities it serves.
+
+---
+
+## Founder's Letter
+
+Written by Kong Meng Vang for the site; received 2026-09-21. Rendered verbatim
+on `/history` from `FOUNDER_LETTER` in `src/lib/content.ts`. The same rules as
+the program description apply: **this document wins any conflict, and the
+wording changes only when he changes it.**
+
+### Why I Founded Housing Support Rides
+
+My name is Kong Meng Vang, founder of Housing Support Rides.
+
+Deep in my heart, I always wanted to change, but I did not have the strength to ask for help. I needed a helping hand—someone willing to walk beside me, not in front of me or behind me—as I faced my fears and broke through decades of addiction, pain, and failure.
+
+By God’s grace, I found strength through Narcotics Anonymous, the Twelve Steps, and a sponsor who helped me work through each step. That personal support was the missing piece in my recovery. Today, I understand that many people truly want to change, but they need someone to help them stand up and believe that a new life is possible. Once they find recovery, they can reach back and help the next person. Recovery is a lifelong journey, and none of us should have to walk it alone.
+
+Transportation is also an important part of that journey. Early in recovery, some people are not ready to ride buses or light rail alone. They may feel afraid, overwhelmed, or vulnerable to returning to old places and habits. HSR provides safe, supportive transportation until participants gain the strength and confidence to take those steps on their own.
+
+I lived through these struggles myself. That is why I founded Housing Support Rides, along with Hnub Zoo Culture-Specific All Recovery—“The Day Healing Starts” and HSR NA, which is based on the Twelve Steps.
+
+Our purpose is simple: to offer safe housing support, dependable rides, recovery meetings, and a caring person who will walk beside someone until they are strong enough to keep moving forward—and one day help someone else do the same.

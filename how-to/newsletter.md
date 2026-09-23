@@ -78,7 +78,7 @@ It costs you maybe 20% of raw signups, and it's worth it every time:
 
 While you're in settings, fill in the **sender name** (`Housing Support Rides`),
 **reply-to** (`hsr@housingsupportrides.org`), and the **physical mailing
-address** — `917 Edmund Ave, Saint Paul, MN 55104`, the same one in the site
+address** — `1351 3rd St E, Saint Paul, MN 55106`, the same one in the site
 footer. The address isn't optional; see "The legal bits" below.
 
 ## Step 2 — Authenticate the domain ⚠️ (don't skip this)
@@ -239,7 +239,7 @@ import { NEWSLETTER_ENDPOINT } from '../../lib/content'
 ---
 
 {NEWSLETTER_ENDPOINT && (
-  <section class="border-t border-[var(--border)] bg-[var(--muted)]">
+  <section class="border-t border-[var(--border)] bg-[var(--card)]">
     <div class="mx-auto flex max-w-[1200px] flex-col gap-6 px-5 py-12 md:flex-row md:items-center md:justify-between md:px-16">
       <div>
         <h2 class="font-serif text-2xl text-[var(--foreground)]">Stay in the loop</h2>
@@ -408,7 +408,7 @@ Only after all five should you tell anyone the newsletter exists.
 CAN-SPAM applies to nonprofits too, and the penalties are per-email.
 
 - **A physical mailing address in every email.** You have one:
-  917 Edmund Ave, Saint Paul, MN 55104.
+  1351 3rd St E, Saint Paul, MN 55106.
 - **A working one-click unsubscribe**, honored within 10 business days. Every
   service above handles this for you — just never remove their footer token.
 - **Accurate subject lines and From fields.** No "Re:" on a first contact.

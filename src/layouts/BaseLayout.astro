@@ -37,10 +37,10 @@ const orgSchema = {
   description: MISSION.statement,
   address: {
     '@type': 'PostalAddress',
-    streetAddress: '917 Edmund Ave',
+    streetAddress: '1351 3rd St E',
     addressLocality: 'Saint Paul',
     addressRegion: 'MN',
-    postalCode: '55104',
+    postalCode: '55106',
     addressCountry: 'US',
   },
   telephone: '+1-763-501-7764',
@@ -60,7 +60,11 @@ const orgSchema = {
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    {/* Favicons generated from public/newlogo.png — see how-to/images.md.
+        The old public/favicon.svg is the previous logo and is no longer used. */}
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+    <link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
     <link rel="canonical" href={canonical} />
 
     <title>{title}</title>

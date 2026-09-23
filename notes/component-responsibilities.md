@@ -19,6 +19,7 @@
 | `common/BrandMark.tsx` | Two-curve river-bend SVG mark; takes color via `currentColor`. |
 | `common/Eyebrow.tsx` | Small uppercase, letter-spaced teal label above headings. |
 | `common/FadeUp.tsx` | **Effect 4.** Wraps children so they rise 24px + fade in once on scroll. Props: `index` (stagger), `delay`, `as`. |
+| `common/FormResult.astro` | **Astro, not React** — used by `/contact` and `/volunteer/apply`, not the landing island. Success panel (check mark, heading, body, optional "send another" button) that replaces a form after a successful send. Ships hidden; `initWeb3Form` in `lib/web3forms.ts` owns showing it, so the component has no logic of its own. Props: `id` (must match the lookup in the page's script), `title`, `body`, `resetLabel`. |
 | `common/MediaPlaceholder.tsx` | Layered teal "water & light" gradient standing in for a real photo. Carries `alt` + `hint` (art direction). **Swap for `<img>` later.** |
 | `ui/Button.tsx` | Renders `<a>` if `href` given, else `<button>`. Variants: `primary` (orange), `outline` (teal), `outline-light` (on teal), `ghost`. Sizes `sm/md/lg`. |
 

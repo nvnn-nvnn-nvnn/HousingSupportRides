@@ -73,9 +73,9 @@ function Footer() {
             </h3>
             <address className="mt-4 space-y-3 text-sm not-italic text-white/75">
               <p>
-                917 Edmund Ave
+                1351 3rd St E
                 <br />
-                Saint Paul, MN 55104
+                Saint Paul, MN 55106
               </p>
               <p>
                 <a href="tel:+17635017764" className="transition-colors hover:text-white">

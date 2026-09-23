@@ -11,11 +11,11 @@ function Newsletter() {
     <section className="bg-[var(--primary)] py-20 text-[var(--primary-foreground)]">
       <div className="mx-auto max-w-3xl px-5 text-center md:px-8">
         <FadeUp>
-          <h2 className="font-serif font-semibold" style={{ fontSize: 'clamp(28px, 3.5vw, 40px)', lineHeight: 1.15 }}>
-            Two emails a month. Both worth opening.
+          <h2 className="font-serif font-semibold" style={{ fontSize: 'clamp(28px, 3.5vw, 40px)', lineHeight: 1.15, color: '#fff' }}>
+            Subscribe to our Newsletter for the latest updates and stories from our community.
           </h2>
           <p className="mt-4 text-white/80">
-            Neighbor stories, volunteer needs, and the occasional call to show up somewhere.
+            Organization updates, volunteer opportunities, and the occasional celebration update.
           </p>
         </FadeUp>
 

@@ -86,3 +86,20 @@ later if you want.
 - [ ] `coverAlt` written if you added a `cover`
 - [ ] `npm run build` passes
 - [ ] commit the `.mdx` (and any image in `/public`) to git
+
+## ⚠️ No comments in a post body
+
+Do not put `{/* comment */}` blocks — or any `{ }` expression — in a post's
+body. The site builds fine with them, but **Keystatic cannot open the post**:
+
+```
+Error: Field validation failed: body: Unhandled type mdxFlowExpression
+```
+
+Keystatic edits the body as a document, not as code, and has no way to
+represent an expression. HTML comments (`<!-- -->`) are no alternative either —
+MDX rejects them outright.
+
+Put notes for editors somewhere else: in the `excerpt` while the post is a
+draft, or in this folder's docs. Set `draft: true` to keep an unfinished post
+off the site.

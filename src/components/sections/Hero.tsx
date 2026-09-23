@@ -82,6 +82,8 @@ function Hero() {
               <Button href="#donate" size="sm" className="md:px-7 md:py-3.5 md:text-base">
                 Donate
               </Button>
+              {/* PLACEHOLDER — points at the ImpactCounters section, which is
+                  commented out in App.tsx. Restore both together.
               <Button
                 href="#impact"
                 variant="outline-light"
@@ -89,7 +91,7 @@ function Hero() {
                 className="md:px-7 md:py-3.5 md:text-base"
               >
                 See Our Impact
-              </Button>
+              </Button> */}
             </motion.div>
 
             <motion.p variants={item} className="mt-2 text-xs text-white/65 md:mt-5 md:text-sm">

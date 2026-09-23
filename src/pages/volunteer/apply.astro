@@ -1,6 +1,7 @@
 ---
 import SiteLayout from '../../layouts/SiteLayout.astro'
 import PageHeader from '../../components/PageHeader.astro'
+import FormResult from '../../components/common/FormResult.astro'
 
 const inputClass =
   'w-full rounded-lg border border-[var(--border)] bg-[var(--background)] px-4 py-3 text-[var(--foreground)] placeholder:text-[var(--muted-foreground)] focus:border-[var(--primary)] focus:outline-none focus:ring-2 focus:ring-[var(--accent-soft)]'
@@ -71,12 +72,20 @@ const inputClass =
       </div>
     </form>
 
+    <FormResult
+      id="volunteer-form-success"
+      title="Thank you for stepping up."
+      body="We've got your application. A coordinator will reach out within a few days about next steps — keep an eye on your inbox, including the spam folder."
+      resetLabel="Submit another application"
+    />
+
     <script>
       import { initWeb3Form } from '../../lib/web3forms'
 
       const form = document.querySelector<HTMLFormElement>('#volunteer-form')
       const status = document.querySelector<HTMLElement>('#volunteer-form-status')
-      if (form && status) initWeb3Form(form, status)
+      const success = document.querySelector<HTMLElement>('#volunteer-form-success')
+      if (form && status) initWeb3Form(form, status, { successEl: success })
 
       // Pre-check the relevant box when arriving from a specific role page,
       // e.g. /volunteer/apply?role=driver or ?role=coordinator

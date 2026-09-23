@@ -15,7 +15,9 @@ import { Key, Car, Handshake, Users, Heart } from 'lucide-react'
 export const NAV_LINKS = [
   { label: 'What We Do', href: '/what-we-do' },
   { label: 'Meetings', href: '/recovery-meetings' },
-  { label: 'Impact', href: '/#impact' },
+  // PLACEHOLDER — the Impact section is commented out in App.tsx until
+  // IMPACT_STATS holds real numbers. Restore this with it.
+  // { label: 'Impact', href: '/#impact' },
   { label: 'Volunteer', href: '/volunteer' },
   { label: 'Gallery', href: '/gallery' },
   { label: 'History', href: '/history' },
@@ -49,7 +51,7 @@ export const GIVEBUTTER_CAMPAIGN_CODE = ''
  * Leave blank and both forms show a friendly "not connected yet" message
  * instead of silently failing. See how-to/deploying.md for setup steps.
  */
-export const WEB3FORMS_ACCESS_KEY = ''
+export const WEB3FORMS_ACCESS_KEY = '30b0aae6-c622-439b-8cff-1f660edfed3e'
 
 export const IMPACT_STATS: { value: number; suffix?: string; label: string }[] = [
   { value: 1850, label: 'Neighbors housed' },
@@ -158,6 +160,30 @@ export const PROGRAM_DESCRIPTION = {
     'Together, our housing and transportation programs address two significant barriers faced by vulnerable individuals: lack of stable housing and lack of reliable transportation.',
     'Housing Support Rides is committed to helping individuals achieve greater stability by providing housing and ensuring they can attend the appointments and services necessary to support their health, well-being, and independence.',
   ],
+} as const
+
+/**
+ * The founder's letter — VERBATIM, in Kong Meng Vang's own words, rendered on
+ * /history. It is his personal story, including his own recovery, published
+ * because he wrote it for the site. Do not edit, tighten, or paraphrase it; if
+ * a word needs to change, it changes because he changed it.
+ * Source copy: notes/mission-and-programs.md.
+ */
+export const FOUNDER_LETTER = {
+  title: 'Why I Founded Housing Support Rides',
+  name: 'Kong Meng Vang',
+  role: 'Founder & Executive Director',
+  paragraphs: [
+    'My name is Kong Meng Vang, founder of Housing Support Rides.',
+    'Deep in my heart, I always wanted to change, but I did not have the strength to ask for help. I needed a helping hand—someone willing to walk beside me, not in front of me or behind me—as I faced my fears and broke through decades of addiction, pain, and failure.',
+    'By God’s grace, I found strength through Narcotics Anonymous, the Twelve Steps, and a sponsor who helped me work through each step. That personal support was the missing piece in my recovery. Today, I understand that many people truly want to change, but they need someone to help them stand up and believe that a new life is possible. Once they find recovery, they can reach back and help the next person. Recovery is a lifelong journey, and none of us should have to walk it alone.',
+    'Transportation is also an important part of that journey. Early in recovery, some people are not ready to ride buses or light rail alone. They may feel afraid, overwhelmed, or vulnerable to returning to old places and habits. HSR provides safe, supportive transportation until participants gain the strength and confidence to take those steps on their own.',
+    'I lived through these struggles myself. That is why I founded Housing Support Rides, along with Hnub Zoo Culture-Specific All Recovery—“The Day Healing Starts” and HSR NA, which is based on the Twelve Steps.',
+    'Our purpose is simple: to offer safe housing support, dependable rides, recovery meetings, and a caring person who will walk beside someone until they are strong enough to keep moving forward—and one day help someone else do the same.',
+  ],
+  /** A line lifted verbatim from paragraph two, set large as the page's focal point. */
+  pullQuote:
+    'I needed a helping hand—someone willing to walk beside me, not in front of me or behind me.',
 } as const
 
 /**
@@ -299,35 +325,38 @@ export const GALLERY_IMAGES: GalleryPhoto[] = [
   },
 
   // --- placeholder text below; files are real, descriptions are not ---------
-  { file: 'IMG_20260920_024632.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
-  { file: 'IMG_20260920_024633.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
-  { file: 'IMG_20260920_024640.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
-  { file: 'IMG_20260920_024645.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
-  { file: 'IMG_20260920_024647.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
-  { file: 'IMG_20260920_024649.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
-  { file: 'IMG_20260920_024653.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
-  { file: 'IMG_20260920_024654.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
-  { file: 'IMG_20260920_024657.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
-  { file: 'IMG_20260920_024659.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
-  { file: 'IMG_20260920_024701.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
-  { file: 'IMG_20260920_024703.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
-  { file: 'IMG_20260920_024705.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
-  { file: 'IMG_20260920_024707.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
-  { file: 'IMG_20260920_024710.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
-  { file: 'IMG_20260920_024711.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
-  { file: 'IMG_20260920_024714.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
-  { file: 'IMG_20260920_024715.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
-  { file: 'IMG_20260920_024716.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
-  { file: 'IMG_20260920_024718.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
-  { file: 'IMG_20260920_024724.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
-  { file: 'IMG_20260920_024726.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
-  { file: 'IMG_20260920_024727.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
-  { file: 'IMG_20260920_024729.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
-  { file: 'IMG_20260920_024730.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
-  { file: 'IMG_20260920_024732.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
-  { file: 'IMG_20260920_024733.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
-  { file: 'IMG_20260920_024735.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
-  { file: 'IMG_20260920_024739.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
+  // PLACEHOLDER — commented out until each photo has real alt text, a real
+  // caption, AND a signed photo release (these show identifiable faces at
+  // recovery events). Restore entries one at a time as they are reviewed.
+  // { file: 'IMG_20260920_024632.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
+  // { file: 'IMG_20260920_024633.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
+  // { file: 'IMG_20260920_024640.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
+  // { file: 'IMG_20260920_024645.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
+  // { file: 'IMG_20260920_024647.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
+  // { file: 'IMG_20260920_024649.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
+  // { file: 'IMG_20260920_024653.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
+  // { file: 'IMG_20260920_024654.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
+  // { file: 'IMG_20260920_024657.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
+  // { file: 'IMG_20260920_024659.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
+  // { file: 'IMG_20260920_024701.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
+  // { file: 'IMG_20260920_024703.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
+  // { file: 'IMG_20260920_024705.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
+  // { file: 'IMG_20260920_024707.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
+  // { file: 'IMG_20260920_024710.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
+  // { file: 'IMG_20260920_024711.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
+  // { file: 'IMG_20260920_024714.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
+  // { file: 'IMG_20260920_024715.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
+  // { file: 'IMG_20260920_024716.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
+  // { file: 'IMG_20260920_024718.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
+  // { file: 'IMG_20260920_024724.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
+  // { file: 'IMG_20260920_024726.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
+  // { file: 'IMG_20260920_024727.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
+  // { file: 'IMG_20260920_024729.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
+  // { file: 'IMG_20260920_024730.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
+  // { file: 'IMG_20260920_024732.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
+  // { file: 'IMG_20260920_024733.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
+  // { file: 'IMG_20260920_024735.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
+  // { file: 'IMG_20260920_024739.jpg', alt: PLACEHOLDER_ALT, title: 'Recovery Highlights', blurb: PLACEHOLDER_BLURB, date: '2026-09-20' },
 ]
 
 /** How many of the most recent photos show under "Highlights". */

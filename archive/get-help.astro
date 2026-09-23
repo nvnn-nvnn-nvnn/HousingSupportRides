@@ -1,0 +1,236 @@
+---
+import SiteLayout from '../layouts/SiteLayout.astro'
+import PageHeader from '../components/PageHeader.astro'
+import Button from '../components/ui/Button'
+import { Car, Key, Handshake } from 'lucide-react'
+import { PROGRAM_DESCRIPTION as DOC } from '../lib/content'
+
+/**
+ * The front door for the people HSR exists to serve.
+ *
+ * Patterns borrowed from plannedgiving.charitywater.org, which this site is
+ * being restructured against:
+ *   - one dominant action, repeated — here the phone number, not a form
+ *   - questions that answer OBJECTIONS ("will you turn me away?") rather than
+ *     logistics ("how does it work?"); objections are what stop someone calling
+ *   - an honest exit for people we cannot help, instead of a dead end
+ *
+ * ⚠️ This page deliberately asserts nothing unverified. It does not say rides
+ * are free and it does not name a service area — both are still unconfirmed
+ * (see notes/todo-next-steps.md § 5). Every unknown is phrased as "ask us"
+ * rather than answered with a guess. When the Executive Director confirms
+ * them, the answers below can become definite.
+ */
+
+const PHONE_DISPLAY = '(763) 501-7764'
+const PHONE_HREF = 'tel:+17635017764'
+
+const services = [
+  {
+    icon: Car,
+    title: 'A ride',
+    body: DOC.transportation.lead,
+    points: DOC.transportation.activities.slice(0, 5),
+  },
+  {
+    icon: Key,
+    title: 'Housing',
+    body: DOC.housing.lead,
+    points: DOC.housing.activities.slice(0, 4),
+  },
+  {
+    icon: Handshake,
+    title: 'Help finding other resources',
+    body: DOC.community.body[0],
+    points: [],
+  },
+]
+
+// Written as objections, not FAQs. Each one is a reason somebody talks
+// themselves out of calling.
+const objections = [
+  {
+    q: 'I am not sure I qualify.',
+    a: 'Call anyway. We work with people facing homelessness, housing instability, economic hardship, or a lack of transportation — that covers a lot of situations, and the line between them is rarely clean. If we are not the right program for you, we will say so and point you somewhere that is.',
+  },
+  {
+    q: 'What does it cost?',
+    a: 'Ask us when you call and we will tell you plainly before anything is arranged. You will never be committed to something without knowing that first.',
+  },
+  {
+    q: 'Do you come out to where I am?',
+    a: 'We are based in Saint Paul and work in the surrounding area. Tell us where you are and we will tell you honestly whether we can reach you — and if we cannot, who can.',
+  },
+  {
+    q: 'I have been turned down by other programs.',
+    a: 'That is common and it is not held against you. Waitlists close, criteria are narrow, and paperwork goes missing. Tell us what has already been tried so we do not send you back through the same door.',
+  },
+  {
+    q: 'I do not have ID, a phone, or an address right now.',
+    a: 'Say so at the start. Helping people work through exactly those gaps is part of what we do, and it is not a reason to put off calling.',
+  },
+  {
+    q: 'Who finds out that I asked for help?',
+    a: 'We share your information with another organization only when it is needed to get you something you asked for, and we will tell you when that is the case.',
+  },
+  {
+    q: 'I am asking on behalf of someone else.',
+    a: 'That is fine — family, a caseworker, a friend, a shelter staff member. Bring what you know and we will work out the rest together.',
+  },
+]
+---
+
+<SiteLayout
+  title="Get Help — Housing Support Rides"
+  description="Need a ride to an appointment, or help finding somewhere to live? Here is how to reach Housing Support Rides."
+>
+  <PageHeader
+    eyebrow="Get Help"
+    title="Need a ride, or somewhere to live?"
+    lead="You do not need paperwork, a referral, or the right words to start. Call and tell us what is going on — we will work out from there whether we can help, and say so honestly either way."
+  />
+
+  <!-- The dominant action. One thing, unmissable, repeated at the foot of the page. -->
+  <section class="border-b border-[var(--border)] bg-[var(--card)] py-14">
+    <div class="mx-auto max-w-[820px] px-5 text-center">
+      <p class="eyebrow">Start here</p>
+      <a
+        href={PHONE_HREF}
+        class="mt-4 block font-serif font-semibold text-[var(--primary)] transition-opacity hover:opacity-80"
+        style="font-size: clamp(34px, 7vw, 56px); line-height: 1.1;"
+      >
+        {PHONE_DISPLAY}
+      </a>
+      <p class="mx-auto mt-4 max-w-md text-[var(--muted-foreground)]">
+        Calling is fastest. If you would rather write, send a message and we will
+        come back to you.
+      </p>
+      <div class="mt-6 flex flex-wrap justify-center gap-3">
+        <Button href={PHONE_HREF}>Call now</Button>
+        <Button href="/contact" variant="outline">Send a message</Button>
+      </div>
+    </div>
+  </section>
+
+  <!-- What we can actually do -->
+  <section class="mx-auto max-w-[820px] px-5 py-16">
+    <p class="eyebrow">What we can help with</p>
+    <h2 class="mt-3 font-serif text-2xl font-semibold md:text-3xl">Three kinds of help</h2>
+
+    {
+      services.map((service, i) => {
+        const Icon = service.icon
+        return (
+          <div class={i > 0 ? 'mt-10 border-t border-[var(--border)] pt-10' : 'mt-8'}>
+            <div class="flex items-center gap-4">
+              <span class="inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[var(--accent-soft)] text-[var(--primary)]">
+                <Icon className="h-6 w-6" strokeWidth={1.6} />
+              </span>
+              <h3 class="font-sans text-xl font-semibold">{service.title}</h3>
+            </div>
+            <p class="mt-4 text-[var(--muted-foreground)]" style="line-height: 1.78;">
+              {service.body}
+            </p>
+            {service.points.length > 0 && (
+              <ul class="mt-4 grid gap-2">
+                {service.points.map((point) => (
+                  <li class="flex items-start gap-3 text-[var(--muted-foreground)]">
+                    <span
+                      class="mt-2.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--primary)]"
+                      aria-hidden="true"
+                    />
+                    <span>{point}</span>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        )
+      })
+    }
+
+    <p class="mt-10 text-sm text-[var(--muted-foreground)]">
+      The full description of both programs is on <a class="underline hover:text-[var(--primary)]" href="/what-we-do">What We Do</a>.
+    </p>
+  </section>
+
+  <!-- Objections, not logistics -->
+  <section class="border-y border-[var(--border)] bg-[var(--card)] py-16">
+    <div class="mx-auto max-w-[760px] px-5">
+      <p class="eyebrow">Before you call</p>
+      <h2 class="mt-3 font-serif text-2xl font-semibold md:text-3xl">
+        Reasons people talk themselves out of it
+      </h2>
+      <p class="mt-4 text-[var(--muted-foreground)]" style="line-height: 1.78;">
+        None of these are a reason not to get in touch.
+      </p>
+
+      <div class="mt-8 divide-y divide-[var(--border)] border-y border-[var(--border)]">
+        {
+          objections.map((item) => (
+            <details class="group py-5">
+              <summary class="flex cursor-pointer list-none items-center justify-between gap-4 font-sans text-lg font-semibold [&::-webkit-details-marker]:hidden">
+                {item.q}
+                <span
+                  class="shrink-0 text-2xl leading-none text-[var(--primary)] transition-transform duration-200 group-open:rotate-45"
+                  aria-hidden="true"
+                >
+                  +
+                </span>
+              </summary>
+              <p class="mt-3 text-[var(--muted-foreground)]" style="line-height: 1.7;">
+                {item.a}
+              </p>
+            </details>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- An honest exit, rather than a dead end -->
+  <section class="mx-auto max-w-[760px] px-5 py-16">
+    <p class="eyebrow">If we are not the right fit</p>
+    <h2 class="mt-3 font-serif text-2xl font-semibold md:text-3xl">We will still point you somewhere</h2>
+    <p class="mt-5 text-[var(--muted-foreground)]" style="line-height: 1.78;">
+      Connecting people to programs that already exist is part of our work, not an
+      afterthought — we would rather hand you to the right organization than be the
+      only door you tried. If you need something now and cannot reach us:
+    </p>
+    <ul class="mt-6 grid gap-4">
+      <li class="rounded-xl border border-[var(--border)] bg-[var(--card)] p-5">
+        <p class="font-sans font-semibold">Dial <a class="text-[var(--primary)] underline" href="tel:211">211</a></p>
+        <p class="mt-1 text-sm text-[var(--muted-foreground)]">
+          Free, confidential, around the clock. Connects you to housing, food, and
+          crisis services near you anywhere in the United States.
+        </p>
+      </li>
+      <li class="rounded-xl border border-[var(--border)] bg-[var(--card)] p-5">
+        <p class="font-sans font-semibold">
+          In immediate danger, dial <a class="text-[var(--primary)] underline" href="tel:911">911</a>
+        </p>
+        <p class="mt-1 text-sm text-[var(--muted-foreground)]">
+          For a mental health or suicide crisis, call or text
+          <a class="text-[var(--primary)] underline" href="tel:988">988</a>.
+        </p>
+      </li>
+    </ul>
+  </section>
+
+  <!-- The dominant action again -->
+  <section class="border-t border-[var(--border)] bg-[var(--card)] py-14">
+    <div class="mx-auto max-w-[820px] px-5 text-center">
+      <h2 class="font-serif text-2xl font-semibold md:text-3xl">Still reading?</h2>
+      <p class="mx-auto mt-3 max-w-md text-[var(--muted-foreground)]">
+        Call and tell us what is going on. That is the whole first step.
+      </p>
+      <a
+        href={PHONE_HREF}
+        class="mt-5 block font-serif font-semibold text-[var(--primary)] transition-opacity hover:opacity-80"
+        style="font-size: clamp(30px, 6vw, 46px); line-height: 1.1;"
+      >
+        {PHONE_DISPLAY}
+      </a>
+    </div>
+  </section>
+</SiteLayout>
