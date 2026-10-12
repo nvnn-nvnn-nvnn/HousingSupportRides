@@ -84,10 +84,10 @@ function Footer() {
               </p>
               <p>
                 <a
-                  href="mailto:hsr@housingsupportrides.org"
+                  href="mailto:hsr.intake@gmail.com"
                   className="transition-colors hover:text-white"
                 >
-                  hsr@housingsupportrides.org
+                  hsr.intake@gmail.com
                 </a>
               </p>
             </address>
@@ -104,8 +104,33 @@ function Footer() {
           </div>
         </div>
 
+        {/* Emergency numbers, on every page. The full panel lives on /contact
+            (components/EmergencyNotice.astro) — this is the compact line,
+            written as JSX because Footer is React and that component is Astro.
+            Keep the two in sync if the numbers or wording change. */}
+        <div
+          role="note"
+          aria-label="Emergency information"
+          className="mt-14 rounded-lg border border-white/15 bg-white/[0.04] px-4 py-3"
+        >
+          <p className="text-xs leading-relaxed text-white/60">
+            <span className="font-semibold text-white/85">
+              Housing Support Rides is not an emergency service.
+            </span>{' '}
+            In an emergency, call{' '}
+            <a href="tel:911" className="font-semibold text-white/85 underline hover:text-white">
+              911
+            </a>
+            . For a mental-health or suicide crisis, call or text{' '}
+            <a href="tel:988" className="font-semibold text-white/85 underline hover:text-white">
+              988
+            </a>
+            {' '}— free and available 24/7.
+          </p>
+        </div>
+
         {/* Bottom strip */}
-        <div className="mt-14 flex flex-col gap-4 border-t border-white/12 pt-6 text-xs text-white/55 md:flex-row md:items-center md:justify-between">
+        <div className="mt-8 flex flex-col gap-4 border-t border-white/12 pt-6 text-xs text-white/55 md:flex-row md:items-center md:justify-between">
           {/* The original maroon lockup, kept as a colophon mark beside the
               copyright. It's maroon (#7F1416) on a near-black footer, which
               would barely read at this size — the filter flattens it to white
@@ -121,6 +146,12 @@ function Footer() {
             />
             <p>
               © 2026 Housing Support Rides, Inc. · NPI 1801751094 ·{' '}
+              <a href="/transparency" className="hover:text-white/85">
+                Accountability
+              </a>{' '}
+              ·{' '}
+              {/* TODO: Privacy Policy page doesn't exist yet — tracked in
+                  notes/todo-next-steps.md § 4. */}
               <a href="#" className="hover:text-white/85">
                 Privacy Policy
               </a>
@@ -132,7 +163,6 @@ function Footer() {
           >
             <LifeBuoy className="h-4 w-4" />
             Need a ride or support? Get help
-            <span aria-hidden="true">→</span>
           </a>
         </div>
       </div>

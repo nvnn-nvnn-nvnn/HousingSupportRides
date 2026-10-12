@@ -1,7 +1,17 @@
 ---
 import SiteLayout from '../layouts/SiteLayout.astro'
 import PageHeader from '../components/PageHeader.astro'
-import { MISSION, FOUNDER_LETTER as LETTER, RECOVERY_MEETINGS } from '../lib/content'
+import type { ImageMetadata } from 'astro'
+import LeadershipCard from '../components/LeadershipCard.astro'
+// Filename is "Johnathan.jpg"; the spelling in his own bio is "Jonathan".
+import jonathanHeadshot from '../assets/img/headshots/Johnathan.jpg'
+import vilyeHeadshot from '../assets/img/headshots/Vilye Yang.jpg'
+import {
+  MISSION,
+  FOUNDER_LETTER as LETTER,
+  RECOVERY_MEETINGS,
+  LEADERSHIP,
+} from '../lib/content'
 
 /**
  * The founder's letter leads this page because it IS the history — the reason
@@ -11,6 +21,22 @@ import { MISSION, FOUNDER_LETTER as LETTER, RECOVERY_MEETINGS } from '../lib/con
  * The meetings he names are pulled from RECOVERY_MEETINGS rather than typed
  * here, so a change of day on the meetings page can't leave this one stale.
  */
+
+/**
+ * Headshots live in src/assets/ so Astro optimizes them. Imported directly
+ * rather than via import.meta.glob (which gallery.astro uses for its 32
+ * photos): there are only two, and a direct import means a renamed file is a
+ * BUILD ERROR instead of silently falling back to initials. For a known,
+ * fixed set of people that's the behaviour you want. See how-to/images.md.
+ *
+ * Keyed by name, so LEADERSHIP in content.ts stays pure data.
+ */
+const HEADSHOTS: Record<string, { img: ImageMetadata; position?: string }> = {
+  // Taller source (0.67 vs 0.75), so the default object-top crop sat too high
+  // on him — centred frames his face properly.
+  'Vilye Yang': { img: vilyeHeadshot, position: 'object-center' },
+  'Jonathan Vang': { img: jonathanHeadshot },
+}
 ---
 
 <SiteLayout
@@ -61,7 +87,7 @@ import { MISSION, FOUNDER_LETTER as LETTER, RECOVERY_MEETINGS } from '../lib/con
         href="/recovery-meetings"
         class="mt-4 inline-flex items-center gap-1.5 text-sm font-medium text-[var(--primary)] hover:gap-2.5"
       >
-        Times and places <span aria-hidden="true">→</span>
+        Times and places
       </a>
     </div>
   </section>
@@ -103,12 +129,32 @@ import { MISSION, FOUNDER_LETTER as LETTER, RECOVERY_MEETINGS } from '../lib/con
     */}
 
     <h2 class="font-serif text-2xl font-semibold">Leadership</h2>
-    <div class="mt-6 rounded-xl border border-[var(--border)] bg-[var(--card)] p-6">
-      <p class="font-sans text-lg font-semibold">{LETTER.name}</p>
-      <p class="text-[var(--muted-foreground)]">{LETTER.role}</p>
-      <a href="#founder" class="mt-3 inline-block text-sm font-medium text-[var(--primary)] hover:underline">
-        Read his letter ↑
-      </a>
+
+    <div class="mt-6 grid gap-6">
+      {/* The founder stays a compact card — his full story is the letter above,
+          so repeating it here would duplicate the page's main content. */}
+      <div class="rounded-xl border border-[var(--border)] bg-[var(--card)] p-6">
+        <p class="font-sans text-lg font-semibold">{LETTER.name}</p>
+        <p class="text-[var(--muted-foreground)]">{LETTER.role}</p>
+        <a
+          href="#founder"
+          class="mt-3 inline-block text-sm font-medium text-[var(--primary)] hover:underline"
+        >
+          Read his letter ↑
+        </a>
+      </div>
+
+      {
+        LEADERSHIP.map((person) => (
+          <LeadershipCard
+            name={person.name}
+            role={person.role}
+            img={HEADSHOTS[person.name]?.img ?? null}
+            imgPosition={HEADSHOTS[person.name]?.position}
+            paragraphs={person.paragraphs}
+          />
+        ))
+      }
     </div>
   </section>
 </SiteLayout>

@@ -1,0 +1,81 @@
+---
+import type { ImageMetadata } from 'astro'
+import { Image } from 'astro:assets'
+
+/**
+ * One leadership bio: headshot, name, role, then the bio paragraphs verbatim.
+ *
+ * The headshot is passed in already-resolved (an ImageMetadata, not a path),
+ * because `import.meta.glob` has to run in the page — a component can't glob a
+ * directory on a caller's behalf. See how-to/images.md.
+ * No image resolves → initials in a maroon circle, so a missing or renamed
+ * file degrades to something deliberate rather than a broken <img>.
+ */
+interface Props {
+  name: string
+  role: string
+  img?: ImageMetadata | null
+  /**
+   * Tailwind object-position class for the circular crop. Defaults to
+   * `object-top`, which suits most headshots — the face is usually in the
+   * upper half of a portrait photo. Override per person when it isn't: a
+   * taller source, or a subject framed lower, needs `object-center`.
+   */
+  imgPosition?: string
+  paragraphs: string[]
+}
+
+const { name, role, img, imgPosition = 'object-top', paragraphs } = Astro.props
+
+const initials = name
+  .split(/\s+/)
+  .map((part) => part[0])
+  .join('')
+  .slice(0, 2)
+  .toUpperCase()
+---
+
+<article
+  class="rounded-xl border border-[var(--border)] bg-[var(--card)] p-6 md:p-8"
+>
+  <div class="flex flex-col gap-5 sm:flex-row sm:items-start sm:gap-7">
+    {
+      img ? (
+        <Image
+          src={img}
+          alt={`${name}, ${role} of Housing Support Rides`}
+          width={160}
+          height={160}
+          densities={[1, 2]}
+          class={`h-28 w-28 shrink-0 rounded-full object-cover ${imgPosition} shadow-sm sm:h-32 sm:w-32`}
+        />
+      ) : (
+        <span
+          aria-hidden="true"
+          class="flex h-28 w-28 shrink-0 items-center justify-center rounded-full bg-[var(--primary)] font-serif text-3xl font-semibold text-white sm:h-32 sm:w-32"
+        >
+          {initials}
+        </span>
+      )
+    }
+
+    <div class="min-w-0">
+      <h3 class="font-serif text-xl font-semibold text-[var(--foreground)] md:text-2xl">
+        {name}
+      </h3>
+      <p class="mt-1 text-sm font-semibold uppercase tracking-[0.12em] text-[var(--primary)]">
+        {role}
+      </p>
+
+      <div class="mt-4 grid gap-3">
+        {
+          paragraphs.map((text) => (
+            <p class="text-[var(--muted-foreground)]" style="line-height: 1.75;">
+              {text}
+            </p>
+          ))
+        }
+      </div>
+    </div>
+  </div>
+</article>

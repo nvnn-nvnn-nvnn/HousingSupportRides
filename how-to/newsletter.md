@@ -77,7 +77,7 @@ It costs you maybe 20% of raw signups, and it's worth it every time:
 - A list of 200 people who confirmed is worth more than 800 who didn't.
 
 While you're in settings, fill in the **sender name** (`Housing Support Rides`),
-**reply-to** (`hsr@housingsupportrides.org`), and the **physical mailing
+**reply-to** (`hsr.intake@gmail.com`), and the **physical mailing
 address** — `1351 3rd St E, Saint Paul, MN 55106`, the same one in the site
 footer. The address isn't optional; see "The legal bits" below.
 

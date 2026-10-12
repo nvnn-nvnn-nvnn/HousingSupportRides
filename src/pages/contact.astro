@@ -2,6 +2,7 @@
 import SiteLayout from '../layouts/SiteLayout.astro'
 import PageHeader from '../components/PageHeader.astro'
 import FormResult from '../components/common/FormResult.astro'
+import EmergencyNotice from '../components/EmergencyNotice.astro'
 
 const inputClass =
   'w-full rounded-lg border border-[var(--border)] bg-[var(--background)] px-4 py-3 text-[var(--foreground)] placeholder:text-[var(--muted-foreground)] focus:border-[var(--primary)] focus:outline-none focus:ring-2 focus:ring-[var(--accent-soft)]'
@@ -16,6 +17,12 @@ const inputClass =
     title="Contact Us"
     lead="Questions about a ride, volunteering, or partnering with us? Send a note and we'll get back to you."
   />
+
+  {/* Above the form on purpose: someone in crisis should see this before they
+      start typing a message that won't be read for days. */}
+  <div class="mx-auto max-w-[1200px] px-5 pt-10 md:px-16">
+    <EmergencyNotice />
+  </div>
 
   <section class="mx-auto max-w-[1200px] px-5 py-16 md:px-16">
     <div class="grid grid-cols-1 gap-12 lg:grid-cols-[1.4fr_1fr]">
@@ -88,9 +95,9 @@ const inputClass =
             <p>
               <a
                 class="text-[var(--primary)] hover:opacity-70"
-                href="mailto:hsr@housingsupportrides.org"
+                href="mailto:hsr.intake@gmail.com"
               >
-                hsr@housingsupportrides.org
+                hsr.intake@gmail.com
               </a>
             </p>
           </address>

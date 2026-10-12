@@ -40,8 +40,9 @@ export const HERO_IMAGE = '/img/cover.jpg'
  * Leave either blank and the Donate button stays a harmless placeholder —
  * no widget script loads, nothing breaks.
  */
-export const GIVEBUTTER_ACCOUNT_ID = ''
-export const GIVEBUTTER_CAMPAIGN_CODE = ''
+export const GIVEBUTTER_ACCOUNT_ID = 'zJRFTUL0GGxyXOtx'
+export const GIVEBUTTER_CAMPAIGN_CODE = 'support-stable-housing-and-rides-for-neighbors-l3x49o'
+
 
 /**
  * Web3Forms — powers the Contact and Volunteer intake forms (no backend
@@ -50,8 +51,36 @@ export const GIVEBUTTER_CAMPAIGN_CODE = ''
  * an access key. It's meant to be public/client-side, safe to commit.
  * Leave blank and both forms show a friendly "not connected yet" message
  * instead of silently failing. See how-to/deploying.md for setup steps.
+ *
+ * ONE KEY = ONE INBOX. The destination address is a property of the key, set
+ * when you generate it at web3forms.com — there is no "send to" field in the
+ * payload. So routing the two forms to different people means two keys.
  */
 export const WEB3FORMS_ACCESS_KEY = '30b0aae6-c622-439b-8cff-1f660edfed3e'
+
+/**
+ * Optional second key, so volunteer applications can go to a different inbox
+ * (a volunteer coordinator) than general contact messages.
+ * Leave blank and the volunteer form falls back to WEB3FORMS_ACCESS_KEY above,
+ * which is the current behaviour — both forms to one inbox.
+ * See how-to/deploying.md → "Routing the two forms separately."
+ */
+export const WEB3FORMS_VOLUNTEER_ACCESS_KEY = ''
+
+/**
+ * Optional third key, for the "report a concern" form on /transparency.
+ *
+ * ⚠️ THIS ONE SHOULD REALLY HAVE ITS OWN KEY. Concern reports include
+ * complaints about how someone was treated — possibly by a staff member or
+ * volunteer who reads the general inbox. Routing them to the same mailbox as
+ * contact enquiries means a complaint can land in front of the person it is
+ * about, which makes the grievance process worthless and unsafe to use.
+ * Point this at a board member or the Secretary, not the general inbox.
+ *
+ * Blank = falls back to WEB3FORMS_ACCESS_KEY, and the page also shows a
+ * postal-mail alternative so there is always a route that bypasses email.
+ */
+export const WEB3FORMS_CONCERN_ACCESS_KEY = ''
 
 export const IMPACT_STATS: { value: number; suffix?: string; label: string }[] = [
   { value: 1850, label: 'Neighbors housed' },
@@ -185,6 +214,49 @@ export const FOUNDER_LETTER = {
   pullQuote:
     'I needed a helping hand—someone willing to walk beside me, not in front of me or behind me.',
 } as const
+
+/**
+ * Leadership bios — VERBATIM, as each person supplied them. Same rule as
+ * FOUNDER_LETTER above: do not tighten or paraphrase. If a word changes, it
+ * changes because they changed it.
+ *
+ * `photo` is a filename in src/assets/img/headshots/ (NOT public/), so Astro
+ * optimizes it. history.astro resolves it via import.meta.glob — see
+ * how-to/images.md for why a variable can't be an import path.
+ * Leave `photo` undefined and the card renders initials instead.
+ *
+ * NOTE: the founder is rendered separately on /history, above his letter.
+ */
+export const LEADERSHIP: {
+  name: string
+  role: string
+  photo?: string
+  paragraphs: string[]
+}[] = [
+  {
+    name: 'Vilye Yang',
+    role: 'President & Board Member',
+    photo: 'Vilye Yang.jpg',
+    paragraphs: [
+      'Vilye Yang serves as President and Board Member of Housing Support Rides (HSR), where he is committed to helping individuals overcome barriers to stability, recovery, housing, transportation, and successful reintegration into the community.',
+      'Vilye brings both professional leadership experience and hands-on community involvement to HSR. Outside of the organization, he works in manufacturing leadership and has years of experience leading teams, developing people, improving processes, and creating accountability within organizations.',
+      'His commitment to community service is deeply rooted in his own life experiences. Vilye has been actively involved in supporting individuals impacted by substance use, incarceration, and the criminal justice system. He facilitates Narcotics Anonymous meetings at the Ramsey County Correctional Facility, serves as a community interview panelist for Ramsey County Community Corrections, and has served on the board of the Sober Foundation supporting participants of Ramsey County Adult Substance Abuse Court.',
+      'Vilye believes that long-term success requires more than simply connecting someone to a service. People also need support, accountability, transportation, stable housing, employment opportunities, positive relationships, and someone willing to help them navigate the challenges along the way.',
+      'Through Housing Support Rides, Vilye works to help build those connections and strengthen the bridge between recovery, stability, and independent living. His goal is to help HSR grow into a sustainable community resource that gives people practical support and a meaningful opportunity to move forward with their lives.',
+    ],
+  },
+  {
+    name: 'Jonathan Vang',
+    role: 'Interim Secretary',
+    // Filename is "Johnathan.jpg" — the spelling in his bio is "Jonathan".
+    photo: 'Johnathan.jpg',
+    paragraphs: [
+      'My name is Jonathan Vang, and I serve as the Interim Secretary of Housing Support Rides (HSR).',
+      'I am committed to supporting Housing Support Rides’ mission of helping individuals and families facing hardships by connecting them with housing, transportation, and community resources. In my role, I help support the organization’s administrative and organizational efforts while working alongside the leadership team to help HSR grow and better serve vulnerable members of our community.',
+      'I am passionate about community service and creating practical opportunities that can help people move toward greater stability, independence, and brighter tomorrows.',
+    ],
+  },
+]
 
 /**
  * The three programs, as cards on the home page. Bodies are verbatim sentences
@@ -413,6 +485,55 @@ export const DOCUMENTS = [
   'Audited Financials 2025',
   'Board of Directors',
 ]
+
+/**
+ * Financial transparency documents. `url` empty = "not yet available", which
+ * the /transparency page states plainly instead of linking to nothing.
+ * ⚠️ NEVER give one a url until the file actually exists and is public —
+ * a dead link on a transparency page is worse than an honest "not yet."
+ * Drop real files in public/docs/ and set the url to e.g. '/docs/form-990-2025.pdf'.
+ */
+export const TRANSPARENCY_DOCS: { label: string; note: string; url?: string }[] = [
+  {
+    label: 'IRS determination letter',
+    note: 'Confirms our federal tax-exempt status.',
+  },
+  {
+    label: 'IRS Form 990',
+    note: 'The annual return every nonprofit of our size files. Also public at ProPublica Nonprofit Explorer and the IRS Tax Exempt Organization Search.',
+  },
+  {
+    label: 'Annual report',
+    note: 'What we did in the year, and what it cost.',
+  },
+  {
+    label: 'Financial summary',
+    note: 'A plain-language breakdown of income and spending.',
+  },
+]
+
+/**
+ * Nondiscrimination statement — rendered verbatim on /transparency.
+ * Reviewed wording; change it deliberately, not casually.
+ */
+export const NONDISCRIMINATION = {
+  statement:
+    'Housing Support Rides welcomes and serves all people. We do not discriminate on the basis of race, color, national origin, ethnicity, religion, sex, sexual orientation, gender identity or expression, age, marital status, familial status, disability, medical condition, veteran status, source of income, or criminal or incarceration history.',
+  commitment:
+    'Everyone who comes to us is treated with the same respect, regardless of background or circumstances. Staff and volunteers are expected to uphold this, and anyone who feels they have been treated unfairly can tell us using the form below.',
+}
+
+/**
+ * Honest, specific requirements a program actually has (e.g. an eligibility
+ * area, an age minimum, a valid licence for drivers).
+ *
+ * ⚠️ DELIBERATELY EMPTY. The nondiscrimination statement above promises we
+ * describe requirements accurately — so this must be filled in by someone who
+ * knows the real ones, not guessed. The page hides the section while it's
+ * empty, which is honest; inventing entries here would make the statement a
+ * lie. Add them as { program, requirements: [...] }.
+ */
+export const PROGRAM_REQUIREMENTS: { program: string; requirements: string[] }[] = []
 
 export const PARTNERS = [
   'County Housing Authority',

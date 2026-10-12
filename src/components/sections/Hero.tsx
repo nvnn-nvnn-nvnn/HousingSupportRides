@@ -56,12 +56,12 @@ function Hero() {
             bottom (headline stays legible).
             ⚠️ Tune the GRADIENT, not the flat tint — raising the flat value
             dulls the whole photo, which is what made the first pass too dark. */}
-        <div className="absolute inset-0 bg-black/20" />
+        <div className="absolute inset-0 bg-black/10" />
         <div
           className="absolute inset-0"
           style={{
             background:
-              'linear-gradient(to top, rgba(10,6,6,0.78) 0%, rgba(10,6,6,0.15) 60%, rgba(10,6,6,0) 100%)',
+              'linear-gradient(to top, rgba(10,6,6,0.64) 0%, rgba(10,6,6,0.10) 60%, rgba(10,6,6,0) 100%)',
           }}
         />
 
@@ -73,7 +73,7 @@ function Hero() {
             <motion.h1
               variants={item}
               className="font-serif font-bold text-white"
-              style={{ fontSize: 'clamp(32px, 7.5vw, 64px)', lineHeight: 1.08, textShadow }}
+              style={{ fontSize: 'clamp(26px, 5.2vw, 44px)', lineHeight: 1.15, textShadow }}
             >
               Everyone deserves a way back home.
             </motion.h1>
@@ -82,7 +82,7 @@ function Hero() {
                 photo. Near-white carries the same emphasis and stays legible. */}
             <motion.p
               variants={item}
-              className="mt-4 text-xs font-semibold uppercase tracking-[0.16em] text-white/90 md:mt-5 md:text-sm"
+              className="mt-3 text-[10px] font-semibold uppercase tracking-[0.14em] text-white/90 md:mt-4 md:text-xs"
               style={{ textShadow }}
             >
               Support · Transportation · Housing · Resources

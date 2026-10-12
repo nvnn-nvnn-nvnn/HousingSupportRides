@@ -58,7 +58,7 @@ function OurWork() {
                     href={`/what-we-do#${program.slug}`}
                     className="mt-5 inline-flex items-center gap-1.5 text-sm font-medium text-[var(--primary)] transition-transform group-hover:gap-2.5"
                   >
-                    Learn more <span aria-hidden="true">→</span>
+                    Learn more
                   </a>
                 </div>
               </motion.article>

@@ -1,35 +1,24 @@
+import { Heart } from 'lucide-react'
+import { GIVEBUTTER_ACCOUNT_ID, GIVEBUTTER_CAMPAIGN_CODE } from '../../lib/content'
+import { cn } from '../../lib/utils'
+
+/* Imports for the commented-out amount picker below. Restore these together
+   with the markup if it ever comes back.
 import { useState } from 'react'
 import { AnimatePresence, motion } from 'motion/react'
 import * as ToggleGroup from '@radix-ui/react-toggle-group'
-import { Heart } from 'lucide-react'
-import { DONATION_TIERS, GIVEBUTTER_CAMPAIGN_CODE } from '../../lib/content'
-import { cn } from '../../lib/utils'
+import { DONATION_TIERS } from '../../lib/content'
+*/
+
+/** Both values are required to open checkout — see the comment on the CTA. */
+const givebutterReady = Boolean(GIVEBUTTER_ACCOUNT_ID && GIVEBUTTER_CAMPAIGN_CODE)
 
 // Shared look for the CTA, applied to whichever element renders as the button
-// (a real <givebutter-button> once configured, a disabled <button> until then).
+// (our own styled <button> once configured, a disabled one until then).
 const ctaClass =
-  'mt-4 flex w-full items-center justify-center gap-2 rounded-full px-7 py-4 text-base font-semibold shadow-sm transition-all duration-200'
-
-type Frequency = 'once' | 'monthly'
+  'mt-8 flex w-full items-center justify-center gap-2 rounded-full px-7 py-4 text-base font-semibold shadow-sm transition-all duration-200'
 
 function DonateBlock() {
-  const [selected, setSelected] = useState(60)
-  const [custom, setCustom] = useState('')
-  const [frequency, setFrequency] = useState<Frequency>('monthly')
-
-  const customNum = Number.parseInt(custom, 10)
-  const usingCustom = custom !== '' && Number.isFinite(customNum) && customNum > 0
-  const amount = usingCustom ? customNum : selected
-
-  const activeTier = DONATION_TIERS.find((t) => t.amount === selected)
-  const impact = usingCustom
-    ? 'goes directly to housing, rides, and support for neighbors rebuilding their lives.'
-    : activeTier?.impact
-
-  const ctaLabel = `Donate $${amount.toLocaleString('en-US')}${
-    frequency === 'monthly' ? ' Monthly' : ''
-  }`
-
   return (
     <section id="donate" className="bg-[var(--primary)] py-24 text-[var(--primary-foreground)]">
       <div className="mx-auto max-w-2xl px-5 md:px-8">
@@ -37,13 +26,35 @@ function DonateBlock() {
           <p className="eyebrow text-[var(--accent-soft)]">Give</p>
           <h2
             className="mt-3 font-serif font-semibold"
-            style={{ fontSize: 'clamp(32px, 4vw, 44px)', lineHeight: 1.1 , color: '#fff'}}
+            style={{ fontSize: 'clamp(32px, 4vw, 44px)', lineHeight: 1.1, color: '#fff' }}
           >
-            Choose an amount. See what it does.
+            Support Us
           </h2>
+          <p className="mx-auto mt-5 max-w-prose text-white/85" style={{ lineHeight: 1.7 }}>
+            Your gift goes directly to housing, rides, and support for neighbors
+            rebuilding their lives in Saint Paul. Give once or monthly — whatever
+            works for you.
+          </p>
         </div>
 
-        {/* One-time / Monthly toggle */}
+        {/*
+          REMOVED 2026-10-12 — the amount picker (One-time/Monthly toggle, the
+          $25/$60/$150/$400 tier grid, the custom-amount input, and the live
+          "Your $60 …" impact sentence).
+
+          Why: Givebutter's checkout collects the amount and frequency itself,
+          so this was a second, parallel set of the same controls. Worse, it was
+          purely cosmetic — `givebutter-button` accepts no `amount` or
+          `frequency` attribute (only `givebutter-widget`, the inline form,
+          does), so choosing $150 Monthly here changed the button label and
+          nothing else. The donor then picked the amount again in the modal.
+
+          To bring it back meaningfully you'd need the inline
+          `<givebutter-widget id amount frequency>` form rather than the modal
+          button, which requires a WIDGET ID from the Givebutter dashboard —
+          see how-to/givebutter.md. Restore the imports at the top of this file
+          along with this markup.
+
         <div className="mt-10 flex justify-center">
           <ToggleGroup.Root
             type="single"
@@ -69,7 +80,6 @@ function DonateBlock() {
           </ToggleGroup.Root>
         </div>
 
-        {/* Tier grid */}
         <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
           {DONATION_TIERS.map((t) => {
             const isActive = !usingCustom && selected === t.amount
@@ -94,7 +104,6 @@ function DonateBlock() {
           })}
         </div>
 
-        {/* Custom amount */}
         <div className="mt-3">
           <label htmlFor="custom-amount" className="sr-only">
             Custom amount
@@ -116,7 +125,6 @@ function DonateBlock() {
           </div>
         </div>
 
-        {/* Live impact sentence */}
         <div className="mt-5 min-h-[3.25rem] text-center">
           <AnimatePresence mode="wait">
             <motion.p
@@ -132,21 +140,35 @@ function DonateBlock() {
             </motion.p>
           </AnimatePresence>
         </div>
+        */}
 
-        {/* CTA — label updates live. Real Givebutter checkout once configured
-            (src/lib/content.ts); otherwise a clearly-disabled placeholder so
-            nothing looks broken before it's wired up. */}
-        {GIVEBUTTER_CAMPAIGN_CODE ? (
-          <givebutter-button
-            campaign={GIVEBUTTER_CAMPAIGN_CODE}
-            class={cn(
+        {/* CTA.
+            A PLAIN <button> carrying data-gb-account / data-gb-campaign, which
+            is Givebutter's documented hook for a custom-styled trigger: their
+            script scans for `[data-gb-account][data-gb-campaign]`, attaches a
+            click handler, and spawns its own hidden
+            <givebutter-button hide-button="true"> elsewhere to host the modal.
+
+            ⚠️ Do NOT replace this with <givebutter-button> directly.
+              1. It needs BOTH `account` and `campaign`. With only `campaign` it
+                 renders nothing at all — the markup looks correct in
+                 view-source and the button is simply invisible.
+              2. Without `hide-button` it draws Givebutter's own button UI,
+                 discarding our styling and icon.
+            See how-to/givebutter.md. */}
+        {givebutterReady ? (
+          <button
+            type="button"
+            data-gb-account={GIVEBUTTER_ACCOUNT_ID}
+            data-gb-campaign={GIVEBUTTER_CAMPAIGN_CODE}
+            className={cn(
               ctaClass,
               'cursor-pointer bg-[var(--accent-warm)] text-white hover:brightness-95 hover:shadow-md active:brightness-90',
             )}
           >
             <Heart className="h-5 w-5" fill="currentColor" aria-hidden="true" />
-            {ctaLabel}
-          </givebutter-button>
+            Donate
+          </button>
         ) : (
           <button
             type="button"
@@ -155,7 +177,7 @@ function DonateBlock() {
             className={cn(ctaClass, 'cursor-not-allowed bg-white/20 text-white/70')}
           >
             <Heart className="h-5 w-5" aria-hidden="true" />
-            {ctaLabel}
+            Donate
           </button>
         )}
 

@@ -56,7 +56,7 @@ function StoryCard({ story, index }: { story: Story; index: number }) {
           href={`/journal/${story.slug}`}
           className="mt-3 inline-flex items-center gap-1.5 text-sm font-medium text-white transition-all group-hover:gap-2.5"
         >
-          Read the story <span aria-hidden="true">→</span>
+          Read the story
         </a>
       </div>
     </motion.article>

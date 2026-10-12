@@ -19,7 +19,8 @@ const inputClass =
 
   <section class="mx-auto max-w-[680px] px-5 py-16">
     <!-- Submits via Web3Forms (no backend needed) — see src/lib/web3forms.ts
-         and src/lib/content.ts (WEB3FORMS_ACCESS_KEY) for setup. -->
+         and src/lib/content.ts (WEB3FORMS_VOLUNTEER_ACCESS_KEY, falling back to
+         WEB3FORMS_ACCESS_KEY) for setup. -->
     <form id="volunteer-form" class="grid gap-5">
       <input type="hidden" name="subject" value="New volunteer interest — Housing Support Rides" />
       <input type="checkbox" name="botcheck" class="hidden" tabindex="-1" autocomplete="off" />
@@ -81,11 +82,17 @@ const inputClass =
 
     <script>
       import { initWeb3Form } from '../../lib/web3forms'
+      import { WEB3FORMS_VOLUNTEER_ACCESS_KEY } from '../../lib/content'
 
       const form = document.querySelector<HTMLFormElement>('#volunteer-form')
       const status = document.querySelector<HTMLElement>('#volunteer-form-status')
       const success = document.querySelector<HTMLElement>('#volunteer-form-success')
-      if (form && status) initWeb3Form(form, status, { successEl: success })
+      // Falls back to the shared contact key while the volunteer key is blank.
+      if (form && status)
+        initWeb3Form(form, status, {
+          successEl: success,
+          accessKey: WEB3FORMS_VOLUNTEER_ACCESS_KEY,
+        })
 
       // Pre-check the relevant box when arriving from a specific role page,
       // e.g. /volunteer/apply?role=driver or ?role=coordinator

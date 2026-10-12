@@ -1,0 +1,74 @@
+---
+/**
+ * "We are not an emergency service" notice, with the two numbers that are.
+ *
+ * HSR serves people in housing crisis and in recovery — some will arrive at
+ * this site in genuine danger, and the contact form is answered in days, not
+ * minutes. This notice exists so nobody waits on us when they need 911 or 988.
+ *
+ * Numbers are tappable (`tel:` / `sms:`) because most visitors are on a phone
+ * and the whole point is to shorten the path to help.
+ *
+ * `compact` renders a single line for footers and page corners; the default
+ * renders the full panel. Place the full panel anywhere someone might be
+ * reaching out for help — /contact, /recovery-meetings, the get-help paths.
+ */
+interface Props {
+  compact?: boolean
+  class?: string
+}
+
+const { compact = false, class: className = '' } = Astro.props
+---
+
+{
+  compact ? (
+    <p class={`text-xs text-white/60 ${className}`}>
+      Not an emergency service. In an emergency call{' '}
+      <a href="tel:911" class="font-semibold text-white/85 underline hover:text-white">
+        911
+      </a>
+      . For a mental-health or suicide crisis, call or text{' '}
+      <a href="tel:988" class="font-semibold text-white/85 underline hover:text-white">
+        988
+      </a>
+      .
+    </p>
+  ) : (
+    <aside
+      role="note"
+      aria-label="Emergency information"
+      class={`rounded-xl border-2 border-[var(--primary)] bg-[var(--card)] p-5 md:p-6 ${className}`}
+    >
+      <h2 class="font-serif text-lg font-semibold text-[var(--foreground)] md:text-xl">
+        Housing Support Rides is not an emergency service
+      </h2>
+      <p class="mt-2 text-sm text-[var(--muted-foreground)]">
+        We answer messages within a few business days. If you need help right
+        now, please use one of these instead — both are free, 24/7.
+      </p>
+
+      <ul class="mt-4 grid gap-3 sm:grid-cols-2">
+        <li class="rounded-lg border border-[var(--border)] bg-[var(--background)] p-4">
+          <a href="tel:911" class="font-serif text-2xl font-semibold text-[var(--primary)] hover:underline">
+            Call 911
+          </a>
+          <p class="mt-1 text-sm text-[var(--muted-foreground)]">
+            For any emergency — medical, safety, or immediate danger.
+          </p>
+        </li>
+        <li class="rounded-lg border border-[var(--border)] bg-[var(--background)] p-4">
+          <p class="font-serif text-2xl font-semibold text-[var(--primary)]">
+            <a href="tel:988" class="hover:underline">Call</a>
+            <span class="text-[var(--muted-foreground)]"> or </span>
+            <a href="sms:988" class="hover:underline">text 988</a>
+          </p>
+          <p class="mt-1 text-sm text-[var(--muted-foreground)]">
+            Suicide &amp; Crisis Lifeline — for a mental-health crisis,
+            thoughts of suicide, or substance-use crisis.
+          </p>
+        </li>
+      </ul>
+    </aside>
+  )
+}

@@ -33,8 +33,11 @@ Start here, then read the companion docs:
 | [blog-cms-plan.md](./blog-cms-plan.md) | Blog/journalism decision record — why Astro + Keystatic |
 | [CHANGELOG.md](./CHANGELOG.md) | Running log of what changed and when |
 
-> **Task-based how-to guides** (writing posts, the admin, deploying) live in a
-> separate top-level folder: **[../how-to/](../how-to/)**.
+> **Task-based how-to guides** live in a separate top-level folder:
+> **[../how-to/](../how-to/)** — 12 guides covering content, photos, forms,
+> email, and deployment. Its [README](../how-to/README.md) opens with an
+> "I want to…" lookup table and a **built vs. planned** status list, because
+> several guides describe features that aren't wired up yet.
 
 ## Tech stack
 

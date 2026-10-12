@@ -17,6 +17,13 @@ interface InitOptions {
    * Omit it and the outcome falls back to a line of text under the button.
    */
   successEl?: HTMLElement | null
+  /**
+   * Which Web3Forms key to submit under — i.e. which inbox this form reaches.
+   * Defaults to WEB3FORMS_ACCESS_KEY. Pass a different key to route this form
+   * somewhere else; an empty string falls back to the default rather than
+   * submitting without a key (which Web3Forms would reject).
+   */
+  accessKey?: string
 }
 
 /**
@@ -35,8 +42,12 @@ interface InitOptions {
 export function initWeb3Form(
   form: HTMLFormElement,
   statusEl: HTMLElement,
-  { successEl }: InitOptions = {},
+  { successEl, accessKey }: InitOptions = {},
 ) {
+  // `||` not `??` on purpose: an empty-string key must fall back, and the
+  // empty-gated constants in content.ts are '' rather than undefined.
+  const key = accessKey || WEB3FORMS_ACCESS_KEY
+
   const setStatus = (text: string, kind: keyof typeof statusClass) => {
     statusEl.textContent = text
     statusEl.className = statusClass[kind]
@@ -70,7 +81,7 @@ export function initWeb3Form(
   form.addEventListener('submit', async (e) => {
     e.preventDefault()
 
-    if (!WEB3FORMS_ACCESS_KEY) {
+    if (!key) {
       setStatus(
         "This form isn't connected yet — please email us directly in the meantime.",
         'idle',
@@ -87,7 +98,7 @@ export function initWeb3Form(
 
     const submitBtn = form.querySelector<HTMLButtonElement>('button[type="submit"]')
     const formData = new FormData(form)
-    formData.set('access_key', WEB3FORMS_ACCESS_KEY)
+    formData.set('access_key', key)
     const payload = Object.fromEntries(formData.entries())
 
     if (submitBtn) submitBtn.disabled = true

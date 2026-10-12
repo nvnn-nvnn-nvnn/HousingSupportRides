@@ -6,6 +6,24 @@ decisions, see [blog-cms-plan.md](./blog-cms-plan.md); for how-tos, see
 
 ## 2026-09-22
 
+### how-to/ index reorganized
+
+The folder had grown to 12 guides listed in one flat table in the order they
+happened to be written. [../how-to/README.md](../how-to/README.md) now leads
+with an **"I want to…"** lookup, then groups the guides by area (everyday
+content · photos & media · forms & email · launch & operations).
+
+- **Added a built-vs-planned status table**, which is the part that actually
+  saves time. Four guides document features that **don't exist yet** —
+  newsletter, spam protection, hero carousel, admin accounts — and nothing
+  previously distinguished them from guides describing working code. Following
+  one and hunting for the implementation is a guaranteed waste of an hour.
+- **Files stayed flat rather than moving into subfolders.** The guides
+  cross-link each other heavily; relocating them would break those links for no
+  gain at this count. The grouping lives in the index.
+- Verified every link resolves and every status claim against the code —
+  arrow-key lightbox nav is real, gallery scroll-reveal genuinely isn't.
+
 ### Gallery archive restored, first journal post published
 
 Two things that looked broken but were switched off on purpose.
