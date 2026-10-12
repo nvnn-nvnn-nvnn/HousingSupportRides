@@ -118,13 +118,9 @@ function Footer() {
               Housing Support Rides is not an emergency service.
             </span>{' '}
             In an emergency, call{' '}
-            <a href="tel:911" className="font-semibold text-white/85 underline hover:text-white">
-              911
-            </a>
+            <span className="font-semibold text-white/85">911</span>
             . For a mental-health or suicide crisis, call or text{' '}
-            <a href="tel:988" className="font-semibold text-white/85 underline hover:text-white">
-              988
-            </a>
+            <span className="font-semibold text-white/85">988</span>
             {' '}— free and available 24/7.
           </p>
         </div>

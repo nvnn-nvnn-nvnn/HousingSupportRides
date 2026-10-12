@@ -25,13 +25,9 @@ const { compact = false, class: className = '' } = Astro.props
   compact ? (
     <p class={`text-xs text-white/60 ${className}`}>
       Not an emergency service. In an emergency call{' '}
-      <a href="tel:911" class="font-semibold text-white/85 underline hover:text-white">
-        911
-      </a>
+      <span class="font-semibold text-white/85">911</span>
       . For a mental-health or suicide crisis, call or text{' '}
-      <a href="tel:988" class="font-semibold text-white/85 underline hover:text-white">
-        988
-      </a>
+      <span class="font-semibold text-white/85">988</span>
       .
     </p>
   ) : (
@@ -50,18 +46,16 @@ const { compact = false, class: className = '' } = Astro.props
 
       <ul class="mt-4 grid gap-3 sm:grid-cols-2">
         <li class="rounded-lg border border-[var(--border)] bg-[var(--background)] p-4">
-          <a href="tel:911" class="font-serif text-2xl font-semibold text-[var(--primary)] hover:underline">
+          <p class="font-serif text-2xl font-semibold text-[var(--primary)]">
             Call 911
-          </a>
+          </p>
           <p class="mt-1 text-sm text-[var(--muted-foreground)]">
             For any emergency — medical, safety, or immediate danger.
           </p>
         </li>
         <li class="rounded-lg border border-[var(--border)] bg-[var(--background)] p-4">
           <p class="font-serif text-2xl font-semibold text-[var(--primary)]">
-            <a href="tel:988" class="hover:underline">Call</a>
-            <span class="text-[var(--muted-foreground)]"> or </span>
-            <a href="sms:988" class="hover:underline">text 988</a>
+            Call or text 988
           </p>
           <p class="mt-1 text-sm text-[var(--muted-foreground)]">
             Suicide &amp; Crisis Lifeline — for a mental-health crisis,
