@@ -24,6 +24,30 @@ interface InitOptions {
    * submitting without a key (which Web3Forms would reject).
    */
   accessKey?: string
+  /**
+   * Also save a copy to the admin dashboard under this name. Omit it and the
+   * submission is emailed only — which is the deliberate choice for the
+   * concern form, so a report can't land in front of the person it's about.
+   * See src/lib/server/submissions.ts.
+   */
+  storeAs?: 'contact' | 'volunteer'
+}
+
+/**
+ * Best-effort copy to /api/submissions for the admin dashboard. Never awaited
+ * by the visitor's flow and never surfaces an error: Web3Forms email is the
+ * record of truth, so a dashboard outage must not make a form look broken.
+ */
+function storeCopy(form: 'contact' | 'volunteer', payload: Record<string, FormDataEntryValue>) {
+  // Strip the Web3Forms key before it leaves for our own server.
+  const { access_key: _accessKey, ...rest } = payload
+  fetch('/api/submissions', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ ...rest, form }),
+    // Lets the request finish even if the success panel swaps the page state.
+    keepalive: true,
+  }).catch(() => {})
 }
 
 /**
@@ -42,7 +66,7 @@ interface InitOptions {
 export function initWeb3Form(
   form: HTMLFormElement,
   statusEl: HTMLElement,
-  { successEl, accessKey }: InitOptions = {},
+  { successEl, accessKey, storeAs }: InitOptions = {},
 ) {
   // `||` not `??` on purpose: an empty-string key must fall back, and the
   // empty-gated constants in content.ts are '' rather than undefined.
@@ -113,6 +137,9 @@ export function initWeb3Form(
       const result = await res.json()
 
       if (res.status === 200 && result.success) {
+        // Only after the email succeeded, so the dashboard never shows a
+        // submission the organization didn't actually receive.
+        if (storeAs) storeCopy(storeAs, payload)
         form.reset()
         if (!showSuccessPanel()) {
           setStatus(result.message || "Thanks — we'll be in touch soon.", 'success')

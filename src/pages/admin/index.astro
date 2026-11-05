@@ -1,0 +1,91 @@
+---
+import AdminLayout from '../../layouts/AdminLayout.astro'
+import { countSubmissions, listSubmissions } from '../../lib/server/submissions'
+
+// ⚠️ Required on every admin page — see src/middleware.ts.
+export const prerender = false
+
+const [counts, recent] = await Promise.all([countSubmissions(), listSubmissions({ limit: 5 })])
+const dateFmt = new Intl.DateTimeFormat('en-US', { dateStyle: 'medium', timeStyle: 'short' })
+
+const cards = [
+  { label: 'Contact messages', href: '/admin/submissions?form=contact', ...counts.contact },
+  { label: 'Volunteer applications', href: '/admin/submissions?form=volunteer', ...counts.volunteer },
+]
+---
+
+<AdminLayout title="Dashboard" active="dashboard">
+  <h1 class="font-serif text-3xl font-semibold">Dashboard</h1>
+  <p class="mt-2 text-[var(--muted-foreground)]">
+    Signed in as {Astro.locals.user?.name || Astro.locals.user?.email}.
+  </p>
+
+  <div class="mt-8 grid gap-4 sm:grid-cols-2">
+    {
+      cards.map((card) => (
+        <a
+          href={card.href}
+          class="rounded-xl border border-[var(--border)] bg-[var(--card)] p-6 transition-shadow hover:shadow-md"
+        >
+          <p class="text-sm font-semibold uppercase tracking-[0.12em] text-[var(--muted-foreground)]">
+            {card.label}
+          </p>
+          <p class="mt-2 font-serif text-4xl font-semibold text-[var(--primary)]">{card.total}</p>
+          <p class="mt-1 text-sm text-[var(--muted-foreground)]">{card.week} in the last 7 days</p>
+        </a>
+      ))
+    }
+  </div>
+
+  <section class="mt-12">
+    <div class="flex items-baseline justify-between">
+      <h2 class="font-serif text-xl font-semibold">Most recent</h2>
+      <a href="/admin/submissions" class="text-sm font-medium text-[var(--primary)] hover:underline">
+        See all
+      </a>
+    </div>
+    {
+      recent.length === 0 ? (
+        <p class="mt-4 rounded-xl border border-dashed border-[var(--border)] p-6 text-[var(--muted-foreground)]">
+          No submissions stored yet. New contact and volunteer forms will appear here.
+        </p>
+      ) : (
+        <ul class="mt-4 divide-y divide-[var(--border)] rounded-xl border border-[var(--border)] bg-[var(--card)]">
+          {recent.map((s) => (
+            <li class="flex flex-wrap items-baseline justify-between gap-2 px-5 py-4">
+              <span>
+                <span class="mr-2 rounded-full bg-[var(--accent-soft)] px-2 py-0.5 text-xs font-semibold capitalize">
+                  {s.form}
+                </span>
+                <span class="font-medium">{s.name || 'No name given'}</span>
+              </span>
+              <span class="text-sm text-[var(--muted-foreground)]">{dateFmt.format(s.createdAt)}</span>
+            </li>
+          ))}
+        </ul>
+      )
+    }
+  </section>
+
+  <section class="mt-12 grid gap-4 sm:grid-cols-2">
+    <a
+      href="/keystatic"
+      class="rounded-xl border border-[var(--border)] bg-[var(--card)] p-6 hover:shadow-md"
+    >
+      <p class="font-serif text-lg font-semibold">Edit site content</p>
+      <p class="mt-1 text-sm text-[var(--muted-foreground)]">
+        Blog posts and page content, in Keystatic. In production this also asks
+        for a GitHub login to save changes.
+      </p>
+    </a>
+    <a
+      href="/admin/users"
+      class="rounded-xl border border-[var(--border)] bg-[var(--card)] p-6 hover:shadow-md"
+    >
+      <p class="font-serif text-lg font-semibold">Manage admins</p>
+      <p class="mt-1 text-sm text-[var(--muted-foreground)]">
+        Add or remove admins, reset passwords, sign someone out everywhere.
+      </p>
+    </a>
+  </section>
+</AdminLayout>

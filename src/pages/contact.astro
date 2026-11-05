@@ -73,7 +73,7 @@ const inputClass =
         const form = document.querySelector<HTMLFormElement>('#contact-form')
         const status = document.querySelector<HTMLElement>('#contact-form-status')
         const success = document.querySelector<HTMLElement>('#contact-form-success')
-        if (form && status) initWeb3Form(form, status, { successEl: success })
+        if (form && status) initWeb3Form(form, status, { successEl: success, storeAs: 'contact' })
       </script>
 
       <!-- Contact details -->

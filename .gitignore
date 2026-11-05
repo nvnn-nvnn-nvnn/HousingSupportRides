@@ -33,3 +33,7 @@ dist-ssr
 
 # Vercel
 .vercel
+
+# Local admin database (dev only — production uses Turso)
+local.db
+local.db-*

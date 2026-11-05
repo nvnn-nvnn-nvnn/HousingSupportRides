@@ -4,6 +4,83 @@ A running log of notable work. Most recent first. For *why* behind big
 decisions, see [blog-cms-plan.md](./blog-cms-plan.md); for how-tos, see
 [../how-to/](../how-to/).
 
+## 2026-11-05
+
+### Security: Astro 7.2.0 → 7.3.8, unused Node adapter removed
+
+`npm audit` after the admin work flagged **Astro itself** as critical. None of
+the new auth packages (better-auth, @libsql/*, kysely) had any advisories.
+
+| Astro advisory | Applied here? | Fixed in |
+| --- | --- | --- |
+| **Critical** — RCE through AVIF image optimization | Low risk (no remote images, so it would need a malicious file committed to the repo) | 7.2.8 |
+| Auth bypass via missing path-segment check on `base` | **No** — no `base` configured | 7.2.4 |
+| XSS via unescaped `<script>`/`<style>` in JSX/MDX | Yes — journal posts are MDX | 7.3.2 |
+| CSS injection in View Transitions (low) | Not used | after 7.3.2 |
+
+- **Why 7.3.8 and not the latest 7.4.7:** ⚠️ Astro 7.4.2+ requires
+  **Node ≥ 22.23.4**, and this machine runs 22.19.0. 7.4.7 was installed first
+  and the build **failed** — while a stale `dist/` made the post-build checks
+  look green. Caught only by cleaning `dist/` and reading the real exit code.
+  7.3.x needs Node ≥ 22.12 and already contains all four fixes.
+- **Pinned as `~7.3.8`** (patch updates only), so a fresh `npm install` can't
+  jump to 7.4 and break the build on older Node. To move to 7.4: upgrade Node
+  to the latest 22.x locally **and confirm Vercel's Node version** first.
+- `@astrojs/vercel` 11.0.9 → 11.0.20 and `@astrojs/sitemap` → 3.7.4 (patch).
+- **Removed `@astrojs/node`.** It was a leftover dependency — the config uses
+  the Vercel adapter, and the DEPLOY warning says never to use Node on Vercel —
+  but it still carried its own high-severity advisory.
+- `@astrojs/react` (6 → 7) and `@astrojs/mdx` (7 → 8) left alone: major bumps.
+- **Result:** 24 → 10 production advisories, **0 critical**, Astro clean.
+  Remaining highs are build tooling (ReDoS/DoS in Vercel's route matching,
+  brace-expansion, js-yaml — no fix within the adapter's major) and a
+  paste-XSS in Keystatic's editor that needs an admin to paste hostile content
+  into their own editor. None is in the login path.
+- Admin feature re-verified on 7.3.8: 29/29 end-to-end checks.
+
+## 2026-11-04
+
+### Admin dashboard: sign-in, submissions, admin management
+
+Staff sign in at `/admin` with email and password. Built on **Better Auth**
+(self-hosted library) + its admin plugin, with **Turso/libSQL** storage — a
+local file in dev, a hosted database in production. Full guide:
+[../how-to/admin-dashboard.md](../how-to/admin-dashboard.md).
+
+- **Pages:** `/admin` (counts + recent), `/admin/submissions` (filter, delete),
+  `/admin/users` (add, remove, set password, sign out everywhere), and
+  `/keystatic` now gated behind the same login.
+- **Contact and volunteer forms save a copy** to the database — but only after
+  Web3Forms confirms the email, so the dashboard never shows a submission the
+  org didn't receive. Email stays the record of truth; storage failures are
+  silent to the visitor.
+- **Concern reports are deliberately NOT stored.** They're routed to a board
+  member so a complaint can't land in front of the staff member it concerns. A
+  dashboard every admin reads would undo that.
+- **Everything initializes lazily.** Middleware also runs while static pages
+  build, so opening the database at import would make a missing `DATABASE_URL`
+  fail the whole build. Verified: the site builds with zero env vars set, and
+  `/admin` returns "not configured" instead.
+- **Rate limits use the database, not memory.** Better Auth's default memory
+  store resets per Vercel serverless instance, which barely slows a
+  password-guessing script.
+- **No public sign-up.** The first admin comes from `npm run admin:create`,
+  which works because Better Auth's admin plugin allows `createUser` as a
+  direct server call with no request attached, while rejecting it over HTTP
+  without an admin session — confirmed in the installed source.
+- **Secrets via `astro:env` with `access: 'secret'`,** so they're read at
+  runtime and never inlined into the build.
+- **Verified end to end:** 28 checks plus CSRF. Notably, 3 checks first failed
+  with 403 — the test script omitted `Origin` headers and Astro's built-in
+  `checkOrigin` rejected them. A foreign-origin request carrying a valid admin
+  cookie also gets 403. That's the CSRF layer working; don't disable it.
+- **Prerender trap verified clear:** no admin page appears as HTML in
+  `dist/client`.
+- **Not done — needs you:** a Turso database and four Vercel env vars. Until
+  then production `/admin` is inert. See todo-next-steps.md § 8.
+- Updated `how-to/admin-accounts.md` with a banner pointing here; its earlier
+  "nothing is wired in" line is no longer true.
+
 ## 2026-09-22
 
 ### how-to/ index reorganized

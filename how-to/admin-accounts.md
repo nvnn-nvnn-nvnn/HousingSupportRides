@@ -1,7 +1,13 @@
 # Admin Accounts & Authentication
 
-**A study guide, not an implementation.** Nothing here is wired into the site.
-Read it, decide what you actually want, then write it yourself.
+> **Update 2026-11-04 — this is now built.** The app login described in Parts
+> 4–8 exists: email + password with Better Auth, admin roles, and a submissions
+> dashboard at `/admin`. To run it, see **[admin-dashboard.md](./admin-dashboard.md)**.
+> This page stays as the reasoning behind it. Where they differ, trust
+> admin-dashboard.md — it describes the code.
+
+**A study guide, not an implementation.** It was written before anything was
+built, to decide what to build.
 
 Your question was: *can admins log in from inside the site, without each of them
 needing a GitHub account — the way Eleventy does it?*

@@ -219,35 +219,48 @@ specific claims a donor or reporter could check, and **none of them appear in
 - [ ] `npm run build` should stay green — run before committing.
 - [ ] Optional: `npm audit fix` — a few transitive advisories exist in the toolchain.
 
-## 8. Admin accounts (researched 2026-09-20, nothing built)
+## 8. Admin dashboard (built 2026-11-04 — needs production setup)
 
-Study guide written at [../how-to/admin-accounts.md](../how-to/admin-accounts.md).
-No code exists — this is deliberately unimplemented; the user is writing it.
+Email + password sign-in at `/admin` with Better Auth, a Turso/libSQL database,
+and an admin plugin for roles. Guide: [../how-to/admin-dashboard.md](../how-to/admin-dashboard.md).
+Background reasoning: [../how-to/admin-accounts.md](../how-to/admin-accounts.md).
 
-The ask was "admins log in inside the site, without each needing a GitHub
-account, like Eleventy." Findings:
+> This section previously said the feature was deliberately unimplemented so it
+> could be written by hand as a learning exercise. That changed on 2026-11-04 —
+> it was requested as a build.
 
-- [ ] **The Eleventy pattern is the deprecated one.** Decap CMS + Netlify
-      **Git Gateway** was the token broker that made in-site login work.
-      Netlify has deprecated Git Gateway — existing sites keep working, new
-      setups are discouraged. Don't start there in 2026.
-- [ ] **Keystatic Cloud is the live equivalent** and is probably the whole
-      answer: editors sign in without GitHub accounts, one `storage:` change in
-      `keystatic.config.tsx`, free up to 3 users then $10/mo + $5/user. Try
-      this *before* building anything.
-- [ ] **A submissions dashboard is a separate, heavier project** — it means
-      storing volunteer/contact PII at rest, which we currently do **not** do
-      (Web3Forms emails it and keeps nothing). Answer the retention/deletion/
-      access questions in Part 7 of the guide before creating a table.
-- [ ] **Correction on record:** Better Auth was described here as a "managed
-      provider." It isn't — it's a self-hosted library; *we* would hold the
-      password hashes. Clerk/WorkOS are the managed ones.
+Done and tested locally (28 end-to-end checks plus a CSRF check):
+- [x] Sign-in, sign-out, sessions stored server-side and revocable
+- [x] Public sign-up disabled; first admin via `npm run admin:create`
+- [x] `/admin` dashboard, `/admin/submissions` (filter + delete), `/admin/users`
+      (add, remove, set password, sign out everywhere)
+- [x] `/keystatic` gated behind the same login
+- [x] Contact + volunteer forms save a copy after the email succeeds
+- [x] Database-backed rate limits on sign-in and on the public submit endpoint
+- [x] Verified no admin page builds as static HTML (the prerender trap)
 
-⚠️ **The Astro-specific trap**, if any protected page ever gets built: this
-project has no `output` set, so pages prerender by default and middleware never
-runs for them. A protected page without `export const prerender = false` ships
-as public static HTML with **no error and no warning**. Verify by checking
-whether the page appears in `dist/` after a build, not by clicking around.
+Before it works on the live site:
+- [ ] 🚨 **Create a Turso database and set 4 env vars in Vercel**
+      (`DATABASE_URL`, `DATABASE_AUTH_TOKEN`, `BETTER_AUTH_SECRET`,
+      `BETTER_AUTH_URL`), run `npm run db:migrate` + `npm run admin:create`
+      against production, redeploy. Steps in admin-dashboard.md. Until then
+      `/admin` returns "not configured" — the public site is unaffected.
+- [ ] Clear production values out of local `.env` afterwards, or `npm run dev`
+      writes to the live database.
+
+Decisions still open (policy, not code):
+- [ ] ⚠️ **Retention.** Submissions are now stored at rest and nothing deletes
+      them automatically. Decide a period.
+- [ ] **Deletion requests** — data now lives in three places: dashboard,
+      Web3Forms email, inbox.
+- [ ] **Keystatic still needs GitHub in production** to save. If staff lack
+      GitHub accounts → Keystatic Cloud (admin-accounts.md, Part 3).
+- [ ] Every admin sees every submission. Add a read-only role if that's too
+      broad.
+
+**Deliberately excluded:** concern reports from `/transparency` are emailed only,
+never stored, so a complaint can't reach the staff member it's about. Don't
+"fix" this without designing an access rule for them first.
 
 ## Housekeeping (low priority, found during a notes audit)
 - [ ] `src/components/layout/Header.tsx` is a 0-byte, unused file (not

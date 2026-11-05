@@ -1,0 +1,101 @@
+---
+import AdminLayout from '../../layouts/AdminLayout.astro'
+
+// ⚠️ Required on every admin page — see src/middleware.ts.
+export const prerender = false
+
+const user = Astro.locals.user
+if (user?.role === 'admin') return Astro.redirect('/admin')
+
+const inputClass =
+  'w-full rounded-lg border border-[var(--border)] bg-[var(--background)] px-4 py-3 text-[var(--foreground)] placeholder:text-[var(--muted-foreground)] focus:border-[var(--primary)] focus:outline-none focus:ring-2 focus:ring-[var(--accent-soft)]'
+---
+
+<AdminLayout title="Sign in">
+  <div class="mx-auto mt-10 max-w-sm">
+    <h1 class="font-serif text-3xl font-semibold">Admin sign in</h1>
+    <p class="mt-2 text-sm text-[var(--muted-foreground)]">
+      Housing Support Rides staff only.
+    </p>
+
+    {
+      user && (
+        <p class="mt-6 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">
+          You're signed in as {user.email}, but that account isn't an admin.
+        </p>
+      )
+    }
+
+    <form id="login-form" class="mt-8 grid gap-5">
+      <label class="grid gap-2 text-sm font-medium">
+        Email
+        <input class={inputClass} type="email" name="email" autocomplete="username" required />
+      </label>
+      <label class="grid gap-2 text-sm font-medium">
+        Password
+        <input
+          class={inputClass}
+          type="password"
+          name="password"
+          autocomplete="current-password"
+          required
+        />
+      </label>
+      <button
+        type="submit"
+        class="rounded-full bg-[var(--primary)] px-7 py-3.5 font-semibold text-white transition-all hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-60"
+      >
+        Sign in
+      </button>
+      <p id="login-status" class="text-sm" role="status"></p>
+    </form>
+  </div>
+
+  <script>
+    import { authClient } from '../../lib/auth-client'
+
+    /**
+     * Where to go after sign-in. `next` comes from the URL, which an attacker
+     * controls — so only accept a same-site path. Without this check,
+     * /admin/login?next=//evil.example sends a freshly signed-in admin to a
+     * lookalike site (an "open redirect"). "//x" and "/\x" are both treated as
+     * another host by browsers, hence both checks.
+     */
+    function safeNext(): string {
+      const next = new URLSearchParams(window.location.search).get('next') ?? ''
+      if (next.startsWith('/') && !next.startsWith('//') && !next.startsWith('/\\')) return next
+      return '/admin'
+    }
+
+    const form = document.getElementById('login-form') as HTMLFormElement | null
+    const status = document.getElementById('login-status')
+
+    form?.addEventListener('submit', async (event) => {
+      event.preventDefault()
+      if (!status) return
+      const data = new FormData(form)
+      const button = form.querySelector('button')
+      if (button) button.disabled = true
+      status.textContent = 'Signing in…'
+      status.className = 'text-sm text-[var(--muted-foreground)]'
+
+      const { error } = await authClient.signIn.email({
+        email: String(data.get('email') ?? ''),
+        password: String(data.get('password') ?? ''),
+      })
+
+      if (error) {
+        // Deliberately generic: never reveal whether the email exists.
+        status.textContent =
+          error.status === 429
+            ? 'Too many attempts. Wait a minute and try again.'
+            : 'Invalid email or password.'
+        status.className = 'text-sm text-red-700'
+        if (button) button.disabled = false
+        return
+      }
+
+      window.location.assign(safeNext())
+    })
+  </script>
+</AdminLayout>

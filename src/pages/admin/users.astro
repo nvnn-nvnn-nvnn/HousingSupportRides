@@ -1,0 +1,156 @@
+---
+import AdminLayout from '../../layouts/AdminLayout.astro'
+import { getAuth } from '../../lib/server'
+
+// ⚠️ Required on every admin page — see src/middleware.ts.
+export const prerender = false
+
+/**
+ * Passing the request headers makes Better Auth authorize this call as the
+ * signed-in admin. Without them it would run as an unauthenticated server
+ * call — which the admin plugin also allows for bootstrapping (see
+ * scripts/create-admin.ts), so the headers are what keep this scoped.
+ */
+const { users } = await getAuth().api.listUsers({
+  headers: Astro.request.headers,
+  query: { limit: 100, sortBy: 'createdAt', sortDirection: 'asc' },
+})
+
+const me = Astro.locals.user
+const dateFmt = new Intl.DateTimeFormat('en-US', { dateStyle: 'medium' })
+
+const inputClass =
+  'w-full rounded-lg border border-[var(--border)] bg-[var(--background)] px-4 py-2.5 text-[var(--foreground)] focus:border-[var(--primary)] focus:outline-none focus:ring-2 focus:ring-[var(--accent-soft)]'
+---
+
+<AdminLayout title="Admins" active="users">
+  <h1 class="font-serif text-3xl font-semibold">Admins</h1>
+  <p class="mt-2 max-w-prose text-sm text-[var(--muted-foreground)]">
+    Everyone listed here can sign in to this dashboard and read every stored
+    submission. Keep the list short, and remove people the day they leave.
+  </p>
+
+  <ul class="mt-8 grid gap-3">
+    {
+      users.map((u) => {
+        const isMe = u.id === me?.id
+        return (
+          <li
+            data-user={u.id}
+            class="flex flex-wrap items-center justify-between gap-4 rounded-xl border border-[var(--border)] bg-[var(--card)] p-5"
+          >
+            <div>
+              <p class="font-semibold">
+                {u.name || u.email}
+                {isMe && <span class="ml-2 text-xs font-normal text-[var(--muted-foreground)]">(you)</span>}
+              </p>
+              <p class="text-sm text-[var(--muted-foreground)]">
+                {u.email} · {u.role ?? 'user'} · added {dateFmt.format(new Date(u.createdAt))}
+                {u.banned && <span class="ml-1 font-semibold text-red-700">· banned</span>}
+              </p>
+            </div>
+            <div class="flex flex-wrap gap-2 text-sm">
+              <button type="button" data-action="password" data-id={u.id} class="rounded-md border border-[var(--border)] px-3 py-1.5 font-medium hover:bg-[var(--accent-soft)]">
+                Set password
+              </button>
+              <button type="button" data-action="revoke" data-id={u.id} data-me={isMe ? 'true' : undefined} class="rounded-md border border-[var(--border)] px-3 py-1.5 font-medium hover:bg-[var(--accent-soft)]">
+                Sign out everywhere
+              </button>
+              {!isMe && (
+                <button type="button" data-action="remove" data-id={u.id} data-email={u.email} class="rounded-md border border-red-200 px-3 py-1.5 font-medium text-red-700 hover:bg-red-50">
+                  Remove
+                </button>
+              )}
+            </div>
+          </li>
+        )
+      })
+    }
+  </ul>
+
+  <section class="mt-12 max-w-md">
+    <h2 class="font-serif text-xl font-semibold">Add an admin</h2>
+    <p class="mt-2 text-sm text-[var(--muted-foreground)]">
+      Give them the password in person or by phone — not in the same email as
+      their address. Ask them to change it with "Set password" after signing in.
+    </p>
+    <form id="add-admin" class="mt-5 grid gap-4">
+      <label class="grid gap-1.5 text-sm font-medium">
+        Name
+        <input class={inputClass} name="name" required autocomplete="off" />
+      </label>
+      <label class="grid gap-1.5 text-sm font-medium">
+        Email
+        <input class={inputClass} name="email" type="email" required autocomplete="off" />
+      </label>
+      <label class="grid gap-1.5 text-sm font-medium">
+        Temporary password <span class="font-normal text-[var(--muted-foreground)]">(12+ characters)</span>
+        <input class={inputClass} name="password" type="text" minlength="12" required autocomplete="new-password" />
+      </label>
+      <button type="submit" class="justify-self-start rounded-full bg-[var(--primary)] px-6 py-2.5 font-semibold text-white hover:brightness-110 disabled:opacity-60">
+        Add admin
+      </button>
+      <p id="add-status" class="text-sm" role="status"></p>
+    </form>
+  </section>
+
+  <script>
+    import { authClient } from '../../lib/auth-client'
+
+    const reload = () => window.location.reload()
+
+    document.querySelectorAll<HTMLButtonElement>('[data-action]').forEach((button) => {
+      button.addEventListener('click', async () => {
+        const userId = button.dataset.id
+        if (!userId) return
+
+        if (button.dataset.action === 'remove') {
+          if (!confirm(`Remove ${button.dataset.email}? They lose access immediately.`)) return
+          const { error } = await authClient.admin.removeUser({ userId })
+          return error ? alert(error.message ?? 'Could not remove.') : reload()
+        }
+
+        if (button.dataset.action === 'revoke') {
+          const self = button.dataset.me === 'true'
+          const warning = self
+            ? 'This signs YOU out on every device, including this one. Continue?'
+            : 'Sign this person out on every device? Use this if a laptop is lost.'
+          if (!confirm(warning)) return
+          const { error } = await authClient.admin.revokeUserSessions({ userId })
+          if (error) return alert(error.message ?? 'Could not sign out.')
+          return self ? window.location.assign('/admin/login') : alert('Done.')
+        }
+
+        if (button.dataset.action === 'password') {
+          const newPassword = prompt('New password (12+ characters):')
+          if (!newPassword) return
+          const { error } = await authClient.admin.setUserPassword({ userId, newPassword })
+          if (error) return alert(error.message ?? 'Could not set password.')
+          // Changing a password does NOT end existing sessions. If this reset
+          // is because the old password leaked, also use "Sign out everywhere".
+          alert('Password updated. If the old one may have leaked, also use "Sign out everywhere".')
+        }
+      })
+    })
+
+    const form = document.getElementById('add-admin') as HTMLFormElement | null
+    const status = document.getElementById('add-status')
+    form?.addEventListener('submit', async (event) => {
+      event.preventDefault()
+      if (!status) return
+      const data = new FormData(form)
+      const { error } = await authClient.admin.createUser({
+        name: String(data.get('name') ?? ''),
+        email: String(data.get('email') ?? ''),
+        password: String(data.get('password') ?? ''),
+        role: 'admin',
+      })
+      if (error) {
+        status.textContent = error.message ?? 'Could not add admin.'
+        status.className = 'text-sm text-red-700'
+        return
+      }
+      reload()
+    })
+  </script>
+</AdminLayout>

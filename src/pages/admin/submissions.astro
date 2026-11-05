@@ -1,0 +1,132 @@
+---
+import AdminLayout from '../../layouts/AdminLayout.astro'
+import { isStoredForm, listSubmissions } from '../../lib/server/submissions'
+
+// ⚠️ Required on every admin page — see src/middleware.ts.
+export const prerender = false
+
+const formParam = Astro.url.searchParams.get('form')
+const filter = isStoredForm(formParam) ? formParam : undefined
+const submissions = await listSubmissions({ form: filter })
+const dateFmt = new Intl.DateTimeFormat('en-US', { dateStyle: 'medium', timeStyle: 'short' })
+
+const tabs = [
+  { label: 'All', href: '/admin/submissions', value: undefined },
+  { label: 'Contact', href: '/admin/submissions?form=contact', value: 'contact' },
+  { label: 'Volunteer', href: '/admin/submissions?form=volunteer', value: 'volunteer' },
+] as const
+
+/** "interest_driver" → "Interest driver". */
+const labelFor = (key: string) =>
+  key.replace(/[_-]+/g, ' ').replace(/^./, (c) => c.toUpperCase())
+---
+
+<AdminLayout title="Submissions" active="submissions">
+  <h1 class="font-serif text-3xl font-semibold">Submissions</h1>
+  <p class="mt-2 max-w-prose text-sm text-[var(--muted-foreground)]">
+    Copies of contact and volunteer forms. Every one was also emailed, so
+    deleting here doesn't delete the email. Concern reports from /transparency
+    are intentionally not stored here.
+  </p>
+
+  <nav aria-label="Filter" class="mt-6 flex gap-2">
+    {
+      tabs.map((tab) => (
+        <a
+          href={tab.href}
+          aria-current={filter === tab.value ? 'page' : undefined}
+          class={`rounded-full border px-4 py-1.5 text-sm font-medium ${
+            filter === tab.value
+              ? 'border-[var(--primary)] bg-[var(--primary)] text-white'
+              : 'border-[var(--border)] hover:bg-[var(--accent-soft)]'
+          }`}
+        >
+          {tab.label}
+        </a>
+      ))
+    }
+  </nav>
+
+  {
+    submissions.length === 0 ? (
+      <p class="mt-8 rounded-xl border border-dashed border-[var(--border)] p-6 text-[var(--muted-foreground)]">
+        Nothing here yet.
+      </p>
+    ) : (
+      <ul class="mt-8 grid gap-4">
+        {submissions.map((s) => (
+          <li
+            data-submission={s.id}
+            class="rounded-xl border border-[var(--border)] bg-[var(--card)] p-5 md:p-6"
+          >
+            <div class="flex flex-wrap items-start justify-between gap-3">
+              <div>
+                <span class="rounded-full bg-[var(--accent-soft)] px-2 py-0.5 text-xs font-semibold capitalize">
+                  {s.form}
+                </span>
+                <p class="mt-2 font-semibold">{s.name || 'No name given'}</p>
+                <p class="text-sm text-[var(--muted-foreground)]">{dateFmt.format(s.createdAt)}</p>
+              </div>
+              <button
+                type="button"
+                data-delete={s.id}
+                class="rounded-md border border-red-200 px-3 py-1.5 text-sm font-medium text-red-700 hover:bg-red-50"
+              >
+                Delete
+              </button>
+            </div>
+
+            <dl class="mt-4 grid gap-x-6 gap-y-2 text-sm sm:grid-cols-[max-content_1fr]">
+              {s.email && (
+                <>
+                  <dt class="text-[var(--muted-foreground)]">Email</dt>
+                  <dd>
+                    <a href={`mailto:${s.email}`} class="text-[var(--primary)] hover:underline">
+                      {s.email}
+                    </a>
+                  </dd>
+                </>
+              )}
+              {s.phone && (
+                <>
+                  <dt class="text-[var(--muted-foreground)]">Phone</dt>
+                  <dd>{s.phone}</dd>
+                </>
+              )}
+              {Object.entries(s.data).map(([key, value]) => (
+                <>
+                  <dt class="text-[var(--muted-foreground)]">{labelFor(key)}</dt>
+                  <dd>{value}</dd>
+                </>
+              ))}
+            </dl>
+
+            {s.message && (
+              <p class="mt-4 whitespace-pre-wrap rounded-lg bg-[var(--background)] p-4 text-sm" style="line-height: 1.7;">
+                {s.message}
+              </p>
+            )}
+          </li>
+        ))}
+      </ul>
+    )
+  }
+
+  <script>
+    // Astro escapes every {value} above, so a submission containing HTML or a
+    // <script> renders as inert text. Don't switch any of it to set:html.
+    document.querySelectorAll<HTMLButtonElement>('[data-delete]').forEach((button) => {
+      button.addEventListener('click', async () => {
+        if (!confirm('Delete this submission permanently? The email copy is not affected.')) return
+        button.disabled = true
+        const res = await fetch(`/api/admin/submissions/${button.dataset.delete}`, { method: 'DELETE' })
+        if (res.ok) {
+          document.querySelector(`[data-submission="${button.dataset.delete}"]`)?.remove()
+        } else {
+          button.disabled = false
+          alert('Could not delete. You may need to sign in again.')
+        }
+      })
+    })
+  </script>
+</AdminLayout>

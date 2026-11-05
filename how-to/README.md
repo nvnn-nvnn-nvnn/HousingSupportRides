@@ -19,6 +19,8 @@ The fast lookup. Find your question, follow the link.
 | Stop spam coming through the forms | [form-spam-protection.md](./form-spam-protection.md) |
 | Put the site online | [deploying.md](./deploying.md) |
 | Turn on donations | [givebutter.md](./givebutter.md) |
+| Sign in as an admin / see form submissions | [admin-dashboard.md](./admin-dashboard.md) |
+| Add or remove an admin | [admin-dashboard.md](./admin-dashboard.md) → Day to day |
 | Let someone else edit the site | [using-the-admin.md](./using-the-admin.md) · [admin-accounts.md](./admin-accounts.md) |
 | Find out what's left before launch | [../notes/todo-next-steps.md](../notes/todo-next-steps.md) |
 | See what changed recently and why | [../notes/CHANGELOG.md](../notes/CHANGELOG.md) |
@@ -43,7 +45,8 @@ use. Check here before following one and wondering why you can't find the code.
 | [form-spam-protection.md](./form-spam-protection.md) | ❌ Not built. Forms are live and unprotected |
 | [givebutter.md](./givebutter.md) | ⚠️ Code is built and waiting &mdash; just needs the two values pasted in |
 | [hero-carousel.md](./hero-carousel.md) | ❌ Not built. Rewritten 2026-09-22 for the new two-crop hero |
-| [admin-accounts.md](./admin-accounts.md) | ❌ Research only, nothing implemented |
+| [admin-dashboard.md](./admin-dashboard.md) | ⚠️ Built and tested locally — **needs a Turso database + 4 Vercel env vars** before it works in production |
+| [admin-accounts.md](./admin-accounts.md) | 📚 Background reading — the reasoning behind admin-dashboard.md |
 
 ## The guides, by area
 
@@ -83,7 +86,8 @@ one Web3Forms key and deliver to one inbox.
 | --- | --- |
 | [deploying.md](./deploying.md) | Getting online, connecting services, the pre-launch checklist |
 | [givebutter.md](./givebutter.md) | Turn on real donations — the two values, and the trap that makes the button silently dead |
-| [admin-accounts.md](./admin-accounts.md) | Admin logins and sessions — and what to use instead of rolling your own |
+| [admin-dashboard.md](./admin-dashboard.md) | **Admin sign-in at /admin**: setup, adding admins, what is stored, security |
+| [admin-accounts.md](./admin-accounts.md) | Why it was built the way it was — auth concepts, sessions, the privacy trade-off |
 
 ## First, run the site locally
 

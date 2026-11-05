@@ -1,0 +1,103 @@
+---
+/**
+ * Shell for every /admin page. Standalone rather than BaseLayout on purpose:
+ * BaseLayout carries the public site's schema.org data, social cards and the
+ * Givebutter script, none of which belong on a private admin page.
+ *
+ * Pages using this layout MUST still declare `export const prerender = false`
+ * themselves — a layout can't do it for them. See src/middleware.ts.
+ */
+import '../styles/global.css'
+
+interface Props {
+  title: string
+  /** Highlights the matching nav link. */
+  active?: 'dashboard' | 'submissions' | 'users'
+}
+
+const { title, active } = Astro.props
+const user = Astro.locals.user
+
+const nav = [
+  { key: 'dashboard', label: 'Dashboard', href: '/admin' },
+  { key: 'submissions', label: 'Submissions', href: '/admin/submissions' },
+  { key: 'users', label: 'Admins', href: '/admin/users' },
+] as const
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Keep admin pages out of search results entirely. -->
+    <meta name="robots" content="noindex, nofollow" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+    <title>{title} — HSR Admin</title>
+  </head>
+  <body class="min-h-screen bg-[var(--background)] text-[var(--foreground)]">
+    {
+      user && (
+        <header class="border-b border-[var(--border)] bg-[var(--card)]">
+          <div class="mx-auto flex max-w-[1200px] flex-wrap items-center justify-between gap-4 px-5 py-4 md:px-10">
+            <div class="flex flex-wrap items-center gap-6">
+              <a href="/admin" class="font-serif text-lg font-semibold text-[var(--primary)]">
+                HSR Admin
+              </a>
+              <nav aria-label="Admin" class="flex flex-wrap gap-1 text-sm">
+                {nav.map((item) => (
+                  <a
+                    href={item.href}
+                    aria-current={active === item.key ? 'page' : undefined}
+                    class={`rounded-md px-3 py-1.5 font-medium transition-colors ${
+                      active === item.key
+                        ? 'bg-[var(--primary)] text-white'
+                        : 'text-[var(--foreground)] hover:bg-[var(--accent-soft)]'
+                    }`}
+                  >
+                    {item.label}
+                  </a>
+                ))}
+                <a
+                  href="/keystatic"
+                  class="rounded-md px-3 py-1.5 font-medium text-[var(--foreground)] hover:bg-[var(--accent-soft)]"
+                >
+                  Edit content
+                </a>
+                <a
+                  href="/"
+                  class="rounded-md px-3 py-1.5 font-medium text-[var(--muted-foreground)] hover:bg-[var(--accent-soft)]"
+                >
+                  View site
+                </a>
+              </nav>
+            </div>
+            <div class="flex items-center gap-3 text-sm">
+              <span class="text-[var(--muted-foreground)]">{user.email}</span>
+              <button
+                type="button"
+                id="admin-sign-out"
+                class="rounded-md border border-[var(--border)] px-3 py-1.5 font-medium hover:bg-[var(--accent-soft)]"
+              >
+                Sign out
+              </button>
+            </div>
+          </div>
+        </header>
+      )
+    }
+
+    <main class="mx-auto max-w-[1200px] px-5 py-10 md:px-10">
+      <slot />
+    </main>
+
+    <script>
+      import { authClient } from '../lib/auth-client'
+
+      document.getElementById('admin-sign-out')?.addEventListener('click', async () => {
+        await authClient.signOut()
+        window.location.assign('/admin/login')
+      })
+    </script>
+  </body>
+</html>
