@@ -4,8 +4,9 @@
 > This site deploys to **Vercel** and MUST use the **`@astrojs/vercel`** adapter
 > in `astro.config.mjs`. **Do NOT use `@astrojs/node` for Vercel** — the build
 > goes green but the site won't serve. Vercel deploys from GitHub `main`
-> (`devvdevvdevv/HousingSuportRides`); `/keystatic` needs `KEYSTATIC_*` env vars
-> set in Vercel. Full steps + the gotcha: [../how-to/deploying.md](../how-to/deploying.md).
+> (`devvdevvdevv/HousingSuportRides`); `/keystatic` needs either a Keystatic
+> Cloud project name in `keystatic.config.tsx` or `KEYSTATIC_*` env vars
+> (GitHub mode) set in Vercel. Full steps + the gotcha: [../how-to/deploying.md](../how-to/deploying.md).
 
 A warm, evidence-led nonprofit website for Housing Support Rides. Soft ivory +
 deep teal, humanist type, an impact section on real numbers, a donation flow
@@ -25,6 +26,7 @@ Start here, then read the companion docs:
 
 | Doc | What it covers |
 | --- | --- |
+| [admin-system.md](./admin-system.md) | How admin sign-in works end to end — sessions, the middleware gate, where submissions go, and the security upgrade |
 | [gallery-pipeline.md](./gallery-pipeline.md) | How a gallery photo gets from a filename in `content.ts` to the lightbox |
 | [mission-and-programs.md](./mission-and-programs.md) | **The official program description, verbatim** — source of truth for every mission/program claim on the site |
 | [folder-structure.md](./folder-structure.md) | Where every file lives and why |
@@ -34,8 +36,10 @@ Start here, then read the companion docs:
 | [CHANGELOG.md](./CHANGELOG.md) | Running log of what changed and when |
 
 > **Task-based how-to guides** live in a separate top-level folder:
-> **[../how-to/](../how-to/)** — 12 guides covering content, photos, forms,
-> email, and deployment. Its [README](../how-to/README.md) opens with an
+> **[../how-to/](../how-to/)** — 16 guides covering content, photos, forms,
+> email, and deployment, plus practice exercises
+> ([slideshow-exercises.md](../how-to/slideshow-exercises.md): build
+> slideshows like the hero's elsewhere on the site). Its [README](../how-to/README.md) opens with an
 > "I want to…" lookup table and a **built vs. planned** status list, because
 > several guides describe features that aren't wired up yet.
 
@@ -47,11 +51,20 @@ Start here, then read the companion docs:
 - **Tailwind CSS v4** (via `@tailwindcss/vite`) + design tokens in `global.css`.
 - **motion** (Framer Motion, `motion/react`) for animation.
 - **MDX content collection** for the blog (`src/content/journal/`).
-- **Keystatic** (git-based CMS) — the `/keystatic` editor. Local mode in dev,
-  GitHub mode in production (multiple editors sign in and commit).
-- **@astrojs/vercel** adapter (deploys to Vercel; only Keystatic's admin route
-  needs a server — public pages are still static). ⚠️ Must stay `vercel()`,
-  not `node()` — see the DEPLOY warning above.
+- **Keystatic** (git-based CMS) — the `/keystatic` editor, behind the `/admin`
+  login. Local mode in dev. In production: **Keystatic Cloud** once
+  `KEYSTATIC_CLOUD_PROJECT` is set in `keystatic.config.tsx` (editors invited
+  by email, no GitHub needed), GitHub mode while it's empty. See
+  [../how-to/keystatic-cloud.md](../how-to/keystatic-cloud.md).
+- **@astrojs/vercel** adapter (deploys to Vercel). Public pages are still
+  static; only `/admin`, `/api/*` and `/keystatic` run on demand. ⚠️ Must stay
+  `vercel()`, not `node()` — see the DEPLOY warning above. `@astrojs/node` was
+  uninstalled 2026-11-05; don't add it back.
+- **Better Auth** (+ admin plugin) — email/password sign-in for `/admin`, with
+  sessions stored in the database. **Turso / libSQL** database: `local.db` in
+  dev, hosted in production. See [admin-system.md](./admin-system.md).
+- ⚠️ **Astro is pinned to `~7.3.8`** — 7.4.2+ needs a newer Node than this
+  machine has. Read CHANGELOG 2026-11-05 before upgrading.
 - **Givebutter** — real donation processing via their widget custom elements,
   wired into `DonateBlock`. Off by default until `GIVEBUTTER_ACCOUNT_ID` /
   `GIVEBUTTER_CAMPAIGN_CODE` are set in `src/lib/content.ts` — see

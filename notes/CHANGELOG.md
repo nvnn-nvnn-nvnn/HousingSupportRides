@@ -4,6 +4,204 @@ A running log of notable work. Most recent first. For *why* behind big
 decisions, see [blog-cms-plan.md](./blog-cms-plan.md); for how-tos, see
 [../how-to/](../how-to/).
 
+## 2026-11-12
+
+### Support Us: photo slideshow beside the Donate button
+
+The homepage's maroon "Support Us" block was a centred column of text and one
+button. It's now two columns: photos left, the message and Donate right.
+
+- **Layout:** one column below 1024px (photos on top, then text), two equal
+  columns from `lg:` up. The Donate button is full width on phones and natural
+  width from `sm:`.
+- **Slideshow:** `SupportSlideshow` in `DonateBlock.tsx`, showing
+  `SUPPORT_IMAGES` from `content.ts`.
+  - 5 gallery photos chosen for people helping or achieving: kitchen group,
+    outdoor setup, certificates, hall setup, hallway group. The bookstore photo
+    was left out because of the store's logo.
+  - A 4:3 frame at every size, with files pre-cropped to 4:3 at 1200 and 800
+    wide (30–175 KB each) in `public/img/support/`.
+  - A 1s crossfade, plus a slow 110%→100% zoom (6.5s, longer than the 5s
+    slide) on the photo that's showing.
+  - Dots, Pause, and hover pause. Reduced-motion visitors get no zoom and start
+    paused.
+- **"Where your gift goes":** three points from the program descriptions, with
+  no dollar figures, because `DONATION_TIERS` aren't verified.
+- **Shared hook:** `src/hooks/useSlideshow.ts`. The hero's slideshow logic moved
+  out of `Hero.tsx`, so both sections use it. It adds `togglePlaying` (Play
+  clears the hover hold) and `reduced`. This is Slideshow Exercise 2's
+  solution, now marked done in the exercises.
+- **Bug fixed:** the "GIVE" label above the heading was invisible, maroon on
+  maroon. `.eyebrow` in `global.css` is unlayered CSS, so it beats Tailwind's
+  `text-*` classes. Its color is now set inline. Any `.eyebrow` on a dark
+  background has the same trap.
+- **Verified:**
+  - `npm run build` passes, with no type errors in the changed files.
+  - Screenshots at 1280px and 390px: correct layout, no horizontal scroll.
+  - Slides advance, and phones load the 800px files.
+  - The hero still advances after the refactor.
+- **Docs:** new [../how-to/support-section.md](../how-to/support-section.md).
+  Updated: hero-carousel.md (the hook's new home), slideshow-exercises.md,
+  the how-to index, component-responsibilities, folder-structure.
+- ⚠️ **Open:** photo consent for these five as well.
+
+## 2026-11-10
+
+### Keystatic: image upload buttons for journal posts
+
+The journal cover field used to be a text box. Editors had to copy a file
+into `public/` by hand and type its path, which Keystatic Cloud editors can't
+do at all.
+
+- **Cover** is now `fields.image`, with a Choose file button and a preview.
+  It saves to `public/img/journal/<slug>/cover.<ext>`.
+- **Body** images: the MDX editor's image button saves to
+  `public/img/journal/<original-filename>`.
+- The folder and URL are set once in `keystatic.config.tsx`
+  (`JOURNAL_IMAGE_DIR` / `JOURNAL_IMAGE_URL`). They must change together.
+- **No other code changed.** The field still stores a plain URL string, so
+  `content.config.ts` and the post pages work as before.
+- **Not resized:** files in `public/` are served as uploaded. The field
+  descriptions tell editors to resize to about 1600px / under 500 KB first.
+  Moving uploads to `src/assets/` with Astro's `image()` would automate this,
+  but is a bigger change.
+- **Picnic post migrated:** its cover is now
+  `/img/journal/recovery-picnic-2026/cover.jpg`, a 670 KB optimized copy, so
+  Keystatic recognizes it. `public/img/cover.jpg` stays (gallery,
+  `FIELD_STORIES`).
+- **Tested locally:** the existing cover previews, a test upload replaced the
+  file and kept the path (then reverted), and the build serves it on
+  `/journal` and the post page. Not tested: body uploads, live-site uploads.
+- **Docs:** full explanation in
+  [../how-to/writing-a-post.md](../how-to/writing-a-post.md) → "Adding
+  images", covering editor steps, resizing, where files go, local vs. live
+  saving, and how it works. `using-the-admin.md` is updated to match.
+
+### Decision: stay on Turso, not Supabase
+
+Considered moving the admin database to Supabase before launch, and decided
+against it. The main reasons:
+- Supabase's free plan pauses idle projects. This admin area is used rarely,
+  so it would often be asleep, blocking sign-in and the saving of submissions.
+- The code is already built and tested on Turso.
+- Only Supabase's plain Postgres would be used.
+
+There was no data to move, because production hadn't been set up. The full
+reasoning, when to reconsider, and the switching checklist (including the
+`createdAt` → `BIGINT` trap) are in [admin-system.md](./admin-system.md) →
+"Why Turso and not Supabase".
+
+### Local `/admin` returned 500 `BetterAuthError`: empty `local.db`
+
+- **Symptom:** `http://127.0.0.1:4321/admin/users` (and every other admin
+  page) showed a blank 500 titled `BetterAuthError`.
+- **Cause:** `local.db` was 0 bytes, so the auth tables had never been
+  created on this machine. The production-only "not configured" check
+  doesn't cover dev.
+- **Fix:** ran `npm run db:migrate` (local file only, no `.env` present), then
+  restarted the dev server. The old process still returned 500 after
+  migrating. Now `/admin/users` redirects to `/admin/login` as it should.
+- **Local admin created afterwards:** `techkage@proton.me` (display name
+  "Techkage"), via `npm run admin:create`, in `local.db` only. Checked that
+  sign-in works and `/admin/users` loads.
+  - ⚠️ The temporary password was shown in a chat session, so treat it as
+    exposed. Change it under Admins → "Set password".
+  - Production has **no** admins yet. Run `admin:create` again against Turso
+    once it exists.
+  - The display name was a placeholder, because the script requires one. There
+    is no rename in the UI, so a different name means removing the account and
+    creating it again.
+- **Docs:** new "Running it on your own computer" section in
+  [admin-system.md](./admin-system.md), and a troubleshooting row in
+  [../how-to/admin-dashboard.md](../how-to/admin-dashboard.md).
+
+## 2026-11-09
+
+### Hero carousel: five photos, crossfading every 6 seconds
+
+The homepage hero now cycles through five community photos instead of one.
+
+- **Photos:** the existing group cover, then gallery shots 024720 ("Recovery
+  Is Everywhere" banner), 024724 (group on steps), 024705 (yellow backdrop)
+  and 024715 (event hall).
+  - Chosen from a contact sheet of the gallery, then checked in the 4:5 phone
+    crop. All five keep their subjects.
+  - Left out: the baptism photos and the single-person portraits.
+- **List:** `HERO_IMAGES` in `src/lib/content.ts`. Each entry is a base path
+  with alt text and an optional `focal`. `HERO_IMAGE` is still exported and
+  now points at the first photo.
+- **Files:** `public/img/hero/hero-N-1920.jpg` and `-1080.jpg`, made with
+  sharp (quality 72, mozjpeg). The `srcset` serves the 1080 file on phones.
+  - The first photo is now 208 KB on phones. It used to be the 2 MB
+    `cover.jpg`, which stays in place for the gallery and field stories.
+- **Crossfade:** CSS opacity on stacked `<img>`s, not `AnimatePresence` as
+  the guide had planned. Under `AnimatePresence`, a slide's file only starts
+  downloading when the slide mounts, so it would fade in black.
+- **Loading:** slides 2–5 mount after `window.load`, so they don't compete
+  with the first photo, which is the LCP image (`fetchpriority="high"`).
+- **Controls:** dots and a Pause/Play button, top-right and clear of the
+  headline.
+  - Hovering pauses the slideshow, and clicking Play clears that hover hold.
+    Without that, Play did nothing while the mouse was still over the hero.
+  - Reduced-motion users start paused.
+  - Covers WCAG 2.2.2, since phones have no hover.
+  - Hidden slides are `aria-hidden`.
+- **Verified:** `npm run build` passes. Tested the built output with headless
+  Chrome at 1440px and 390px: slides advance, the right file size loads, no
+  failed requests.
+  - The running dev server had a stale Vite dependency cache (504 "Outdated
+    Optimize Dep"), so the homepage didn't hydrate there. Not caused by this
+    change; restarting `npm run dev` fixes it.
+- ⚠️ **Open:** photo consent for front-page use, and review of the alt text,
+  which was written from what's visible in each photo.
+- **Docs:**
+  - [../how-to/hero-carousel.md](../how-to/hero-carousel.md) is rewritten to
+    match the built code: adding/swapping a photo, how the five parts work, a
+    gotchas table. The outdated `AnimatePresence` plan is gone, and the reason
+    it was dropped is kept.
+  - New [../how-to/slideshow-exercises.md](../how-to/slideshow-exercises.md):
+    six graded exercises with hints, self-checks and collapsed solutions.
+    Topics: a shared `useSlideshow` hook, homepage testimonials, a `/gallery`
+    highlights slideshow (Astro → React boundary), progress bar + arrow keys,
+    swipe. **None of it is built.** The exercises are for practice.
+  - Updated: how-to index, notes README, todo-next-steps.
+
+## 2026-11-08
+
+### Keystatic Cloud, so staff can edit posts without GitHub
+
+Staff need to edit blog posts on the live site, and most don't have GitHub
+accounts. In GitHub mode Keystatic needs one per editor. Keystatic Cloud
+replaces that with emailed invites, and Keystatic's GitHub App makes the
+commits on their behalf.
+
+- `keystatic.config.tsx`: new `KEYSTATIC_CLOUD_PROJECT` constant
+  (`team/project`).
+  - Dev is always `local`.
+  - Production uses `cloud` when the constant is set and falls back to
+    `github` when it's empty.
+- **Empty by default, on purpose.** The Cloud project doesn't exist yet. With
+  the GitHub fallback, deploying this change breaks nothing. Pasting the
+  project name is the only switch.
+- The project name isn't a secret (Cloud's own sign-in protects it), so it
+  lives in code, not an env var. That also avoids a client-side
+  `PUBLIC_` variable.
+- Cloud sign-in returns to `/keystatic/cloud/oauth/callback`. That path is
+  under the admin gate and works because the editor is already signed in to
+  `/admin`.
+  - Result: two logins, admin first, then Keystatic Cloud.
+  - Removing someone from `/admin/users` cuts editor access through the site.
+    Remove them from the Cloud team too.
+- **Roles:** decided to stay **admins only** for now. Everyone in
+  `/admin/users` is a full admin. Better Auth's access control can add
+  Staff/Editor levels later.
+- ⚠️ Cloud's free plan covers 3 users.
+- Verified: the build passes with the constant empty, and the cloud branch
+  type-checks with a value set.
+- New guide: [../how-to/keystatic-cloud.md](../how-to/keystatic-cloud.md).
+  Updated: how-to index, admin-dashboard.md Part 4, admin-accounts.md,
+  deploying.md, todo-next-steps, notes README.
+
 ## 2026-11-05
 
 ### Security: Astro 7.2.0 → 7.3.8, unused Node adapter removed

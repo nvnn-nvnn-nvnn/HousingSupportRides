@@ -13,14 +13,17 @@ The fast lookup. Find your question, follow the link.
 | Change wording on the landing page | [editing-the-site.md](./editing-the-site.md) |
 | Add photos to the site | [images.md](./images.md) |
 | Add photos to the gallery | [gallery-page.md](./gallery-page.md) |
-| Let the hero photo cycle through several images | [hero-carousel.md](./hero-carousel.md) |
+| Add or swap a photo in the homepage slideshow | [hero-carousel.md](./hero-carousel.md) |
+| Change the photos beside the Donate button | [support-section.md](./support-section.md) |
+| Learn to build a slideshow somewhere else | [slideshow-exercises.md](./slideshow-exercises.md) |
 | Collect email addresses / send a newsletter | [newsletter.md](./newsletter.md) |
 | Change what a form says after you hit send | [form-feedback.md](./form-feedback.md) |
 | Stop spam coming through the forms | [form-spam-protection.md](./form-spam-protection.md) |
 | Put the site online | [deploying.md](./deploying.md) |
 | Turn on donations | [givebutter.md](./givebutter.md) |
 | Sign in as an admin / see form submissions | [admin-dashboard.md](./admin-dashboard.md) |
-| Add or remove an admin | [admin-dashboard.md](./admin-dashboard.md) → Day to day |
+| Add or remove an admin | [admin-dashboard.md](./admin-dashboard.md) → Part 3 |
+| Let staff edit blog posts without a GitHub account | [keystatic-cloud.md](./keystatic-cloud.md) |
 | Let someone else edit the site | [using-the-admin.md](./using-the-admin.md) · [admin-accounts.md](./admin-accounts.md) |
 | Find out what's left before launch | [../notes/todo-next-steps.md](../notes/todo-next-steps.md) |
 | See what changed recently and why | [../notes/CHANGELOG.md](../notes/CHANGELOG.md) |
@@ -35,6 +38,7 @@ use. Check here before following one and wondering why you can't find the code.
 | --- | --- |
 | [writing-a-post.md](./writing-a-post.md) | ✅ Built and working |
 | [using-the-admin.md](./using-the-admin.md) | ✅ Built and working |
+| [keystatic-cloud.md](./keystatic-cloud.md) | ⚠️ Code ready — **switches on once you create the Cloud project and paste its name** into `keystatic.config.tsx` |
 | [editing-the-site.md](./editing-the-site.md) | ✅ Built and working |
 | [images.md](./images.md) | ✅ Built and working |
 | [form-feedback.md](./form-feedback.md) | ✅ Built and working |
@@ -44,7 +48,9 @@ use. Check here before following one and wondering why you can't find the code.
 | [newsletter.md](./newsletter.md) | ❌ **Not wired.** `Newsletter.tsx` shows a *false* confirmation and discards the address — see the guide's Step 3 |
 | [form-spam-protection.md](./form-spam-protection.md) | ❌ Not built. Forms are live and unprotected |
 | [givebutter.md](./givebutter.md) | ⚠️ Code is built and waiting &mdash; just needs the two values pasted in |
-| [hero-carousel.md](./hero-carousel.md) | ❌ Not built. Rewritten 2026-09-22 for the new two-crop hero |
+| [hero-carousel.md](./hero-carousel.md) | ✅ Built and working (2026-11-09) |
+| [support-section.md](./support-section.md) | ✅ Built and working (2026-11-12) |
+| [slideshow-exercises.md](./slideshow-exercises.md) | 📘 Practice exercises. Nothing in them is built yet, by design |
 | [admin-dashboard.md](./admin-dashboard.md) | ⚠️ Built and tested locally — **needs a Turso database + 4 Vercel env vars** before it works in production |
 | [admin-accounts.md](./admin-accounts.md) | 📚 Background reading — the reasoning behind admin-dashboard.md |
 
@@ -68,7 +74,9 @@ everything the other three can do.
 | [images.md](./images.md) | Adding photos and getting them optimized. **The prerequisite.** |
 | [gallery-page.md](./gallery-page.md) | The gallery: Highlights/Archive split, lightbox, scroll-reveal |
 | [lightbox-navigation.md](./lightbox-navigation.md) | ← / → navigation between photos in the lightbox |
-| [hero-carousel.md](./hero-carousel.md) | Looping the hero photo through several images |
+| [hero-carousel.md](./hero-carousel.md) | The homepage slideshow: adding photos, how the code works, gotchas |
+| [support-section.md](./support-section.md) | The Support Us block: photo slideshow beside the Donate button, mobile layout |
+| [slideshow-exercises.md](./slideshow-exercises.md) | Six graded exercises for building slideshows elsewhere (testimonials, /gallery, swipe…) |
 
 ### Forms & email
 All three touch the same two forms (`/contact`, `/volunteer/apply`), which share
@@ -86,7 +94,7 @@ one Web3Forms key and deliver to one inbox.
 | --- | --- |
 | [deploying.md](./deploying.md) | Getting online, connecting services, the pre-launch checklist |
 | [givebutter.md](./givebutter.md) | Turn on real donations — the two values, and the trap that makes the button silently dead |
-| [admin-dashboard.md](./admin-dashboard.md) | **Admin sign-in at /admin**: setup, adding admins, what is stored, security |
+| [admin-dashboard.md](./admin-dashboard.md) | **Admin sign-in at /admin**, step by step: try it locally, turn it on for the live site, add/remove admins, fix problems |
 | [admin-accounts.md](./admin-accounts.md) | Why it was built the way it was — auth concepts, sessions, the privacy trade-off |
 
 ## First, run the site locally

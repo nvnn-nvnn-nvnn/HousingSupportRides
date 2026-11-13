@@ -5,6 +5,9 @@
 > dashboard at `/admin`. To run it, see **[admin-dashboard.md](./admin-dashboard.md)**.
 > This page stays as the reasoning behind it. Where they differ, trust
 > admin-dashboard.md — it describes the code.
+>
+> **Update 2026-11-08:** Keystatic Cloud (Part 3) is now wired in. Setup:
+> **[keystatic-cloud.md](./keystatic-cloud.md)**.
 
 **A study guide, not an implementation.** It was written before anything was
 built, to decide what to build.

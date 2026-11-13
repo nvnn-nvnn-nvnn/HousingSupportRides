@@ -85,6 +85,9 @@ team). Everyone there can edit all collections, including the news/journal.
 
 **Editors without GitHub accounts?** Use **Keystatic Cloud** — it handles sign-in
 and team management for you, so non-technical staff don't need GitHub logins.
+The code is already wired: set `KEYSTATIC_CLOUD_PROJECT` in `keystatic.config.tsx`.
+Steps in [keystatic-cloud.md](./keystatic-cloud.md). In Cloud mode the
+`KEYSTATIC_*` Vercel variables above aren't used.
 Keystatic itself has no per-collection roles yet; GitHub/Cloud access is all-or-nothing.
 
 ## Connecting Givebutter (donations)

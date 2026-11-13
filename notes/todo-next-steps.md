@@ -70,8 +70,8 @@ gave:
          nothing useful from 29 of 32 photos. Was mitigated by those entries
          being disabled; that mitigation is gone. Fix per photo and move each up
          to the "✓ reviewed" group as you go.
-   - [ ] Looping hero carousel (still unbuilt). ⚠️ The guide was rewritten
-         2026-09-22 for the new two-crop hero — re-read Step 1 before starting.
+   - [x] Looping hero carousel — built 2026-11-09. Five photos in
+         `HERO_IMAGES` (`content.ts`), files in `public/img/hero/`.
    - [ ] Scroll-reveal on the tiles (still unbuilt — the `.reveal` hook described
          in the how-to is not wired up).
    Guides: [../how-to/images.md](../how-to/images.md),
@@ -247,14 +247,21 @@ Before it works on the live site:
       `/admin` returns "not configured" — the public site is unaffected.
 - [ ] Clear production values out of local `.env` afterwards, or `npm run dev`
       writes to the live database.
+- [x] Local dev set up (2026-11-10): `local.db` migrated, admin
+      `techkage@proton.me` created. Local only. Production still needs its own.
+- [ ] Change the local `techkage@proton.me` password. The temporary one was
+      shown in a chat session.
 
 Decisions still open (policy, not code):
 - [ ] ⚠️ **Retention.** Submissions are now stored at rest and nothing deletes
       them automatically. Decide a period.
 - [ ] **Deletion requests** — data now lives in three places: dashboard,
       Web3Forms email, inbox.
-- [ ] **Keystatic still needs GitHub in production** to save. If staff lack
-      GitHub accounts → Keystatic Cloud (admin-accounts.md, Part 3).
+- [ ] **Keystatic Cloud: create the project** at keystatic.cloud, connect the
+      repo, paste `team/project` into `KEYSTATIC_CLOUD_PROJECT` in
+      `keystatic.config.tsx`, invite staff. Code is ready (2026-11-08); until
+      then production stays in GitHub mode. Steps: how-to/keystatic-cloud.md.
+      ⚠️ Free plan is 3 users.
 - [ ] Every admin sees every submission. Add a read-only role if that's too
       broad.
 

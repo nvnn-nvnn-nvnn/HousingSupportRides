@@ -38,10 +38,16 @@ edit = who has write access to the GitHub repo. See
 
 ## Images
 
-- The cover field is a **path** to an image you place in the `public/` folder,
-  e.g. put `public/img/muddy-fork.jpg` and set the cover to `/img/muddy-fork.jpg`.
+- **Cover:** click **Choose file** under "Cover image". No typing paths.
+- **In the body:** click the image button (the last icon in the editor toolbar).
+- **Resize first:** about 1600px wide, under 500 KB. Nothing shrinks uploads
+  for you.
 - Always fill in **cover alt text** for accessibility.
-- No cover? The article shows a styled placeholder — the site still works.
+- No cover? The article shows a styled placeholder, and the site still works.
+
+The full explanation, including where files go, why they aren't resized,
+and what to commit, is in
+[writing-a-post.md → Adding images](./writing-a-post.md#adding-images).
 
 ## Categories
 

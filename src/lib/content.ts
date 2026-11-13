@@ -27,10 +27,76 @@ export const NAV_LINKS = [
 ] as const
 
 /**
- * Hero image. Drop a file in public/img/ and set the path here, e.g.
- * '/img/hero.jpg'. Leave '' to keep the gradient placeholder.
+ * Hero carousel — the homepage photo crossfades through these in order.
+ * See how-to/hero-carousel.md.
+ *
+ * Each entry is a BASE path: the hero loads `${src}-1080.jpg` on phones and
+ * `${src}-1920.jpg` on wider screens, so both files must exist in public/.
+ * Make them with sharp at 1920 and 1080 wide (quality ~72).
+ *
+ * ⚠️ Check every new photo at 390px wide — the phone crop is 4:5 and cuts
+ * both sides of a 4:3 photo. Groups that sit in the middle survive.
+ * `focal` (optional) overrides the default object-position for one photo.
+ *
+ * Empty list = gradient placeholder. One entry = static photo, no animation.
  */
-export const HERO_IMAGE = '/img/cover.jpg'
+export const HERO_IMAGES: { src: string; alt: string; focal?: string }[] = [
+  {
+    src: '/img/hero/hero-1',
+    alt: 'A large group of Housing Support Rides clients, volunteers, and staff gathered outdoors, several holding recovery milestone certificates',
+  },
+  {
+    src: '/img/hero/hero-2',
+    alt: 'A group standing outdoors beside a large "Recovery Is Everywhere" story banner at an outdoor event',
+  },
+  {
+    src: '/img/hero/hero-3',
+    alt: 'A large group seated together on wide outdoor stone steps, smiling at the camera',
+  },
+  {
+    src: '/img/hero/hero-4',
+    alt: 'A group of community members posing in front of a bright yellow curtain, some kneeling in front',
+  },
+  {
+    src: '/img/hero/hero-5',
+    alt: 'Volunteers posing cheerfully in an event hall set with rows of white-covered chairs',
+  },
+]
+
+/**
+ * Support Us slideshow — the photos beside the Donate button (DonateBlock.tsx).
+ * Same idea as HERO_IMAGES: `src` is a base path, and both
+ * `${src}-800.jpg` and `${src}-1200.jpg` must exist in public/.
+ *
+ * The frame is 4:3 at every screen size, so 4:3 photos aren't cropped. Make
+ * them with sharp at 1200 and 800 wide, cropped to 4:3 (quality ~72). See
+ * how-to/support-section.md.
+ */
+export const SUPPORT_IMAGES: { src: string; alt: string }[] = [
+  {
+    src: '/img/support/support-1',
+    alt: 'Volunteers and community members smiling around a serving table in a community kitchen',
+  },
+  {
+    src: '/img/support/support-2',
+    alt: 'A volunteer carrying a folding table while others set up a tent for an outdoor event',
+  },
+  {
+    src: '/img/support/support-3',
+    alt: 'Four men standing in front of a brick wall, each holding a certificate',
+  },
+  {
+    src: '/img/support/support-4',
+    alt: 'Volunteers hanging drapes and setting up tables to prepare an event hall',
+  },
+  {
+    src: '/img/support/support-5',
+    alt: 'Four smiling community members standing together in a hallway, two in matching yellow shirts',
+  },
+]
+
+/** First hero photo — kept for anything that wants a single image. */
+export const HERO_IMAGE = HERO_IMAGES[0] ? `${HERO_IMAGES[0].src}-1920.jpg` : ''
 
 /**
  * Givebutter donation processor. Create a free account at givebutter.com,

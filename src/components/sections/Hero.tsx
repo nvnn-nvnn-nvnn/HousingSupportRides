@@ -1,7 +1,15 @@
 import { motion } from 'motion/react'
+import { Pause, Play } from 'lucide-react'
 import Button from '../ui/Button'
 import MediaPlaceholder from '../common/MediaPlaceholder'
-import { HERO_IMAGE } from '../../lib/content'
+import { HERO_IMAGES } from '../../lib/content'
+import { useSlideshow } from '../../hooks/useSlideshow'
+import { cn } from '../../lib/utils'
+
+/** How long each photo stays up before crossfading to the next. */
+const SLIDE_MS = 6000
+/** Default crop: biased toward the upper-middle on phones, where the faces are. */
+const DEFAULT_FOCAL = 'object-[50%_32%] sm:object-center'
 
 const container = {
   hidden: {},
@@ -20,8 +28,23 @@ const item = {
 const textShadow = '0 2px 14px rgba(0,0,0,0.55)'
 
 function Hero() {
+  const count = HERO_IMAGES.length
+  // waitForLoad: slides 2+ aren't mounted until the first photo has loaded,
+  // so they don't compete with it for bandwidth (it's the page's LCP image).
+  const { index, setIndex, playing, togglePlaying, setHeld, ready: restReady } = useSlideshow(count, {
+    intervalMs: SLIDE_MS,
+    waitForLoad: true,
+  })
+
   return (
-    <section id="top" className="relative overflow-hidden bg-black">
+    <section
+      id="top"
+      className="relative overflow-hidden bg-black"
+      aria-roledescription={count > 1 ? 'carousel' : undefined}
+      aria-label={count > 1 ? 'Photos from our community' : undefined}
+      onMouseEnter={() => setHeld(true)}
+      onMouseLeave={() => setHeld(false)}
+    >
       {/* Taller on phones (4:5), wider on tablet+ (4:3). A 4:3 frame on a 390px
           phone is only ~290px tall — a squashed letterbox that wastes the photo
           and crams the text. The taller mobile crop gives both room.
@@ -38,15 +61,39 @@ function Hero() {
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
       >
-        {/* object-position biases toward the upper-middle on phones, where the
-            faces are — the default centre crop cut heads off in the 4:5 frame. */}
-        <MediaPlaceholder
-          src={HERO_IMAGE}
-          eager
-          className="object-[50%_32%] sm:object-center"
-          alt="A large group of Housing Support Rides clients, volunteers, and staff gathered outdoors, several holding recovery milestone certificates"
-          hint="A volunteer driver opening a car door for a smiling person outside an apartment, warm morning light, hopeful documentary photography"
-        />
+        {/* Slides — all stacked in the same box, crossfading by opacity. They
+            MUST stay the first children so both scrims below sit on top of
+            every slide; otherwise each new photo fades in over the darkening
+            and the headline loses its background.
+            Phones get the 1080px file, everything wider the 1920px one. */}
+        {HERO_IMAGES.length === 0 ? (
+          <MediaPlaceholder
+            className={DEFAULT_FOCAL}
+            alt="Housing Support Rides"
+            hint="A volunteer driver opening a car door for a smiling person outside an apartment, warm morning light, hopeful documentary photography"
+          />
+        ) : (
+          HERO_IMAGES.map((img, i) =>
+            i === 0 || restReady ? (
+              <img
+                key={img.src}
+                src={`${img.src}-1920.jpg`}
+                srcSet={`${img.src}-1080.jpg 1080w, ${img.src}-1920.jpg 1920w`}
+                sizes="100vw"
+                alt={img.alt}
+                aria-hidden={i !== index}
+                loading={i === 0 ? 'eager' : 'lazy'}
+                fetchPriority={i === 0 ? 'high' : 'low'}
+                decoding="async"
+                className={cn(
+                  'absolute inset-0 h-full w-full object-cover transition-opacity duration-[1200ms] ease-in-out motion-reduce:transition-none',
+                  img.focal ?? DEFAULT_FOCAL,
+                  i === index ? 'opacity-100' : 'opacity-0',
+                )}
+              />
+            ) : null,
+          )
+        )}
 
         {/* Two-part scrim, tuned to keep the photo visible. The flat tint is
             deliberately light — it covers the WHOLE frame only so white text
@@ -109,6 +156,42 @@ function Hero() {
             </motion.p>
           </motion.div>
         </div>
+
+        {/* Slide controls — top-right, clear of the headline and the
+            full-width phone button. The Pause button is what makes an
+            auto-advancing carousel pass WCAG 2.2.2: hover-to-pause alone
+            doesn't exist on a phone. */}
+        {count > 1 && (
+          <div className="absolute right-3 top-3 flex items-center gap-1 rounded-full bg-black/35 px-2 py-1 backdrop-blur-sm md:right-6 md:top-6">
+            {HERO_IMAGES.map((img, i) => (
+              <button
+                key={img.src}
+                type="button"
+                onClick={() => setIndex(i)}
+                aria-label={`Show photo ${i + 1} of ${count}`}
+                aria-current={i === index ? 'true' : undefined}
+                className="group grid h-7 w-5 place-items-center rounded-full focus-visible:outline focus-visible:outline-2 focus-visible:outline-white"
+              >
+                <span
+                  className={cn(
+                    'block h-2 rounded-full transition-all duration-300',
+                    i === index ? 'w-4 bg-white' : 'w-2 bg-white/50 group-hover:bg-white/80',
+                  )}
+                />
+              </button>
+            ))}
+            <button
+              type="button"
+              // Also clears the hover hold — the pointer is over the hero when
+              // this is clicked, so otherwise Play would appear to do nothing.
+              onClick={togglePlaying}
+              aria-label={playing ? 'Pause slideshow' : 'Play slideshow'}
+              className="ml-1 grid h-7 w-7 place-items-center rounded-full text-white/90 hover:bg-white/15 focus-visible:outline focus-visible:outline-2 focus-visible:outline-white"
+            >
+              {playing ? <Pause className="h-3.5 w-3.5" aria-hidden="true" /> : <Play className="h-3.5 w-3.5" aria-hidden="true" />}
+            </button>
+          </div>
+        )}
       </motion.div>
     </section>
   )
