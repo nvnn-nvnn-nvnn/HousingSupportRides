@@ -12,8 +12,9 @@ Domain purchased (Squarespace registrar) and a Givebutter account started, but
 **not yet ready to go live.** Remaining before launch, in the order the user
 gave:
 
-1. **Domain** — point the Squarespace-registered domain at Vercel (DNS), and
-   set `site` in `astro.config.mjs` to the real domain.
+1. ✅ **Domain** — done. Live at `https://www.housingsupportrides.org` (bare
+   domain redirects to `www`), and `site` in `astro.config.mjs` matches
+   (2026-11-18). `BETTER_AUTH_URL` in Vercel must be this same `www` address.
 2. **Givebutter** ⚠️ — setup is proving painful (2026-09-19). Still needs
    `GIVEBUTTER_ACCOUNT_ID` + `GIVEBUTTER_CAMPAIGN_CODE` in `src/lib/content.ts`.
    See [../how-to/deploying.md](../how-to/deploying.md) → "Connecting Givebutter."
@@ -91,6 +92,18 @@ Full reasoning + how-to: [../how-to/images.md](../how-to/images.md).
       which Astro does **not** optimize, and it's the hero (= our LCP image).
       Move photos to `src/assets/img/` and render via `<Image />`. Usually
       drops it to ~100–200 KB.
+- [x] **More photos across the site (2026-11-16):** homepage "Out in the
+      Community" mosaic, photo cards, photo page headers, redesigned sign-up
+      and contact forms. See [../how-to/moments-section.md](../how-to/moments-section.md).
+- [ ] **Real captions for the Moments mosaic.** `MOMENTS` in `content.ts` uses
+      generic captions ("Braving the cold, together", "Yard cleanup"…). Ask
+      someone who was there for each event's name and date.
+- [ ] ⚠️ **"Mileage is covered"** is still on the homepage driver card
+      (`INVOLVEMENT` in `content.ts`) and on `/volunteer`, but
+      `become-a-driver.astro` says reimbursement isn't confirmed. Confirm it
+      with the Executive Director, or remove the sentence from both.
+- [ ] 📘 **Dark mode** (learning project, user is building it). Follow
+      [../how-to/dark-mode-exercises.md](../how-to/dark-mode-exercises.md).
 - [ ] 3 field-story images (`FIELD_STORIES[].image` in `content.ts`) — still
       the maroon gradient placeholder. See [../how-to/editing-the-site.md](../how-to/editing-the-site.md).
 - [ ] Blog post cover images (`cover` frontmatter / Keystatic field) — placeholder.
@@ -220,6 +233,11 @@ specific claims a donor or reporter could check, and **none of them appear in
 - [ ] Optional: `npm audit fix` — a few transitive advisories exist in the toolchain.
 
 ## 8. Admin dashboard (built 2026-11-04 — needs production setup)
+
+> **Doing the setup?** Follow
+> [../how-to/admin-launch-checklist.md](../how-to/admin-launch-checklist.md):
+> the step-by-step order for getting admins signed in and writing posts on the
+> live site. The items below are the engineering record.
 
 Email + password sign-in at `/admin` with Better Auth, a Turso/libSQL database,
 and an admin plugin for roles. Guide: [../how-to/admin-dashboard.md](../how-to/admin-dashboard.md).

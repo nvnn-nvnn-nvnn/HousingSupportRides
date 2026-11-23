@@ -6,7 +6,7 @@ HousingSupportRides/
 ├── keystatic.config.tsx        # CMS schema + storage mode (local / Keystatic Cloud / GitHub)
 ├── tsconfig.json               # extends astro/tsconfigs/strict
 ├── .env.example                # the 4 admin env vars, documented — copy to .env (gitignored)
-├── scripts/                    # admin CLI, run with plain Node (see notes/admin-system.md)
+├── scripts/                    # admin CLI (see notes/admin-system.md) + optimize-image.mjs (`npm run img`)
 │   ├── db-migrate.ts           #   npm run db:migrate    create/update all tables
 │   └── create-admin.ts         #   npm run admin:create  make an admin (how the FIRST one exists)
 ├── how-to/                     # task guides (writing posts, admin, deploy)
@@ -14,7 +14,11 @@ HousingSupportRides/
 ├── public/                     # static assets served as-is (favicon, logo, img/)
 │   ├── img/hero/               # hero carousel photos, two sizes each (-1920 / -1080.jpg)
 │   ├── img/support/            # Support Us slideshow photos, 4:3, two sizes each (-1200 / -800.jpg)
-│   └── img/journal/            # journal images uploaded through Keystatic
+│   ├── img/journal/            # journal images uploaded through Keystatic
+│   ├── img/headers/            # photo page headers, 16:7 (-1920 / -1080.jpg)
+│   ├── img/cards/              # role/involvement card photos, 3:2 (-960 / -640.jpg)
+│   ├── img/moments/            # homepage "Out in the Community" mosaic, 4:3 (-900 / -600.jpg)
+│   └── img/forms/              # photo beside the volunteer sign-up form, 4:5
 └── src/
     ├── env.d.ts                # declares App.Locals.user / .session (set by middleware)
     ├── middleware.ts           # 🔒 the admin gate — /admin, /api/admin, /keystatic

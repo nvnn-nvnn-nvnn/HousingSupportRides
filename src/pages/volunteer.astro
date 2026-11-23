@@ -2,21 +2,29 @@
 import SiteLayout from '../layouts/SiteLayout.astro'
 import PageHeader from '../components/PageHeader.astro'
 
+// `image` = base path in public/img/cards/ (3:2 crops at -640 and -960).
+// Alt text describes what's in the photo, not the role.
 const roles = [
   {
     title: 'Become a Driver',
     href: '/volunteer/become-a-driver',
     body: 'Give rides to work, appointments, and interviews on a schedule that fits your week. Mileage is covered.',
+    image: '/img/cards/driver',
+    alt: 'A group of program members and volunteers on an outing together at a shopping mall',
   },
   {
     title: 'Help Coordinate',
     href: '/volunteer/help-coordinate',
     body: 'Match riders with drivers, handle intake, and keep the schedule running — much of it from home.',
+    image: '/img/cards/coordinate',
+    alt: 'Volunteers on ladders setting up a stage and decorations before an event',
   },
   {
     title: 'Give Monthly',
     href: '/volunteer/give-monthly',
     body: 'Join our monthly giving circle. Steady support lets us plan for the long haul.',
+    image: '/img/cards/give',
+    alt: 'A full community room of people sharing a meal at a decorated celebration',
   },
 ]
 ---
@@ -29,24 +37,52 @@ const roles = [
     eyebrow="Join Us"
     title="Volunteer"
     lead="Our programs run on people who show up. Volunteers drive neighbors to housing, medical, and employment appointments, keep the schedule matched and moving, and help connect people to the community resources they qualify for. Most roles are a few hours a week, on a schedule you set."
+    image="/img/headers/volunteer"
   />
 
-  <section class="mx-auto max-w-[1200px] px-5 py-16 md:px-16">
+  <section class="mx-auto max-w-[1200px] px-5 py-16 md:px-16 md:py-20">
     <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
       {
         roles.map((role) => (
           <a
             href={role.href}
-            class="group flex flex-col rounded-xl border border-[var(--border)] bg-[var(--card)] p-8 transition-all hover:-translate-y-1 hover:shadow-[0_18px_40px_-16px_rgba(40,18,20,0.28)]"
+            class="group flex flex-col overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--card)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_18px_40px_-16px_rgba(40,18,20,0.28)]"
           >
-            <h2 class="font-sans text-xl font-semibold">{role.title}</h2>
-            <p class="mt-3 flex-1 text-[var(--muted-foreground)]">{role.body}</p>
-            <span class="mt-5 inline-flex items-center gap-1.5 text-sm font-medium text-[var(--primary)] transition-all group-hover:gap-2.5">
-              Learn more
-            </span>
+            <div class="aspect-[3/2] overflow-hidden">
+              <img
+                src={`${role.image}-960.jpg`}
+                srcset={`${role.image}-640.jpg 640w, ${role.image}-960.jpg 960w`}
+                sizes="(min-width: 768px) 360px, 100vw"
+                alt={role.alt}
+                loading="lazy"
+                class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+              />
+            </div>
+            <div class="flex flex-1 flex-col p-7">
+              <h2 class="font-sans text-xl font-semibold">{role.title}</h2>
+              <p class="mt-3 flex-1 text-[var(--muted-foreground)]">{role.body}</p>
+              <span class="mt-5 inline-flex items-center gap-1.5 text-sm font-medium text-[var(--primary)] transition-all group-hover:gap-2.5">
+                Learn more <span aria-hidden="true">→</span>
+              </span>
+            </div>
           </a>
         ))
       }
+    </div>
+
+    <div class="mt-14 flex flex-col items-start gap-5 rounded-2xl bg-[var(--accent-soft)] p-8 md:flex-row md:items-center md:justify-between md:p-10">
+      <div>
+        <h2 class="font-serif text-2xl font-semibold">Not sure which fits?</h2>
+        <p class="mt-2 text-[var(--muted-foreground)]">
+          One short form covers every role. Tell us what you're good at and we'll find the right spot.
+        </p>
+      </div>
+      <a
+        href="/volunteer/apply"
+        class="inline-flex shrink-0 items-center justify-center rounded-full bg-[var(--accent-warm)] px-7 py-3.5 font-semibold text-white transition-all hover:brightness-95"
+      >
+        Apply to volunteer
+      </a>
     </div>
   </section>
 </SiteLayout>

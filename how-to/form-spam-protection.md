@@ -100,7 +100,8 @@ differences are noted at the end.
 
 1. Cloudflare dashboard → **Turnstile** → **Add site**. A free Cloudflare
    account is enough; **your domain does not need to use Cloudflare DNS.**
-2. Add `housingsupportrides.org` **and `localhost`** as hostnames. Without
+2. Add `housingsupportrides.org`, `www.housingsupportrides.org` **and
+   `localhost`** as hostnames. The live site is the `www` one. Without
    `localhost` you can't test locally, which you will want to do in Step 5.
 3. Widget mode: **Managed**. Let Cloudflare decide when to challenge.
 4. Copy both keys.

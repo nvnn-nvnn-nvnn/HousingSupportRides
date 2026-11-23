@@ -4,6 +4,87 @@ A running log of notable work. Most recent first. For *why* behind big
 decisions, see [blog-cms-plan.md](./blog-cms-plan.md); for how-tos, see
 [../how-to/](../how-to/).
 
+## 2026-11-18
+
+### Learning section + dark mode project
+
+- New **📘 Learning** section in `how-to/README.md`, grouping the guided
+  projects (dark mode, slideshows).
+- New `how-to/dark-mode-exercises.md`: 7 exercises the user will program
+  themselves. Nothing was built. It covers dark tokens via
+  `prefers-color-scheme`, a bug hunt, a `data-theme` override, a no-flash
+  `is:inline` head script, the Navbar toggle, polish, and shipping.
+- The bug hunt lists the traps actually found in the code:
+  - `Footer.tsx` uses `--foreground` as its background, so it would turn light.
+  - `Navbar.tsx` hard-codes `#e5e5e5` in three places.
+  - `--primary` is used both as text and as band background (Support Us,
+    Newsletter, admin buttons), so it needs splitting.
+  - Shadows are hard-coded `rgba`.
+  - No `color-scheme` is set.
+  - `/admin` shares `global.css`.
+- Found while auditing, not fixed: `global.css` maps `--color-rb-teal` to
+  `--rb-teal`, which is never defined. It's left as bonus trap H in the exercises.
+- Reverses the "Light-only palette (committed)" comment in `global.css` once
+  built. The exercises tell the builder to update it.
+
+
+### Domain is live, so the checklist and site address were updated
+
+- Checked the live site: `housingsupportrides.org` redirects (308) to
+  **`https://www.housingsupportrides.org`**, served by Vercel. `/admin` there
+  says "not configured yet", as expected before Phase 1.
+- `admin-launch-checklist.md`: domain step ticked, and `BETTER_AUTH_URL` is now
+  spelled out as the `www` address (not vercel.app, not the bare domain).
+  Phase 0's address is filled in.
+- `astro.config.mjs`: `site` changed to the `www` address, so the sitemap,
+  RSS and canonical links no longer point at a redirect.
+- `astro.config.mjs`: the sitemap no longer lists `/admin/*` (it listed four
+  admin pages, including the sign-in page). `/keystatic` and `/api` are
+  filtered too. The pages were already protected by the middleware. This
+  only stops advertising them.
+- Guides brought up to date with the live domain: `admin-dashboard.md`
+  (`BETTER_AUTH_URL` example is now the `www` address), `newsletter.md` (domain
+  marked live, RSS URL), `form-spam-protection.md` (add the `www` hostname to
+  Turnstile), and the deploying.md status row in `how-to/README.md`.
+
+## 2026-11-16
+
+### More photos, better sign-up and contact forms
+
+Goal: make the site as visual as possible and show what the organization has
+actually done. Full guide: [moments-section.md](../how-to/moments-section.md).
+
+- **Homepage, "Out in the Community"** (new `Moments.tsx`, between How We Help
+  and Support Us): a mosaic of 5 photos (crew, polar plunge, yard cleanup,
+  celebration, room setup) with captions and a "See the full gallery" button.
+  Data: `MOMENTS` in `content.ts`. Captions describe only what's visible;
+  real event names are still to confirm.
+- **Homepage, "Three Ways to Help":** icon cards became photo cards (icon badge
+  on the photo's edge). `INVOLVEMENT` gained `image` + `alt`.
+- **Photo page headers:** `PageHeader.astro` takes an optional `image` (and
+  `focal`). Used on /volunteer, the three role pages, /volunteer/apply and
+  /contact. Without `image`, the old plain header is unchanged.
+- **/volunteer:** photo role cards + a "Not sure which fits?" band to the form.
+- **/volunteer/apply:** the form is a card. Roles are clickable icon tiles
+  (still real checkboxes, same `name`/`value`, so emails and
+  /admin/submissions are unchanged). A photo + "What happens next" (3 steps)
+  sits beside it, sticky on desktop and below the form on phones.
+- **/contact:** form in a card, icon rows for phone/email/address, a photo
+  linking to the sign-up form.
+  - **Bug fixed:** a stray `http://127.0.0.1:4321` had been pasted after
+    `eyebrow="Get in Touch"` in the page header.
+- **New script:** `npm run img -- <photo> <out> <shape> <widths> [anchor]`
+  (`scripts/optimize-image.mjs`), which crops and shrinks a photo the same way the
+  hero/support photos were made.
+- **Photos:** 16 new files, 35–195 KB each, in `public/img/headers/`,
+  `cards/`, `moments/` and `forms/`. All from the gallery (releases signed).
+- **Verified:** `npm run build` passes. Screenshots at 1280px and 390px for the
+  homepage, /volunteer, /volunteer/apply and /contact: no horizontal scroll, no
+  JS errors, `?role=` pre-ticks the right tile.
+- **Not changed, flagged:** "Mileage is covered" still appears on the homepage
+  driver card and /volunteer, but become-a-driver.astro says reimbursement
+  isn't confirmed yet. See todo.
+
 ## 2026-11-12
 
 ### Support Us: photo slideshow beside the Donate button

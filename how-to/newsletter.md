@@ -51,11 +51,9 @@ Decide these before you open a signup page anywhere.
    recommendation toward MailerLite over Buttondown, despite Buttondown being
    the more pleasant tool. A list of 40 people does not justify $9/month yet.
 
-2. **The domain isn't live yet.** Item 1 on the
-   [launch punch list](../notes/todo-next-steps.md) is pointing the
-   Squarespace-registered domain at Vercel. Until that's done, RSS-to-email has
-   nothing real to link to — every "read the full post" link in your email
-   would 404. Finish the domain first.
+2. ✅ **The domain is live** (2026-11-18): `https://www.housingsupportrides.org`.
+   RSS-to-email links will work once the latest code is deployed, because
+   `site` in `astro.config.mjs` now uses the `www` address.
 
 3. **You'll be adding DNS records at Squarespace anyway.** Since you're already
    going into the registrar's DNS panel for Vercel, do the newsletter's email
@@ -354,7 +352,7 @@ In your service, create an **RSS campaign** (MailerLite: *Campaigns → RSS
 campaign*; Buttondown: *Settings → RSS-to-email*) and point it at:
 
 ```
-https://housingsupportrides.org/rss.xml
+https://www.housingsupportrides.org/rss.xml
 ```
 
 Then set:

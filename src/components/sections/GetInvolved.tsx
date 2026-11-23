@@ -4,6 +4,11 @@ import FadeUp from '../common/FadeUp'
 import Button from '../ui/Button'
 import { INVOLVEMENT } from '../../lib/content'
 
+/**
+ * "Three Ways to Help": photo cards. Each card is a photo (3:2) with the
+ * icon badge overlapping its bottom edge, then title, body and button.
+ * Photos: `image` on each INVOLVEMENT entry (public/img/cards/).
+ */
 function GetInvolved() {
   return (
     <section id="get-involved" className="bg-[var(--accent-soft)] py-24">
@@ -25,21 +30,33 @@ function GetInvolved() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: '-60px' }}
                 transition={{ duration: 0.7, delay: i * 0.08, ease: [0.22, 1, 0.36, 1] }}
-                className="flex flex-col items-start rounded-xl border border-[var(--border)] bg-[var(--background)] p-8"
+                className="group flex flex-col overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--background)] transition-shadow duration-300 hover:shadow-[0_18px_40px_-16px_rgba(40,18,20,0.28)]"
               >
-                <span className="inline-flex h-14 w-14 items-center justify-center rounded-full bg-[var(--accent-soft)] text-[var(--primary)]">
-                  <Icon className="h-7 w-7" strokeWidth={1.6} aria-hidden="true" />
-                </span>
-                <h3 className="mt-6 font-sans text-xl font-semibold text-[var(--foreground)]">
-                  {route.title}
-                </h3>
-                <p className="mt-3 flex-1 text-[var(--muted-foreground)]" style={{ lineHeight: 1.7 }}>
-                  {route.body}
-                </p>
-                <div className="mt-6">
-                  <Button href={route.href} variant="outline" size="sm">
-                    {route.cta}
-                  </Button>
+                <div className="relative">
+                  <div className="aspect-[3/2] overflow-hidden">
+                    <img
+                      src={`${route.image}-960.jpg`}
+                      srcSet={`${route.image}-640.jpg 640w, ${route.image}-960.jpg 960w`}
+                      sizes="(min-width: 768px) 360px, 100vw"
+                      alt={route.alt}
+                      loading="lazy"
+                      className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105 motion-reduce:transition-none"
+                    />
+                  </div>
+                  <span className="absolute -bottom-7 left-8 inline-flex h-14 w-14 items-center justify-center rounded-full border-4 border-[var(--background)] bg-[var(--accent-soft)] text-[var(--primary)]">
+                    <Icon className="h-6 w-6" strokeWidth={1.6} aria-hidden="true" />
+                  </span>
+                </div>
+                <div className="flex flex-1 flex-col items-start px-8 pb-8 pt-11">
+                  <h3 className="font-sans text-xl font-semibold text-[var(--foreground)]">{route.title}</h3>
+                  <p className="mt-3 flex-1 text-[var(--muted-foreground)]" style={{ lineHeight: 1.7 }}>
+                    {route.body}
+                  </p>
+                  <div className="mt-6">
+                    <Button href={route.href} variant="outline" size="sm">
+                      {route.cta}
+                    </Button>
+                  </div>
                 </div>
               </motion.div>
             )

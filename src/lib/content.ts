@@ -507,6 +507,44 @@ export const HIGHLIGHT_COUNT = 6
 
 
 
+/**
+ * "Out in the Community": the homepage photo mosaic (Moments.tsx).
+ * The FIRST photo is the big tile; keep it a group shot. 5 photos fill the grid.
+ * Files: public/img/moments/<name>-600.jpg and -900.jpg (4:3); the first also
+ * needs -1400. Make them with:
+ *   npm run img -- <photo> public/img/moments/<name> 4:3 600,900
+ * ⚠️ Captions describe only what's visible in the photo. Swap in the real
+ * event name and date once someone who was there confirms them.
+ * See how-to/moments-section.md.
+ */
+export const MOMENTS: { src: string; alt: string; caption: string }[] = [
+  {
+    src: '/img/moments/crew',
+    alt: 'About thirty program members and volunteers posing together in a gymnasium',
+    caption: 'The whole crew',
+  },
+  {
+    src: '/img/moments/plunge',
+    alt: 'A group in swimsuits and towels laughing together outdoors in the snow',
+    caption: 'Braving the cold, together',
+  },
+  {
+    src: '/img/moments/yard',
+    alt: 'Volunteers clearing cut branches and brush from a yard in a residential neighborhood',
+    caption: 'Yard cleanup',
+  },
+  {
+    src: '/img/moments/celebrate',
+    alt: 'Members of the community smiling together in front of a pink balloon backdrop at a celebration',
+    caption: 'Celebrating milestones',
+  },
+  {
+    src: '/img/moments/setup',
+    alt: 'Three volunteers posing playfully beside folding tables and stacked chairs in a community room',
+    caption: 'Setting up the room',
+  },
+]
+
 // Involvment - NOT GALLERY
 
 export const INVOLVEMENT: {
@@ -515,6 +553,9 @@ export const INVOLVEMENT: {
   body: string
   cta: string
   href: string
+  /** Base path in public/img/cards/ (3:2 crops at -640 and -960). */
+  image: string
+  alt: string
 }[] = [
   {
     icon: Users,
@@ -522,6 +563,8 @@ export const INVOLVEMENT: {
     body: 'Help at intake, sort donations, assemble move-in kits, or mentor a neighbor. No experience needed — just a few hours.',
     cta: 'Find a role',
     href: '/volunteer',
+    image: '/img/cards/volunteer',
+    alt: 'Volunteers clearing cut branches and brush from a yard in a residential neighborhood',
   },
   {
     icon: Car,
@@ -529,6 +572,8 @@ export const INVOLVEMENT: {
     body: 'Give rides to work, appointments, and interviews on a schedule that fits your week. Mileage is covered.',
     cta: 'Start driving',
     href: '/volunteer/become-a-driver',
+    image: '/img/cards/driver',
+    alt: 'A group of program members and volunteers on an outing together at a shopping mall',
   },
   {
     icon: Heart,
@@ -536,6 +581,8 @@ export const INVOLVEMENT: {
     body: 'Join our monthly giving circle. Steady, predictable support is what lets us commit to people for the long haul.',
     cta: 'Give monthly',
     href: '/volunteer/give-monthly',
+    image: '/img/cards/give',
+    alt: 'A full community room of people sharing a meal at a decorated celebration',
   },
 ]
 

@@ -139,12 +139,13 @@ fine, just expected.)
 | `DATABASE_URL` | the `libsql://…` address from Step 1 |
 | `DATABASE_AUTH_TOKEN` | the long token from Step 1 |
 | `BETTER_AUTH_SECRET` | the secret key from Step 2 |
-| `BETTER_AUTH_URL` | the website address exactly as it appears in the browser, e.g. `https://housingsupportrides.org` |
+| `BETTER_AUTH_URL` | the website address exactly as it appears in the browser: **`https://www.housingsupportrides.org`** |
 
 ⚠️ **`BETTER_AUTH_URL` has to match the address bar exactly.** `https` vs
 `http`, with or without `www.`, all of it. If it's even slightly off, sign-in
-will fail on the live site. If the site still lives at a `something.vercel.app`
-address, use that for now and update it once the real domain is connected.
+will fail on the live site. Our domain is connected and the bare
+`housingsupportrides.org` redirects to `www.`, so the `www` address is the
+right one (checked 2026-11-18). It must also match `site` in `astro.config.mjs`.
 
 ### Step 4 — Set up the live database and your admin account
 

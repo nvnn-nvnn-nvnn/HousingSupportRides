@@ -15,6 +15,9 @@ The fast lookup. Find your question, follow the link.
 | Add photos to the gallery | [gallery-page.md](./gallery-page.md) |
 | Add or swap a photo in the homepage slideshow | [hero-carousel.md](./hero-carousel.md) |
 | Change the photos beside the Donate button | [support-section.md](./support-section.md) |
+| Change the homepage photo mosaic, a page-header photo, or a card photo | [moments-section.md](./moments-section.md) |
+| Shrink / crop a photo for the site | [moments-section.md → Step 1](./moments-section.md#step-1-prepare-a-photo-always) (`npm run img`) |
+| Learn to build dark mode myself | [dark-mode-exercises.md](./dark-mode-exercises.md) |
 | Learn to build a slideshow somewhere else | [slideshow-exercises.md](./slideshow-exercises.md) |
 | Collect email addresses / send a newsletter | [newsletter.md](./newsletter.md) |
 | Change what a form says after you hit send | [form-feedback.md](./form-feedback.md) |
@@ -25,6 +28,7 @@ The fast lookup. Find your question, follow the link.
 | Add or remove an admin | [admin-dashboard.md](./admin-dashboard.md) → Part 3 |
 | Let staff edit blog posts without a GitHub account | [keystatic-cloud.md](./keystatic-cloud.md) |
 | Let someone else edit the site | [using-the-admin.md](./using-the-admin.md) · [admin-accounts.md](./admin-accounts.md) |
+| **Give my admins access (sign in, edit, write posts)** | **[admin-launch-checklist.md](./admin-launch-checklist.md)** — start here |
 | Find out what's left before launch | [../notes/todo-next-steps.md](../notes/todo-next-steps.md) |
 | See what changed recently and why | [../notes/CHANGELOG.md](../notes/CHANGELOG.md) |
 
@@ -44,12 +48,14 @@ use. Check here before following one and wondering why you can't find the code.
 | [form-feedback.md](./form-feedback.md) | ✅ Built and working |
 | [gallery-page.md](./gallery-page.md) | ✅ Built — except scroll-reveal, still unbuilt |
 | [lightbox-navigation.md](./lightbox-navigation.md) | ✅ Built and working |
-| [deploying.md](./deploying.md) | ⚠️ Accurate, but **the site isn't live yet** — see its checklist |
+| [deploying.md](./deploying.md) | ✅ Site is live at `www.housingsupportrides.org` (domain connected, checked 2026-11-18). Admin sign-in still needs Phase 1 of [admin-launch-checklist.md](./admin-launch-checklist.md) |
 | [newsletter.md](./newsletter.md) | ❌ **Not wired.** `Newsletter.tsx` shows a *false* confirmation and discards the address — see the guide's Step 3 |
 | [form-spam-protection.md](./form-spam-protection.md) | ❌ Not built. Forms are live and unprotected |
 | [givebutter.md](./givebutter.md) | ⚠️ Code is built and waiting &mdash; just needs the two values pasted in |
 | [hero-carousel.md](./hero-carousel.md) | ✅ Built and working (2026-11-09) |
 | [support-section.md](./support-section.md) | ✅ Built and working (2026-11-12) |
+| [moments-section.md](./moments-section.md) | ✅ Built and working (2026-11-16) |
+| [dark-mode-exercises.md](./dark-mode-exercises.md) | 📘 Learning project. Not built: you build it |
 | [slideshow-exercises.md](./slideshow-exercises.md) | 📘 Practice exercises. Nothing in them is built yet, by design |
 | [admin-dashboard.md](./admin-dashboard.md) | ⚠️ Built and tested locally — **needs a Turso database + 4 Vercel env vars** before it works in production |
 | [admin-accounts.md](./admin-accounts.md) | 📚 Background reading — the reasoning behind admin-dashboard.md |
@@ -76,7 +82,22 @@ everything the other three can do.
 | [lightbox-navigation.md](./lightbox-navigation.md) | ← / → navigation between photos in the lightbox |
 | [hero-carousel.md](./hero-carousel.md) | The homepage slideshow: adding photos, how the code works, gotchas |
 | [support-section.md](./support-section.md) | The Support Us block: photo slideshow beside the Donate button, mobile layout |
+| [moments-section.md](./moments-section.md) | Homepage photo mosaic, photo page headers, photo cards, the sign-up form layout, and `npm run img` |
 | [slideshow-exercises.md](./slideshow-exercises.md) | Six graded exercises for building slideshows elsewhere (testimonials, /gallery, swipe…) |
+
+### 📘 Learning
+
+Guided projects for learning to program on this site. Each has hints, hidden
+answers (try first!), and a "how to check it works" for every step. Nothing in
+them is built yet, by design. You build it.
+
+| Project | You'll learn | Level |
+| --- | --- | --- |
+| [dark-mode-exercises.md](./dark-mode-exercises.md) | CSS design tokens, `prefers-color-scheme`, a no-flash `<head>` script, a React toggle without hydration bugs, contrast checking. 7 exercises | Beginner → intermediate |
+| [slideshow-exercises.md](./slideshow-exercises.md) | React state + effects, timers, accessibility for moving content. 6 exercises | Beginner → intermediate |
+
+Tip: work on a git branch (`git checkout -b my-project`), and ask Claude to
+*review* your branch rather than write it.
 
 ### Forms & email
 All three touch the same two forms (`/contact`, `/volunteer/apply`), which share

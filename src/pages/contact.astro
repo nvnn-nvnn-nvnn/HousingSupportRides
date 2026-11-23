@@ -3,6 +3,7 @@ import SiteLayout from '../layouts/SiteLayout.astro'
 import PageHeader from '../components/PageHeader.astro'
 import FormResult from '../components/common/FormResult.astro'
 import EmergencyNotice from '../components/EmergencyNotice.astro'
+import { MapPin, Phone, Mail } from 'lucide-react'
 
 const inputClass =
   'w-full rounded-lg border border-[var(--border)] bg-[var(--background)] px-4 py-3 text-[var(--foreground)] placeholder:text-[var(--muted-foreground)] focus:border-[var(--primary)] focus:outline-none focus:ring-2 focus:ring-[var(--accent-soft)]'
@@ -13,9 +14,11 @@ const inputClass =
   description="Get in touch with Housing Support Rides."
 >
   <PageHeader
-    eyebrow="Get in Touch"http://127.0.0.1:4321
+    eyebrow="Get in Touch"
     title="Contact Us"
     lead="Questions about a ride, volunteering, or partnering with us? Send a note and we'll get back to you."
+    image="/img/headers/contact"
+    focal="50% 55%"
   />
 
   {/* Above the form on purpose: someone in crisis should see this before they
@@ -28,7 +31,11 @@ const inputClass =
     <div class="grid grid-cols-1 gap-12 lg:grid-cols-[1.4fr_1fr]">
       <!-- Submits via Web3Forms (no backend needed) — see src/lib/web3forms.ts
            and src/lib/content.ts (WEB3FORMS_ACCESS_KEY) for setup. -->
-      <form id="contact-form" class="grid gap-5">
+      <form
+        id="contact-form"
+        class="grid gap-5 self-start rounded-2xl border border-[var(--border)] bg-[var(--card)] p-6 shadow-[0_18px_40px_-24px_rgba(40,18,20,0.25)] md:p-10"
+      >
+        <h2 class="font-serif text-2xl font-semibold">Send us a message</h2>
         <input type="hidden" name="subject" value="New contact form message — Housing Support Rides" />
         <input type="checkbox" name="botcheck" class="hidden" tabindex="-1" autocomplete="off" />
 
@@ -43,7 +50,7 @@ const inputClass =
           </label>
         </div>
         <label class="grid gap-2 text-sm font-medium text-[var(--foreground)]">
-          Phone <span class="font-normal text-[var(--muted-foreground)]">(optional)</span>
+          <span>Phone <span class="font-normal text-[var(--muted-foreground)]">(optional)</span></span>
           <input class={inputClass} type="tel" name="phone" autocomplete="tel" placeholder="(000) 000-0000" />
         </label>
         <label class="grid gap-2 text-sm font-medium text-[var(--foreground)]">
@@ -53,7 +60,7 @@ const inputClass =
         <div>
           <button
             type="submit"
-            class="rounded-full bg-[var(--accent-warm)] px-7 py-3.5 font-semibold text-white transition-all duration-200 hover:brightness-95 active:brightness-90 disabled:cursor-not-allowed disabled:opacity-60"
+            class="w-full rounded-full bg-[var(--accent-warm)] px-8 py-3.5 shadow-sm hover:shadow-md sm:w-auto font-semibold text-white transition-all duration-200 hover:brightness-95 active:brightness-90 disabled:cursor-not-allowed disabled:opacity-60"
           >
             Send message
           </button>
@@ -78,30 +85,52 @@ const inputClass =
 
       <!-- Contact details -->
       <aside class="grid content-start gap-6">
-        <div>
-          <h2 class="text-xs font-semibold uppercase tracking-[0.16em] text-[var(--muted-foreground)]">
-            Reach us
-          </h2>
-          <address class="mt-3 grid gap-3 not-italic text-[var(--foreground)]">
-            <p>
-              1351 3rd St E<br />
-              Saint Paul, MN 55106
-            </p>
-            <p>
-              <a class="text-[var(--primary)] hover:opacity-70" href="tel:+17635017764">
-                (763) 501-7764
-              </a>
-            </p>
-            <p>
-              <a
-                class="text-[var(--primary)] hover:opacity-70"
-                href="mailto:hsr.intake@gmail.com"
-              >
-                hsr.intake@gmail.com
-              </a>
-            </p>
+        <div class="rounded-2xl bg-[var(--accent-soft)] p-6 md:p-8">
+          <h2 class="font-serif text-2xl font-semibold">Reach us directly</h2>
+          <address class="mt-6 grid gap-5 not-italic text-[var(--foreground)]">
+            <a href="tel:+17635017764" class="group flex items-center gap-4">
+              <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[var(--background)] text-[var(--primary)]">
+                <Phone className="h-5 w-5" strokeWidth={1.8} aria-hidden="true" />
+              </span>
+              <span>
+                <span class="block text-xs font-semibold uppercase tracking-[0.14em] text-[var(--muted-foreground)]">Call</span>
+                <span class="font-medium text-[var(--primary)] group-hover:opacity-70">(763) 501-7764</span>
+              </span>
+            </a>
+            <a href="mailto:hsr.intake@gmail.com" class="group flex items-center gap-4">
+              <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[var(--background)] text-[var(--primary)]">
+                <Mail className="h-5 w-5" strokeWidth={1.8} aria-hidden="true" />
+              </span>
+              <span class="min-w-0">
+                <span class="block text-xs font-semibold uppercase tracking-[0.14em] text-[var(--muted-foreground)]">Email</span>
+                <span class="break-all font-medium text-[var(--primary)] group-hover:opacity-70">hsr.intake@gmail.com</span>
+              </span>
+            </a>
+            <div class="flex items-center gap-4">
+              <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[var(--background)] text-[var(--primary)]">
+                <MapPin className="h-5 w-5" strokeWidth={1.8} aria-hidden="true" />
+              </span>
+              <span>
+                <span class="block text-xs font-semibold uppercase tracking-[0.14em] text-[var(--muted-foreground)]">Visit</span>
+                1351 3rd St E, Saint Paul, MN 55106
+              </span>
+            </div>
           </address>
         </div>
+
+        <figure class="relative overflow-hidden rounded-2xl">
+          <img
+            src="/img/moments/celebrate-900.jpg"
+            srcset="/img/moments/celebrate-600.jpg 600w, /img/moments/celebrate-900.jpg 900w"
+            sizes="(min-width: 1024px) 420px, 100vw"
+            alt="Members of the community smiling together in front of a pink balloon backdrop at a celebration"
+            loading="lazy"
+            class="aspect-[4/3] w-full object-cover"
+          />
+          <figcaption class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent p-5 pt-14 text-sm text-white">
+            Want to volunteer instead? <a href="/volunteer/apply" class="font-semibold underline underline-offset-4">Apply here</a>.
+          </figcaption>
+        </figure>
         {/* PLACEHOLDER — office hours not yet confirmed. Restore with the real hours.
         <div>
           <h2 class="text-xs font-semibold uppercase tracking-[0.16em] text-[var(--muted-foreground)]">

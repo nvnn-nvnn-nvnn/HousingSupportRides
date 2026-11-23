@@ -10,7 +10,8 @@
     "astro": "astro",
     "lint": "oxlint",
     "db:migrate": "node --env-file-if-exists=.env scripts/db-migrate.ts",
-    "admin:create": "node --env-file-if-exists=.env scripts/create-admin.ts"
+    "admin:create": "node --env-file-if-exists=.env scripts/create-admin.ts",
+    "img": "node scripts/optimize-image.mjs"
   },
   "dependencies": {
     "@astrojs/mdx": "^7.0.5",

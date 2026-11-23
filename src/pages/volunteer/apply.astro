@@ -2,9 +2,26 @@
 import SiteLayout from '../../layouts/SiteLayout.astro'
 import PageHeader from '../../components/PageHeader.astro'
 import FormResult from '../../components/common/FormResult.astro'
+// lucide-react icons render to plain SVG here: no client: directive, no JS shipped.
+import { Car, ClipboardList, Sparkles, Send, PhoneCall, CalendarCheck } from 'lucide-react'
 
 const inputClass =
   'w-full rounded-lg border border-[var(--border)] bg-[var(--background)] px-4 py-3 text-[var(--foreground)] placeholder:text-[var(--muted-foreground)] focus:border-[var(--primary)] focus:outline-none focus:ring-2 focus:ring-[var(--accent-soft)]'
+
+// Role tiles. ⚠️ `name` and `value` are what arrive in the email and in
+// /admin/submissions. Don't rename them without checking both.
+const interests = [
+  { id: 'interest-driver', name: 'interest_driver', value: 'Become a Driver', label: 'Drive', hint: 'Rides to work, appointments and interviews', icon: Car },
+  { id: 'interest-coordinator', name: 'interest_coordinator', value: 'Help Coordinate', label: 'Coordinate', hint: 'Matching, intake and scheduling, often from home', icon: ClipboardList },
+  { id: 'interest-other', name: 'interest_other', value: 'Other / not sure yet', label: 'Not sure yet', hint: "Tell us your skills and we'll suggest a fit", icon: Sparkles },
+]
+
+// "What happens next". Step 2 matches the promise in the success message below.
+const steps = [
+  { icon: Send, title: 'Send this form', body: 'Takes about two minutes. No commitment yet.' },
+  { icon: PhoneCall, title: 'We reach out', body: 'A coordinator contacts you within a few days.' },
+  { icon: CalendarCheck, title: 'Pick your schedule', body: 'Choose a role and the hours that work for you.' },
+]
 ---
 
 <SiteLayout
@@ -14,71 +31,142 @@ const inputClass =
   <PageHeader
     eyebrow="Volunteer"
     title="Tell Us How You'd Like to Help"
-    lead="One quick form covers every volunteer role — pick as many as you like and we'll follow up about next steps."
+    lead="One quick form covers every volunteer role. Pick as many as you like and we'll follow up about next steps."
+    image="/img/headers/volunteer"
   />
 
-  <section class="mx-auto max-w-[680px] px-5 py-16">
-    <!-- Submits via Web3Forms (no backend needed) — see src/lib/web3forms.ts
-         and src/lib/content.ts (WEB3FORMS_VOLUNTEER_ACCESS_KEY, falling back to
-         WEB3FORMS_ACCESS_KEY) for setup. -->
-    <form id="volunteer-form" class="grid gap-5">
-      <input type="hidden" name="subject" value="New volunteer interest — Housing Support Rides" />
-      <input type="checkbox" name="botcheck" class="hidden" tabindex="-1" autocomplete="off" />
+  <section class="mx-auto max-w-[1200px] px-5 py-14 md:px-16 md:py-20">
+    <div class="grid gap-10 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-14">
+      <!-- Left: photo + what happens next. Sticks beside the form on desktop.
+           On phones it moves BELOW the form (order-last) and the photo is
+           hidden, so the form is the first thing after the header. -->
+      <aside class="order-last lg:order-none lg:sticky lg:top-[124px] lg:self-start">
+        <div class="relative hidden overflow-hidden rounded-2xl lg:block">
+          <img
+            src="/img/forms/apply-900.jpg"
+            srcset="/img/forms/apply-600.jpg 600w, /img/forms/apply-900.jpg 900w"
+            sizes="440px"
+            alt="Three volunteers posing playfully beside folding tables and stacked chairs in a community room"
+            loading="lazy"
+            class="aspect-[4/5] w-full object-cover"
+          />
+          <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/75 to-transparent p-6 pt-20">
+            <p class="font-serif text-xl font-semibold text-white">Setting up the room</p>
+            <p class="mt-1 text-sm text-white/80">Volunteers getting ready (and clowning around) before an event.</p>
+          </div>
+        </div>
 
-      <div class="grid gap-5 sm:grid-cols-2">
-        <label class="grid gap-2 text-sm font-medium text-[var(--foreground)]">
-          Name
-          <input class={inputClass} type="text" name="name" autocomplete="name" placeholder="Your name" required />
-        </label>
-        <label class="grid gap-2 text-sm font-medium text-[var(--foreground)]">
-          Email
-          <input class={inputClass} type="email" name="email" autocomplete="email" placeholder="you@example.com" required />
-        </label>
-      </div>
+        <h2 class="font-serif text-2xl font-semibold lg:mt-8">What happens next</h2>
+        <ol class="mt-5 grid gap-5 sm:grid-cols-3 lg:grid-cols-1">
+          {
+            steps.map((step, i) => {
+              const Icon = step.icon
+              return (
+                <li class="flex gap-4">
+                  <span class="relative flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[var(--accent-soft)] text-[var(--primary)]">
+                    <Icon className="h-5 w-5" strokeWidth={1.8} aria-hidden="true" />
+                    <span class="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-[var(--primary)] text-[11px] font-semibold text-white">
+                      {i + 1}
+                    </span>
+                  </span>
+                  <div>
+                    <p class="font-semibold text-[var(--foreground)]">{step.title}</p>
+                    <p class="mt-0.5 text-sm text-[var(--muted-foreground)]">{step.body}</p>
+                  </div>
+                </li>
+              )
+            })
+          }
+        </ol>
+      </aside>
 
-      <label class="grid gap-2 text-sm font-medium text-[var(--foreground)]">
-        Phone <span class="font-normal text-[var(--muted-foreground)]">(optional)</span>
-        <input class={inputClass} type="tel" name="phone" autocomplete="tel" placeholder="(000) 000-0000" />
-      </label>
-
-      <fieldset class="grid gap-2">
-        <legend class="text-sm font-medium text-[var(--foreground)]">How would you like to help?</legend>
-        <label class="flex items-center gap-2 text-[var(--foreground)]">
-          <input id="interest-driver" type="checkbox" name="interest_driver" value="Become a Driver" class="h-4 w-4 accent-[var(--primary)]" />
-          Become a Driver
-        </label>
-        <label class="flex items-center gap-2 text-[var(--foreground)]">
-          <input id="interest-coordinator" type="checkbox" name="interest_coordinator" value="Help Coordinate" class="h-4 w-4 accent-[var(--primary)]" />
-          Help Coordinate
-        </label>
-        <label class="flex items-center gap-2 text-[var(--foreground)]">
-          <input type="checkbox" name="interest_other" value="Other / not sure yet" class="h-4 w-4 accent-[var(--primary)]" />
-          Other / not sure yet
-        </label>
-      </fieldset>
-
-      <label class="grid gap-2 text-sm font-medium text-[var(--foreground)]">
-        Availability & anything else <span class="font-normal text-[var(--muted-foreground)]">(optional)</span>
-        <textarea class={inputClass} name="message" rows="4" placeholder="Days/times that work for you, questions, etc."></textarea>
-      </label>
-
+      <!-- Right: the form. Submits via Web3Forms (no backend needed). See
+           src/lib/web3forms.ts and src/lib/content.ts
+           (WEB3FORMS_VOLUNTEER_ACCESS_KEY, falling back to WEB3FORMS_ACCESS_KEY). -->
       <div>
-        <button
-          type="submit"
-          class="rounded-full bg-[var(--accent-warm)] px-7 py-3.5 font-semibold text-white transition-all duration-200 hover:brightness-95 active:brightness-90 disabled:cursor-not-allowed disabled:opacity-60"
+        <form
+          id="volunteer-form"
+          class="grid gap-6 rounded-2xl border border-[var(--border)] bg-[var(--card)] p-6 shadow-[0_18px_40px_-24px_rgba(40,18,20,0.25)] md:p-10"
         >
-          Send application
-        </button>
-        <p id="volunteer-form-status" class="mt-3 text-sm text-[var(--muted-foreground)]" role="status"></p>
-      </div>
-    </form>
+          <input type="hidden" name="subject" value="New volunteer interest — Housing Support Rides" />
+          <input type="checkbox" name="botcheck" class="hidden" tabindex="-1" autocomplete="off" />
 
-    <FormResult
-      id="volunteer-form-success"
-      title="Thank you for stepping up."
-      body="We've got your application. A coordinator will reach out within a few days about next steps — keep an eye on your inbox, including the spam folder."
-      resetLabel="Submit another application"
-    />
+          <fieldset class="grid gap-3">
+            <legend class="font-serif text-xl font-semibold text-[var(--foreground)]">
+              How would you like to help?
+            </legend>
+            <p class="-mt-1 text-sm text-[var(--muted-foreground)]">Pick one or more.</p>
+            <div class="grid gap-3 sm:grid-cols-3">
+              {
+                interests.map((opt) => {
+                  const Icon = opt.icon
+                  return (
+                    <label class="relative flex cursor-pointer items-start gap-3 rounded-xl sm:flex-col sm:gap-2 border-2 border-[var(--border)] bg-[var(--background)] p-4 transition-all hover:border-[var(--primary)]/50 has-[:checked]:border-[var(--primary)] has-[:checked]:bg-[var(--accent-soft)] has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-[var(--primary)] has-[:focus-visible]:ring-offset-2">
+                      <input
+                        id={opt.id}
+                        type="checkbox"
+                        name={opt.name}
+                        value={opt.value}
+                        class="absolute right-3 top-3 h-4 w-4 accent-[var(--primary)]"
+                      />
+                      <Icon className="h-7 w-7 shrink-0 text-[var(--primary)]" strokeWidth={1.6} aria-hidden="true" />
+                      <span class="grid gap-1 pr-6 sm:pr-0">
+                        <span class="font-semibold text-[var(--foreground)]">{opt.label}</span>
+                        <span class="text-sm leading-snug text-[var(--muted-foreground)]">{opt.hint}</span>
+                      </span>
+                    </label>
+                  )
+                })
+              }
+            </div>
+          </fieldset>
+
+          <div class="grid gap-5 border-t border-[var(--border)] pt-6">
+            <p class="font-serif text-xl font-semibold text-[var(--foreground)]">About you</p>
+            <div class="grid gap-5 sm:grid-cols-2">
+              <label class="grid gap-2 text-sm font-medium text-[var(--foreground)]">
+                Name
+                <input class={inputClass} type="text" name="name" autocomplete="name" placeholder="Your name" required />
+              </label>
+              <label class="grid gap-2 text-sm font-medium text-[var(--foreground)]">
+                Email
+                <input class={inputClass} type="email" name="email" autocomplete="email" placeholder="you@example.com" required />
+              </label>
+            </div>
+
+            <label class="grid gap-2 text-sm font-medium text-[var(--foreground)]">
+              <span>Phone <span class="font-normal text-[var(--muted-foreground)]">(optional, if you'd rather we call)</span></span>
+              <input class={inputClass} type="tel" name="phone" autocomplete="tel" placeholder="(000) 000-0000" />
+            </label>
+
+            <label class="grid gap-2 text-sm font-medium text-[var(--foreground)]">
+              <span>Availability & anything else <span class="font-normal text-[var(--muted-foreground)]">(optional)</span></span>
+              <textarea class={inputClass} name="message" rows="4" placeholder="Days and times that work for you, skills, questions…"></textarea>
+            </label>
+          </div>
+
+          <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <p class="text-xs text-[var(--muted-foreground)]">
+              We only use this to contact you about volunteering.
+            </p>
+            <button
+              type="submit"
+              class="w-full rounded-full bg-[var(--accent-warm)] px-8 py-3.5 font-semibold text-white shadow-sm transition-all duration-200 hover:shadow-md hover:brightness-95 active:brightness-90 disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
+            >
+              Send application
+            </button>
+          </div>
+          <p id="volunteer-form-status" class="-mt-3 text-sm text-[var(--muted-foreground)]" role="status"></p>
+        </form>
+
+        <FormResult
+          id="volunteer-form-success"
+          title="Thank you for stepping up."
+          body="We've got your application. A coordinator will reach out within a few days about next steps — keep an eye on your inbox, including the spam folder."
+          resetLabel="Submit another application"
+        />
+      </div>
+    </div>
 
     <script>
       import { initWeb3Form } from '../../lib/web3forms'
@@ -95,7 +183,7 @@ const inputClass =
           storeAs: 'volunteer',
         })
 
-      // Pre-check the relevant box when arriving from a specific role page,
+      // Pre-check the relevant tile when arriving from a specific role page,
       // e.g. /volunteer/apply?role=driver or ?role=coordinator
       const role = new URLSearchParams(location.search).get('role')
       const checkboxId = role === 'driver' ? 'interest-driver' : role === 'coordinator' ? 'interest-coordinator' : null

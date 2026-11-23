@@ -4,6 +4,7 @@ import Hero from './components/sections/Hero'
 // PLACEHOLDER — hidden until real data exists. See the note in App() below.
 // import ImpactCounters from './components/sections/ImpactCounters'
 import OurWork from './components/sections/OurWork'
+import Moments from './components/sections/Moments'
 import DonateBlock from './components/sections/DonateBlock'
 // import FieldStories from './components/sections/FieldStories'
 import GetInvolved from './components/sections/GetInvolved'
@@ -36,6 +37,7 @@ function App() {
         */}
         {/* <ImpactCounters /> */}
         <OurWork />
+        <Moments />
         <DonateBlock />
         {/* <FieldStories /> */}
         <GetInvolved />
