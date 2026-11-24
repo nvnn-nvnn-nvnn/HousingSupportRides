@@ -14,7 +14,7 @@ import { config, collection, fields } from '@keystatic/core'
  * Cloud project exists. Filled in = production uses Keystatic Cloud, and
  * editors sign in with an emailed invite instead of a GitHub account.
  */
-const KEYSTATIC_CLOUD_PROJECT = ''
+const KEYSTATIC_CLOUD_PROJECT = 'hsr-admin/housingsupportrides'
 
 /**
  * Where uploaded journal images go — the cover AND images dropped into the
