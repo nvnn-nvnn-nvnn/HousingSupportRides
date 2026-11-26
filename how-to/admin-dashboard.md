@@ -297,6 +297,8 @@ and an invite in Keystatic Cloud.
 | What you see | What it means | What to do |
 | --- | --- | --- |
 | `/admin` says **"not configured"** | One of the Vercel settings is missing, or you didn't redeploy | Check all four are in Vercel (Part 2, Step 3), then redeploy |
+| Can't sign in on `localhost` with your real account | That account lives in **Turso** (live). Your computer uses **`local.db`**, a separate database with separate accounts | Make a local one with `.env` empty: `npm run admin:create -- you@email "Name"`. See notes/admin-system.md → plain-English answers |
+| Sign-in blocked after several wrong passwords | 5 failed tries lock sign-in for 1 minute | Wait 60 seconds |
 | Sign-in **always fails** on the live site | `BETTER_AUTH_URL` doesn't exactly match the address bar | Compare them letter by letter: `www.`, `https`, `.vercel.app` |
 | Sign-in fails **right after setup** | The database setup ran against `local.db` instead of the live database | Redo Part 2, Step 4, and check the first line it prints |
 | **"Too many attempts"** | 5 wrong passwords within a minute | Wait 60 seconds |

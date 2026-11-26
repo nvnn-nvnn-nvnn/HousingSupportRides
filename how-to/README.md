@@ -17,7 +17,9 @@ The fast lookup. Find your question, follow the link.
 | Change the photos beside the Donate button | [support-section.md](./support-section.md) |
 | Change the homepage photo mosaic, a page-header photo, or a card photo | [moments-section.md](./moments-section.md) |
 | Shrink / crop a photo for the site | [moments-section.md → Step 1](./moments-section.md#step-1-prepare-a-photo-always) (`npm run img`) |
+| Save a new form to the admin dashboard / add an admin API route | [forms-and-admin-routes.md](./forms-and-admin-routes.md) |
 | Learn to build dark mode myself | [dark-mode-exercises.md](./dark-mode-exercises.md) |
+| Learn to make blog photos click-to-enlarge | [post-lightbox-exercises.md](./post-lightbox-exercises.md) |
 | Learn to build a slideshow somewhere else | [slideshow-exercises.md](./slideshow-exercises.md) |
 | Collect email addresses / send a newsletter | [newsletter.md](./newsletter.md) |
 | Change what a form says after you hit send | [form-feedback.md](./form-feedback.md) |
@@ -56,6 +58,8 @@ use. Check here before following one and wondering why you can't find the code.
 | [support-section.md](./support-section.md) | ✅ Built and working (2026-11-12) |
 | [moments-section.md](./moments-section.md) | ✅ Built and working (2026-11-16) |
 | [dark-mode-exercises.md](./dark-mode-exercises.md) | 📘 Learning project. Not built: you build it |
+| [post-lightbox-exercises.md](./post-lightbox-exercises.md) | 📘 Learning project. Not built: you build it |
+| [forms-and-admin-routes.md](./forms-and-admin-routes.md) | 📘 Worked examples. Not built: the partner form and CSV export don't exist yet |
 | [slideshow-exercises.md](./slideshow-exercises.md) | 📘 Practice exercises. Nothing in them is built yet, by design |
 | [admin-dashboard.md](./admin-dashboard.md) | ⚠️ Built and tested locally — **needs a Turso database + 4 Vercel env vars** before it works in production |
 | [admin-accounts.md](./admin-accounts.md) | 📚 Background reading — the reasoning behind admin-dashboard.md |
@@ -94,6 +98,8 @@ them is built yet, by design. You build it.
 | Project | You'll learn | Level |
 | --- | --- | --- |
 | [dark-mode-exercises.md](./dark-mode-exercises.md) | CSS design tokens, `prefers-color-scheme`, a no-flash `<head>` script, a React toggle without hydration bugs, contrast checking. 7 exercises | Beginner → intermediate |
+| [post-lightbox-exercises.md](./post-lightbox-exercises.md) | `<dialog>` + `showModal()`, finding admin-written content with `querySelectorAll`, keyboard accessibility, wrap-around prev/next. 4 exercises + 1 stretch | Beginner |
+| [forms-and-admin-routes.md](./forms-and-admin-routes.md) | Store a new form ("Partner With Us") in the admin dashboard; build an admin-only API route (download submissions as CSV); the security checklist for any admin route. 2 worked examples + 3 exercises | Intermediate |
 | [slideshow-exercises.md](./slideshow-exercises.md) | React state + effects, timers, accessibility for moving content. 6 exercises | Beginner → intermediate |
 
 Tip: work on a git branch (`git checkout -b my-project`), and ask Claude to

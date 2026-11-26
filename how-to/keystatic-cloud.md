@@ -49,11 +49,29 @@ Keystatic Cloud as well (see [Removing an editor](#removing-an-editor)).
    Keystatic's GitHub App on that repo, so approve it. This is how Keystatic
    saves posts for your staff.
 
+5. **"Project URLs"** asks where the site is deployed. Keystatic Cloud only
+   accepts sign-ins from addresses on this list (the same idea as
+   `BETTER_AUTH_URL`). Enter the live address, nothing else:
+   ```
+   https://www.housingsupportrides.org
+   ```
+   - With `www` (the bare domain only redirects there), no slash at the end,
+     no `/keystatic`.
+   - **Don't add `localhost`.** On your computer the editor always uses local
+     mode and never contacts Keystatic Cloud.
+   - Don't add the `vercel.app` address either. Nobody should edit through it.
+
 ### Step 2 — Copy the project name
 
-The project page shows the project's name as **`team-name/project-name`**, for
-example `housing-support-rides/website`. It's also in the page's web address.
-Copy it exactly.
+The project page shows the project's name as **`team-name/project-name`**.
+It's also in the page's web address
+(`keystatic.cloud/teams/<team>/project/<project>`). Copy it exactly.
+
+> **Ours (done 2026-11-24):** `hsr-admin/housingsupportrides`.
+>
+> The project name is **not a secret**. It sits in public code. If what you
+> found is a long random string instead, that's a token, so don't paste it
+> anywhere.
 
 ### Step 3 — Paste it into the site
 
@@ -72,6 +90,9 @@ const KEYSTATIC_CLOUD_PROJECT = 'housing-support-rides/website'
 
 Save, commit, and push. Once Vercel finishes deploying, the live editor uses
 Keystatic Cloud.
+
+> **Ours:** `const KEYSTATIC_CLOUD_PROJECT = 'hsr-admin/housingsupportrides'`,
+> pushed 2026-11-24 (commit `f6b65b1`).
 
 > On your own computer (`npm run dev`) nothing changes. The editor always saves
 > straight to the files on your computer, with no Cloud login.
@@ -146,6 +167,17 @@ account with write access to the repo.
   - `npm run dev` → **local** (files on disk)
   - production with `KEYSTATIC_CLOUD_PROJECT` set → **cloud**
   - production with it empty → **github**
+- What a live save does, step by step:
+  ```
+  /keystatic (admin sign-in checked first by the middleware)
+    → "Sign in with Keystatic Cloud" → email login
+    → Cloud checks: member of the project? request from a Project URL?
+    → Keystatic's GitHub App commits the post → Vercel rebuilds → live
+  ```
+  The project on keystatic.cloud holds **who** (members), **from where**
+  (Project URLs), and **which repo** (keep it pointed at the current repo name).
+- Every line of `keystatic.config.tsx` now has a plain-English comment
+  (2026-11-24). Start there to change a field or add a collection.
 - The project name isn't a secret. Keystatic Cloud's own sign-in protects it,
   so it's fine to keep it in the code.
 - Cloud mode doesn't use the `KEYSTATIC_GITHUB_CLIENT_ID` /

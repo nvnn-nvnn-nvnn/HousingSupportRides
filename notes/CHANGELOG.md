@@ -4,6 +4,93 @@ A running log of notable work. Most recent first. For *why* behind big
 decisions, see [blog-cms-plan.md](./blog-cms-plan.md); for how-tos, see
 [../how-to/](../how-to/).
 
+## 2026-11-25
+
+- `notes/admin-system.md` → plain-English answers: **"How does the editor
+  work?"** Keystatic builds the form from the `schema`; line-by-line table of
+  the `body: fields.mdx({…})` block; why images need both `directory` and
+  `publicPath`; the save flow from typing to the live page.
+- Decided: the user will build the remaining editor sections (meetings,
+  gallery, FAQ, bios, homepage) themselves, as learning projects.
+
+## 2026-11-24
+
+### 🎉 Admin is live
+
+- Admin sign-in works on `https://www.housingsupportrides.org/admin` (Phase 1 done).
+- Admins invited in Keystatic Cloud. Each one must **accept the emailed
+  invitation** before they can save posts; noted in the launch checklist.
+- Still to do: the test post (Phase 3, Step 5) and the hand-over (Phase 4).
+
+### New learning project: click-to-enlarge photos in posts
+
+- `how-to/post-lightbox-exercises.md`: 4 exercises + 1 stretch for making
+  photos inside journal posts open in a lightbox (`<dialog>`, click, keyboard,
+  prev/next). Not built: the user builds it. Linked from the how-to README.
+
+### Plain-English answers documented
+
+- `notes/admin-system.md`: new **"Plain-English answers"** section near the top,
+  collecting the questions asked 2026-11-18 to 11-24: Better Auth is a library,
+  not an outside product; what the cookie is (a ticket, not an "admin" flag);
+  admin comes from account creation, not sign-in; what the middleware guards
+  and lets through; the 7 server files; the `prerender = false` line; the 6
+  database tables; the secret key.
+- `how-to/admin-launch-checklist.md`: Phase 1 now opens with a "What this phase
+  does" box (3 steps + before/after), and the secret-key step explains what
+  the key is, the exact command, and the rules.
+- User progress (Phase 1): Turso database created, secret key made.
+- **Keystatic Cloud turned on:** `KEYSTATIC_CLOUD_PROJECT = 'hsr-admin/housingsupportrides'` in
+  `keystatic.config.tsx`, built and pushed (f6b65b1). Project URL set in
+  Keystatic Cloud to `https://www.housingsupportrides.org` (no localhost needed:
+  dev always uses local mode).
+- ⚠️ The push revealed the GitHub repo **moved** to
+  `nvnn-nvnn-nvnn/HousingSupportRides`. Pushes still work through GitHub's
+  redirect. Old name still in the GitHub-mode fallback in keystatic.config.tsx
+  and in the docs.
+- Documented: "What is Keystatic?" and "How does admin:create make the password?"
+  added to the plain-English answers in `notes/admin-system.md`;
+  `how-to/keystatic-cloud.md` gained the **Project URLs** step (Step 1.5: www
+  address only) and our project name; the checklist's Phase 3 is ticked up to the push,
+  with a new item to check the Keystatic project is connected to the moved repo.
+- **Local sign-in "not working" (diagnosed, not a bug):** the user's real
+  account was created in Turso (`.env` filled in at the time). The dev server uses
+  `local.db` (`.env` now commented out), which only had `techkage@proton.me`.
+  5 failed tries also tripped the 1-minute sign-in lock. Documented in
+  admin-system.md ("Why can't I sign in on localhost…") and as troubleshooting
+  rows in admin-dashboard.md and admin-launch-checklist.md.
+- **`keystatic.config.tsx` fully commented:** a plain-English comment on every
+  block and setting (storage modes, the cloud spread, collections, each form
+  field). The code is unchanged (verified by diff + build). The old repo name in
+  the GitHub-mode fallback is flagged in a comment but not changed.
+- Documented how `KEYSTATIC_CLOUD_PROJECT` works in production: admin-system.md
+  (modes table + save flow) and keystatic-cloud.md → "How it works".
+- New `notes/timeline.md`: one-page project history (Aug to Nov 2026, from git
+  log + this changelog), an admin-launch progress table, and what's ahead.
+- Checklist Phase 1, the sign-in step: how passwords work (the temporary password
+  is generated and printed once, then replaced via Set password with 12+
+  characters; no reset email, so another admin resets it).
+
+## 2026-11-23
+
+### Learning: storing another form + admin API routes
+
+- New `how-to/forms-and-admin-routes.md` (in the 📘 Learning section). Nothing
+  was built; it's for the user to follow.
+  - **Example 1:** store a "Partner With Us" form. It maps every place the
+    form names are hard-coded: `STORED_FORMS` (core.ts), `countSubmissions`
+    (submissions.ts), `storeAs`/`storeCopy` (web3forms.ts), the
+    admin/submissions tabs, the admin/index count cards. No schema change is
+    needed.
+  - **Example 2:** an admin-only `GET /api/admin/export.csv` route, with CSV
+    injection escaping and `cache-control: no-store`.
+  - A security checklist for any admin route (GET only for reads, because the
+    session cookie is `SameSite=Lax`, confirmed in Better Auth's source), plus
+    3 exercises.
+- `notes/admin-system.md` got plain-English rewrites: "public pages", the
+  flyer/front-desk analogy, Walkthrough 4 (where admins come from), and a
+  piece-by-piece breakdown of Better Auth's `UNAUTHORIZED` line.
+
 ## 2026-11-18
 
 ### Learning section + dark mode project

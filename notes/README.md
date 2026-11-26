@@ -33,6 +33,7 @@ Start here, then read the companion docs:
 | [component-responsibilities.md](./component-responsibilities.md) | What each section/component does |
 | [todo-next-steps.md](./todo-next-steps.md) | Placeholders + what still needs wiring |
 | [blog-cms-plan.md](./blog-cms-plan.md) | Blog/journalism decision record — why Astro + Keystatic |
+| [timeline.md](./timeline.md) | **One-page project history**, month by month, plus admin launch progress |
 | [CHANGELOG.md](./CHANGELOG.md) | Running log of what changed and when |
 
 > **Task-based how-to guides** live in a separate top-level folder:

@@ -14,6 +14,10 @@ for the reasoning that led here. The history is in
 
 ## The short version
 
+**Public pages** = every page a normal visitor sees: the homepage, Contact,
+Volunteer, Gallery, the blog. No sign-in, same for everyone.
+**Admin pages** = `/admin/*`, only for signed-in admins.
+
 ```
                          ┌──────────────── VERCEL ────────────────┐
 browser ──request──▶     │                                        │
@@ -33,10 +37,226 @@ browser ──request──▶     │                                        �
 
 Three things to take from that picture:
 
-1. **Public pages never touch any of this.** They're files on a CDN.
+1. **Public pages never touch any of this.** They're ready-made files,
+   handed out as-is (like printed flyers), so they can't check who's asking.
+   A CDN is just the fast delivery network Vercel uses to hand them out.
 2. **Middleware is the gate**, and it only exists for pages that run on demand.
 3. **The database is the source of truth for who's signed in** — every
    protected request checks it.
+
+---
+
+## Plain-English answers (questions that came up, 2026-11-18 to 11-24)
+
+Quick answers first. The walkthroughs below have the detail.
+
+**What runs sign-in? Is it an outside product?**
+No. It's **Better Auth**, a free open-source library inside our own code (it's
+in `package.json`): no account, no company, no bill.
+
+| Part | Job | Outside service? |
+| --- | --- | --- |
+| Astro | Builds the site | No (our code) |
+| Better Auth | Checks passwords, issues cookies, admin roles | No (a library in our code) |
+| Vercel | Runs the code (hosting) | Yes |
+| Turso | Stores accounts, sessions, form messages | Yes |
+
+Unlike Clerk, Auth0 or Supabase Auth, nobody else holds our accounts. The
+trade-off is that we're responsible for it: no "forgot password" email, so
+admins reset each other's passwords.
+
+**What is "the cookie"?**
+A small piece of text the site stores in your browser. The browser sends it
+back automatically on every visit. Ours (`better-auth.session_token`) is
+**just a ticket number**:
+
+1. You sign in, and the database saves "ticket `x7Kq…` = Devan, valid 7 days".
+2. The browser keeps the ticket.
+3. On each admin page, the middleware asks the database: "whose ticket? are
+   they an admin?"
+
+The cookie **does not say "admin"**. It's a random code, like a coat-check
+ticket. The database knows who it belongs to and what their role is. So you
+can't fake admin by editing it, and removing someone's role or signing them
+out takes effect immediately. It's sent only over HTTPS, page JavaScript
+can't read it, and it expires in 7 days. *Analogy: password = ID shown once
+at the door; cookie = wristband; database = guest list.*
+
+**So does admin come from signing in?**
+No. **Admin is saved on the account when it's created**, by `admin:create`
+(the first admin) or **Add an admin** (everyone after). Signing in only
+proves who you are. Nobody can sign themselves up. See Walkthrough 4.
+
+**What's connected to the middleware?**
+[`src/middleware.ts`](../src/middleware.ts) is the gate for server pages.
+
+| Guards (admin needed) | Lets through (on purpose) |
+| --- | --- |
+| `/admin`, `/admin/submissions`, `/admin/users` | `/admin/login`: you must reach it before signing in |
+| `/api/admin/…` (e.g. delete a message) | `/api/auth/…`: the sign-in endpoint itself |
+| `/keystatic`, `/api/keystatic` (blog editor) | `/api/submissions`: public forms save copies here |
+| | All public pages: they're files, so the middleware never runs |
+
+It asks `getAuth()` → Better Auth → Turso "who owns this cookie?", stores the
+answer in `Astro.locals.user`, and sends non-admins to the login page (or a
+401 for `/api/`). Each `/api/admin` route **checks the role again** itself.
+
+**Which pages run on the server?**
+Only 7 files, plus Keystatic. Everything else is static.
+
+| Server page | Admin needed? |
+| --- | --- |
+| `admin/index`, `admin/submissions`, `admin/users`, `api/admin/submissions/[id]`, `/keystatic` | Yes |
+| `admin/login`, `api/auth/[...all]`, `api/submissions` | No |
+
+Rule: **static unless the page needs the server**, which means it must know
+who's asking, or save something.
+
+**What makes a page server instead of static?**
+One line at the top of the file: `export const prerender = false`. Without
+it, the page is built once as a public file. (Keystatic's plugin sets it for
+its own pages.) ⚠️ Forget it on a new admin page and that page is public, with
+no error.
+
+**What's in the Turso database?**
+6 tables: `user` (accounts + **`role`**), `account` (passwords, hashed),
+`session` (the cookie tickets), `rateLimit` (sign-in attempts), `verification`
+(unused here), and `submission` (form copies, ours). Blog posts, photos and
+page text are **not** in it; they're files in GitHub. Donations live in
+Givebutter.
+
+**What is Keystatic?**
+**The blog editor** at `/keystatic`: a "write a post" screen, so admins can
+publish without code. Like Better Auth, it's a free open-source library in our
+code ([keystatic.config.tsx](../keystatic.config.tsx)). **It has no database:
+it edits files.**
+
+```
+admin writes a post in /keystatic → Save
+  → saved as a file: src/content/journal/my-post.mdx (+ photos in public/img/journal/)
+  → that save is a commit to GitHub
+  → Vercel sees the commit and rebuilds (1–2 min) → live at /journal/my-post
+```
+
+- Edits **journal posts only** for now (meetings, FAQ, bios, homepage text
+  still need a developer).
+- On your computer: **local mode**, which saves straight to your files.
+- On the live site: saving to GitHub needs a login. **Keystatic Cloud** (a
+  small outside service, free for 3 people) lets admins sign in **by email**
+  instead of each needing a GitHub account. Ours: `hsr-admin/housingsupportrides`,
+  turned on 2026-11-24. Its "Project URLs" list is just
+  `https://www.housingsupportrides.org`.
+
+| | Admin dashboard (`/admin`) | Keystatic (`/keystatic`) |
+| --- | --- | --- |
+| Job | Form messages, managing admins | Writing blog posts |
+| Data lives in | Turso | GitHub (files) |
+| Sign-in | Better Auth | Better Auth (middleware) **and** Keystatic Cloud |
+
+*In one line:* Turso holds the **private** data; Keystatic edits the
+**public** content as files in GitHub, which Vercel turns into pages.
+
+**How does `KEYSTATIC_CLOUD_PROJECT` work in production?**
+It decides **where the editor saves**. `storage` in
+[keystatic.config.tsx](../keystatic.config.tsx) picks one of three modes:
+
+| Where | Mode | Who can save, and how |
+| --- | --- | --- |
+| Your computer (`npm run dev`) | **local** | Anyone running the code. It writes straight to the files, with no login. |
+| Live site, name set (**now**) | **cloud** | Admins invited on keystatic.cloud sign in **by email**. Keystatic's GitHub App commits for them. |
+| Live site, name empty | **github** | Each editor needs their **own GitHub account** with repo access (backup mode). |
+
+```
+/keystatic (passes the admin sign-in first, via the middleware)
+  → "Sign in with Keystatic Cloud" → email login
+  → Keystatic Cloud checks: a member of hsr-admin/housingsupportrides?
+                            coming from a Project URL (www.housingsupportrides.org)?
+  → yes → Keystatic's GitHub App commits the post to the repo
+  → Vercel sees the commit → rebuilds → post is live
+```
+
+The name only tells the live editor *which* project to log in through. The
+project on keystatic.cloud holds the rest: **who** may edit (members),
+**from where** (Project URLs), and **which repo** to commit to (it must
+follow the repo's move to `nvnn-nvnn-nvnn/HousingSupportRides`).
+
+**Why can't I sign in on `localhost` with my real account? (2026-11-24)**
+**Your computer and the live site have separate databases, so they have
+separate accounts.**
+
+| Where you sign in | Database | Accounts in it |
+| --- | --- | --- |
+| `www.housingsupportrides.org/admin` | **Turso** (live) | The ones made while `.env` pointed at Turso (yours), plus everyone added on the live site |
+| `localhost:4321/admin` | **`local.db`** (your computer) | Only ones made with `.env` empty. On 2026-11-24 that was just the test account `techkage@proton.me` |
+
+Which one `admin:create` writes to depends on `.env` at that moment: filled
+in → Turso, empty or commented out → `local.db`. To sign in locally, make a
+local account with `.env` empty: `npm run admin:create -- you@email "Name"`.
+
+Also seen that day: **5 failed tries lock sign-in for a minute** (the
+`rateLimit` table, key `127.0.0.1|/sign-in/email`). Wait 60 seconds; it clears
+by itself.
+
+**How does `admin:create` make the password?**
+`randomBytes(18).toString('base64url')`: 18 bytes of secure randomness → 24
+characters (~144 bits). Better Auth **hashes** it (a one-way scramble) and only
+the scrambled version is saved in `account`. The original is printed once,
+then exists nowhere, so it can be replaced but never looked up. At sign-in,
+what you type is scrambled the same way and compared.
+
+**What is the secret key (`BETTER_AUTH_SECRET`)?**
+A random password for the website itself. It stamps cookies so they can't be
+forged, and salts the form senders' `ipHash`. Make it with
+`node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"`,
+put the same value in Vercel and (temporarily) `.env`, and make it once.
+Changing it signs everyone out.
+
+**How does the editor work? What does the `body: fields.mdx({…})` block do? (2026-11-25)**
+Keystatic reads the `schema` in `keystatic.config.tsx` and **builds the form
+from it**: each field = one input box. Nobody writes the editor's screens; the
+config describes them.
+
+`fields.mdx` is the one special field: instead of a text box it draws the
+**rich-text writing area** (bold, headings, lists, links, image button).
+
+| Line | Plain English |
+| --- | --- |
+| `body:` | The field's name. `format: { contentField: 'body' }` (higher up) says this field is the post's main text. |
+| `fields.mdx({` | "Draw a rich-text editor, and save what's typed as MDX" (Markdown that can also hold components). |
+| `label: 'Body'` | The heading shown above the writing area. |
+| `description: RESIZE_NOTE` | The grey help text under it ("Resize to about 1600px…"). |
+| `options: { image: {…} }` | Settings for the toolbar's **image button**. |
+| `directory: JOURNAL_IMAGE_DIR` | Where the uploaded photo **file** is saved in the repo: `public/img/journal/`. |
+| `publicPath: JOURNAL_IMAGE_URL` | The **web address** written into the post for that photo: `/img/journal/…`. |
+
+Why two settings for one photo? A file has two names: where it sits in the
+repo (`public/img/journal/picnic.jpg`) and what a browser asks for
+(`/img/journal/picnic.jpg`, because Astro serves `public/` at the site root).
+Keystatic needs the first to **save** it and the second to **link** it. Change
+one without the other and every photo breaks.
+
+**What happens when an admin types and saves:**
+
+```
+admin types in the writing area, clicks 🖼 and picks picnic.jpg
+  → Save
+  → photo file  → public/img/journal/picnic.jpg            (directory)
+  → post file   → src/content/journal/<slug>.mdx:
+        ---
+        title: …            ← every OTHER field goes up here (frontmatter)
+        cover: …
+        ---
+        ## September 5      ← the BODY field goes down here, as Markdown
+        Some text…
+        ![Volunteers at the picnic](/img/journal/picnic.jpg)   (publicPath)
+  → live site: both files committed to GitHub → Vercel rebuilds
+  → Astro reads the .mdx → <Content /> in src/pages/journal/[...slug].astro
+    turns the Markdown into HTML (the ![…] line becomes an <img>)
+```
+
+The real example to compare against: `src/content/journal/recovery-picnic-2026.mdx`.
+Typing in the editor and editing that file by hand produce the same thing; the
+editor is just a friendlier way to write it.
 
 ---
 
@@ -45,7 +265,12 @@ Three things to take from that picture:
 Astro builds this site two ways, and the whole admin design follows from the
 difference.
 
-| | **Prerendered (static)** | **On-demand** |
+**In plain words:** a public page is a **printed flyer**: made once, the same
+copy handed to everyone, nobody checks who takes one. An admin page is a
+**front desk**: made fresh for each person, after checking their ID. You can't
+put a lock on a flyer, so anything private has to be a front-desk page.
+
+| | **Prerendered (static)**: public pages, "flyers" | **On-demand**: admin pages, "front desk" |
 | --- | --- | --- |
 | When it's made | Once, at `npm run build` | Fresh, on every request |
 | Where it lives | A file on Vercel's CDN | A serverless function |
@@ -213,36 +438,56 @@ it's about. A table every admin can read would undo that.
 
 ## Walkthrough 4 — where admins come from
 
-There is **no sign-up page**, and `disableSignUp: true` makes Better Auth refuse
-one even if someone calls the API directly. That leaves two doors:
+**Only an admin can make an admin.** Nobody can sign themselves up: there's
+no sign-up page, and `disableSignUp: true` blocks it even if someone tries
+the API directly. The admin role is saved on the account when it's created.
+Signing in later only proves who you are.
 
-```
-FIRST admin                                   EVERY admin after that
-npm run admin:create -- email "Name"          /admin/users → Add an admin
-     │  scripts/create-admin.ts                    │  authClient.admin.createUser(…)
-     │  runs on your computer                      │  over HTTP, with your cookie
-     ▼                                             ▼
-auth.api.createUser(…)  — called directly, no request object
-     │                                             │
-     ▼                                             ▼
-admin plugin: "is there a session?"
-     no request at all     ──▶ allowed (trusted local script)
-     HTTP + admin session  ──▶ allowed
-     HTTP, no admin        ──▶ 401
-```
+There are two ways to create an account:
 
-That middle rule is the whole trick, and it's Better Auth's own code, not ours:
+| | Who | How | Why it's allowed |
+| --- | --- | --- | --- |
+| **The first admin** | You, once | `npm run admin:create -- email "Name"` on your computer | The command talks **straight to the database**, not through the website. Only someone holding the database keys (in `.env`) can do that. |
+| **Every admin after** | Any signed-in admin | `/admin/users` → **Add an admin** | It comes **through the website**, so it's checked: your cookie must belong to an admin. |
+
+**The chicken-and-egg problem:** you need an admin to make an admin, so how
+does the first one exist? The command solves it. Better Auth's rule (its own
+code, not ours) is:
 
 ```js
 if (!session && (ctx.request || ctx.headers)) throw ctx.error("UNAUTHORIZED")
 ```
 
-A call with **no request attached** can only come from code running with direct
-access to the database — the script. Anything arriving over the internet has a
-request, and without an admin session it's refused.
+Piece by piece:
 
-The script prints a random password once instead of taking one on the command
-line, so it never lands in your shell history.
+| Piece | Meaning |
+| --- | --- |
+| `!session` | **nobody is signed in** (`!` = "not"; `session` = the admin found from the cookie) |
+| `&&` | **and also** (both sides must be true) |
+| `ctx.request \|\| ctx.headers` | **it came over the internet**. A browser call always carries a request and headers; `\|\|` = "or" |
+| `throw ctx.error("UNAUTHORIZED")` | **stop and refuse** with a 401, and don't create the account |
+
+| Caller | Nobody signed in? | Over the internet? | Refused? |
+| --- | --- | --- | --- |
+| Stranger online | yes | yes | **yes** (both true) |
+| Admin on the website | no | yes | no |
+| `admin:create` on your computer | yes | **no** | no |
+
+In plain words: **"if the call came over the internet and nobody is signed
+in, refuse it."** The command doesn't come over the internet. It runs on your
+computer with the database keys, so the rule doesn't block it. A stranger
+online can't do the same: they don't have the keys, and their request has no
+admin cookie.
+
+| Who's asking | Result |
+| --- | --- |
+| The command on your computer (has the database keys) | ✅ allowed |
+| The website, with an admin's cookie | ✅ allowed |
+| The website, no admin cookie | ❌ refused (401) |
+
+Small detail: the command **makes up** a random password and shows it once,
+rather than you typing one, so the password never sits in your terminal history.
+Change it after your first sign-in.
 
 ---
 
